@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.client.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "module": "commonjs",
+    "types": [
+      "node"
+    ]
+  },
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts",
+    "./assets/demo/**/*"
+  ],
+  "angularCompilerOptions": {
+    "entryModule": "app/root.server.module#RootServerModule"
+  }
+}

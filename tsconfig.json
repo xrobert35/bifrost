@@ -1,0 +1,31 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
+    "noLib": false,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es6",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "skipLibCheck": true,
+    "paths": {
+      "@shared/*" : ["./shared/*"],
+      "@common/*" : ["./server/app/common/*"],
+      "@services/*" : ["./server/app/services/*"],
+      "@schema/*" : ["./server/app/schema/*"],
+      "@config/*" : ["./server/app/config/*"],
+      "@environments/*": ["./client/environments/*"],
+      "@rest/*" : ["./client/app/common/rest/*"]
+    }
+  }
+}

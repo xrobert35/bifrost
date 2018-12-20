@@ -1,0 +1,15 @@
+language: node_js
+services: mongodb
+node_js:
+  - "8"
+before_install:
+  - npm i -g npm@latest
+  - npm i
+install:
+  - npm run server:lint
+  - npm run server:build
+  - npm run client:universal
+script:
+  - npm run server:test
+after_success:
+  - npm run server:coveralls

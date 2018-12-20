@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "allowJs": false,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/server/app/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/server/**/*.spec.ts",
+    "src/server/test/**/*"
+  ]
+}

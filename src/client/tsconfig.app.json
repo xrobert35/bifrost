@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.client.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "module": "es2015",
+    "types": [
+      "node"
+    ]
+  },
+  "exclude": [
+    "src/test.ts",
+    "**/*.spec.ts",
+    "./assets/demo/**/*"
+  ]
+}

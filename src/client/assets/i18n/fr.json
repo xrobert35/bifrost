@@ -1,0 +1,23 @@
+{
+  "page" : {
+    "login" : {
+      "title" : "Login",
+      "form" : {
+        "email" : "Email",
+        "password" : "Password"
+      },
+      "notifications": {
+        "success" : "Welcome to Univ Base Project",
+        "badcrendential" : "Bad credential",
+        "connection-problem" : "An error occured while trying to contact authentication server"
+      }
+    },
+    "home" : {
+      "title" : "Univ Base"
+    }
+  },
+  "validations" : {
+    "email" : "Please write a correct email",
+    "required" : "This field is required"
+  }
+}
