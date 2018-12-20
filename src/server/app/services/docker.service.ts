@@ -11,7 +11,7 @@ export class DockerService {
   }
 
   async list() {
-    this.docker.container.list();
+   return this.docker.container.list();
   }
 
 }
