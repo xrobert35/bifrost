@@ -18,7 +18,10 @@ export class ServerController {
   @UsePipes(new CustomValidationPipe())
   public async containers() {
     const containers = await this.dockerService.list();
-    return containers;
+    const datas = containers.map((container) => {
+      return container.data;
+    });
+    return datas;
   }
 
   @Get('')

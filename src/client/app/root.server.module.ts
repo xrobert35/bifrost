@@ -5,7 +5,6 @@ import { RootModule } from './root.module';
 import { RootComponent } from './root.component';
 import { FlexLayoutServerModule } from '@angular/flex-layout/server';
 import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
-import { ServerCookiesModule } from '@ngx-utils/cookies/server';
 import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
@@ -14,7 +13,6 @@ import { BrowserModule } from '@angular/platform-browser';
     RootModule,
     ServerModule,
     ServerTransferStateModule,
-    ServerCookiesModule.forRoot(),
     ModuleMapLoaderModule,
     FlexLayoutServerModule,
   ],

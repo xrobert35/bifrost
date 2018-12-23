@@ -5,14 +5,14 @@ import { UnivCommonModule } from '../common/univ-common.module';
 import { HeaderComponent } from '../pages/header/header.component';
 import { MenuComponent } from '../pages/menu/menu.component';
 import { AppPage } from '../pages/app.page.';
-import { ServersResolver } from './server/servers.resolver';
+import { ServerResolver } from './server/server.resolver';
 import { ContainersResolver } from './server/containers.resolver';
 
 const appRouter: Routes = [
   {
     path: 'app', component: AppPage,
     children: [
-      { path: 'server', component: ServerPage, resolve : { servers : ServersResolver, containers : ContainersResolver} },
+      { path: 'server', component: ServerPage, resolve : { server : ServerResolver, containers : ContainersResolver} },
       { path: '', redirectTo: 'server', pathMatch: 'full' }
     ]
   },
@@ -34,7 +34,7 @@ const appRouter: Routes = [
     UnivCommonModule
   ],
   providers: [
-    ServersResolver, ContainersResolver
+    ServerResolver, ContainersResolver
   ],
   exports: [
     RouterModule,

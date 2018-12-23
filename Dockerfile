@@ -1,4 +1,4 @@
-FROM node:8.9.0-alpine
+FROM node:10.14.2-slim
 
 RUN mkdir -p /app
 RUN mkdir -p /app/dist
@@ -7,15 +7,11 @@ RUN npm install --quiet node-gyp -g
 
 WORKDIR /app
 
-ADD package*.json /app/
+COPY . .
 
 RUN npm install
-
-COPY . .
 
 RUN npm run client:build
 RUN npm run server:build
 
-npm run server:start
-
-VOLUME [ "/app" ]
+CMD npm run server

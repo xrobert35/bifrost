@@ -2,6 +2,7 @@
 @import "./lessvars.less";
 @import "./asi-ngtools-override.less";
 @import "./components/component.less";
+@import "./pages/page.less";
 
 
 html {
@@ -32,6 +33,14 @@ html {
       display: flex;
       flex-direction: row;
       flex : 1 0 auto;
+
+      &.center{
+        justify-content: center;
+      }
+
+      &.col-center{
+        align-items: center;
+      }
     }
     .clickable {
       cursor: pointer;

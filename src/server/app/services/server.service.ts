@@ -12,7 +12,10 @@ export class ServerService {
 
   constructor() {
     this.readNginxTemplate();
-    this.server = this.readServerJson();
+    this.readServerJson();
+
+    fs.mkdirSync('/opt/bifrost/nginx', { recursive: true });
+    fs.mkdirSync('/opt/bifrost/server',  {recursive : true});
   }
 
   async get() {
@@ -20,12 +23,17 @@ export class ServerService {
   }
 
   async create(server: Server): Promise<Server> {
+    this.saveServerJson(server);
     this.server = server;
 
-    Mustache.parse(this.nginxTemplate);
-    const nginxConf = Mustache.render(this.nginxTemplate, server);
+    const mustacheServer = { ...server};
+    mustacheServer.locations = this.server.locations.filter((location) => {
+      return location.activated;
+    });
 
-    this.saveServerJson(server);
+    Mustache.parse(this.nginxTemplate);
+    const nginxConf = Mustache.render(this.nginxTemplate, mustacheServer);
+
     this.writeNginxConf(nginxConf);
 
     return server;
@@ -43,15 +51,13 @@ export class ServerService {
     fs.writeFileSync('/opt/bifrost/server/server.json', JSON.stringify(server));
   }
 
-  private readServerJson(): Server {
+  private readServerJson() {
     try {
       const server = fs.readFileSync('/opt/bifrost/server/server.json', 'utf8');
       if (server) {
         this.server = JSON.parse(server);
       }
-      return null;
     } catch (err) {
-      return null;
     }
   }
 }

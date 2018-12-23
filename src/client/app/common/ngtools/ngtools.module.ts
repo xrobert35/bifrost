@@ -10,7 +10,8 @@ import {
   AsiErrorMessagesModule,
   AsiServicesModule,
   AsiMenuModule,
-  AsiRadioGroupModule
+  AsiRadioGroupModule,
+  AsiTableModule
 } from '@asi-ngtools/lib';
 import { NotificationComponent } from './notification/notification.component';
 import { InexysNotificationService } from './notification/notification.service';
@@ -27,7 +28,8 @@ const modules = [
   AsiErrorMessagesModule,
   AsiServicesModule,
   AsiRadioGroupModule,
-  AsiMenuModule
+  AsiMenuModule,
+  AsiTableModule
 ];
 
 @NgModule({

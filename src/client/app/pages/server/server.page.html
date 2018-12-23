@@ -1,5 +1,44 @@
-<h1 translate="page.home.title"></h1>
-
-<div *ngFor="let container of containers">
-  <span>{{ container.id }} </span>
+<div class="flex-row">
+  <asi-checkbox label="Show only active : " labelPosition="left" [(ngModel)]="onlyActive" (onValueChange)="onShowOnlyActiveChanged()"></asi-checkbox>
+  <asi-button (click)="updateProxyConf()">Update proxy</asi-button>
 </div>
+
+<asi-table [autoSort]="true" [selectionModel]="serverSelectionModel" [onRequestData]="refreshTable">
+  <asi-table-column name="proxified" type="checkbox"></asi-table-column>
+  <asi-table-column name="name" libelle="Name" [sortable]="true">
+    <asi-cell *asiCellDef="let container">
+      <div class="flex-row col-center">
+        <asi-fa-icon icon="fa fa-power-off" [ngClass]="container.State"></asi-fa-icon>
+        <span>{{ container.name }}</span>
+      </div>
+    </asi-cell>
+  </asi-table-column>
+  <asi-table-column name="image" libelle="Image">
+    <asi-cell *asiCellDef="let container">
+      <div class="flex-row col-center">
+        <span>{{container.Image}}</span>
+        <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.ImageID"></asi-fa-icon>
+      </div>
+    </asi-cell>
+  </asi-table-column>
+  <asi-table-column name="proxy" libelle="Proxy - Path">
+    <asi-cell *asiCellDef="let container">
+      <asi-input [(ngModel)]="container.proxyPath"></asi-input>
+    </asi-cell>
+  </asi-table-column>
+  <asi-table-column name="proxy" libelle="ProxyPass">
+    <asi-cell *asiCellDef="let container">
+      <asi-input [(ngModel)]="container.proxyPass"></asi-input>
+    </asi-cell>
+  </asi-table-column>
+  <asi-table-column name="proxy" libelle="Tag">
+    <asi-cell *asiCellDef="let container">
+      <asi-input [(ngModel)]="container.tag"></asi-input>
+    </asi-cell>
+  </asi-table-column>
+  <asi-table-column name="proxy" libelle="Info">
+    <asi-cell *asiCellDef="let container">
+      <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.tooltip"></asi-fa-icon>
+    </asi-cell>
+  </asi-table-column>
+</asi-table>

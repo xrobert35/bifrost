@@ -8,10 +8,11 @@ export class DockerService {
 
   constructor() {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
+    // this.docker = new Docker({ host : '192.168.56.101', port : '2375' });
   }
 
   async list() {
-   return this.docker.container.list();
+   return this.docker.container.list({ all: true });
   }
 
 }

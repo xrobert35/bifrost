@@ -1,38 +1,25 @@
-# Univ Base Project
+# Bifröst Project
 
-This project is a POC, mixing NestJS and Angular Universal in one archive.
+Proxify your Docker :)
 
-Simply clone this project and run it !
+This project allow you to generate nginx proxypass configuration based on your docker container.
 
-run 
-```
-npm run build
-```
-
-To build everything
-
-use
+## Installation (not yet available)
 
 ```
-npm run server:start
+services:
+  bifrost:
+    image: bifrost:latest
+    container_name: bifrost
+    volumes: 
+      - /opt/bifrost:/opt/bifrost
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes: 
+      - /opt/bifrost/nginx:/etc/nginx/conf
+    restart: always
 ```
-
-To start everything. 
-
-By default 2 serveur will be launch :
-* the universal client server :  from  server/app/client.server.ts on port 4080
-* this nestjs server : from server/app/main.ts on port 4000
-
-go on  http://localhost:4080 to see the universal ui. You should normaly be on the login page. To be able to continue you will need an auth server running on http://localhost:3000  (take a look at the proxy.config.json)
-
-You can checkout my project : https://github.com/xrobert35/univ-auth  and run it ;) (you will find a default admin account in the configuration files)
-
-You can also run this project without building it by using the vscode "launch server" configuration
-
-## Testing
-
-This project is ready to be tested, all the necessary "jest" configuration are in place
-
-## Docker
-
-You can also use docker to build and expose this project,  you will find a ready to use Dockerfile at the root of the project
