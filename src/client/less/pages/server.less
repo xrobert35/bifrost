@@ -1,5 +1,15 @@
 server-page {
 
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+
+  margin-left: 100px;
+  margin-right: 100px;
+
+  .asi-table table thead tr th {
+    padding-right: 10px;
+  }
 
   .container {
     display: flex;
@@ -10,26 +20,42 @@ server-page {
     height: 40px;
     border-radius: 10px;
     border: 1px solid grey;
-    margin : 10px 10px 10px 10px;
+    margin: 10px;
 
     > span {
-      margin : 5px;
+      margin: 5px;
     }
   }
 
-  .asi-fa-icon button:not([disabled]) {
-    color: grey;
-  }
+  .asi-fa-icon {
+    &.running {
+      .fa-power-off:not([disabled]) {
+        color: green;
+      }
+    }
 
-  .running {
-    .fa-power-off{
+    &.exited {
+      .fa-power-off:not([disabled]) {
+        color: red;
+      }
+    }
+
+    button:not([disabled]) {
+      color: grey;
+    }
+
+    .fa-play:not([disabled]) {
       color: green;
     }
-  }
 
-  .exited {
-    .fa-power-off{
+    .fa-stop:not([disabled]) {
       color: red;
     }
+
+    .fa-sync-alt:not([disabled]) {
+      color : blue;
+    }
+
   }
+
 }

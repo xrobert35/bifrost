@@ -4,6 +4,8 @@ export class DockerContainer  {
   proxified: boolean;
   proxyPath: string;
   proxyPass: string;
+
+  imageName: string;
   tag: string;
   // Real docker properties
   Command: string;
@@ -12,8 +14,10 @@ export class DockerContainer  {
   Image: string;
   ImageID: string;
   Names: Array<string>;
+  Name: string;
   State: string;
   Status: string;
+  Config: any;
   Mounts: Array<{ Type: string, Source: string, Destination: string }>;
   Ports: Array<{ PrivatePort: string, PublicPort: string }>;
 }

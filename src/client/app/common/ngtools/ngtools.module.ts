@@ -14,7 +14,7 @@ import {
   AsiTableModule
 } from '@asi-ngtools/lib';
 import { NotificationComponent } from './notification/notification.component';
-import { InexysNotificationService } from './notification/notification.service';
+import { BifrostNotificationService } from './notification/notification.service';
 
 const modules = [
   AsiInputModule,
@@ -37,7 +37,7 @@ const modules = [
   imports: [modules],
   exports: [modules],
   entryComponents : [NotificationComponent],
-  providers: [InexysNotificationService]
+  providers: [BifrostNotificationService]
 })
 export class NgToolsModule {
 }

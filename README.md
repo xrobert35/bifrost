@@ -9,7 +9,7 @@ This project allow you to generate nginx proxypass configuration based on your d
 ```
 services:
   bifrost:
-    image: bifrost:latest
+    image: xrobert35/bifrost:latest
     container_name: bifrost
     volumes: 
       - /opt/bifrost:/opt/bifrost
