@@ -4,19 +4,26 @@ import { share } from 'rxjs/operators';
 import { Server } from '@shared/interface/server.int';
 import { Observable } from 'rxjs';
 import { DockerContainer } from '@shared/interface/container.int';
+import { UniversalService } from '../universal/universal.service';
 
 @Injectable()
 export class ServerWebService {
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private universalService: UniversalService) {
   }
 
   get(): Observable<Server> {
-    return this.httpClient.get<Server>('/api/server').pipe(share());
+    if (this.universalService.isClient()) {
+      return this.httpClient.get<Server>('/api/server').pipe(share());
+    }
+    return null;
   }
 
   stopContainer(containerId: string) {
-    return this.httpClient.post(`/api/server/container/${containerId}/stop`, {});
+    if (this.universalService.isClient()) {
+      return this.httpClient.post(`/api/server/container/${containerId}/stop`, {});
+    }
+    return null;
   }
 
   startContainer(containerId: string) {
@@ -32,6 +39,9 @@ export class ServerWebService {
   }
 
   containers() {
-    return this.httpClient.get<Array<DockerContainer>>('/api/server/containers').pipe(share());
+    if (this.universalService.isClient()) {
+      return this.httpClient.get<Array<DockerContainer>>('/api/server/containers').pipe(share());
+    }
+    return null;
   }
 }
