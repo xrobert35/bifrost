@@ -24,4 +24,12 @@ EXPOSE 8080
 # Expose node server port
 EXPOSE 4000
 
-CMD npm run server:start
+RUN mkdir -p /run/nginx
+
+WORKDIR /
+
+# Add a startup script
+ADD ./start.sh /start.sh
+RUN chmod 755 /start.sh
+
+CMD ["/start.sh"]
