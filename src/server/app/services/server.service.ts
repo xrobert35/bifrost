@@ -14,7 +14,7 @@ export class ServerService {
     this.readNginxTemplate();
     this.readServerJson();
 
-    fs.mkdirSync('/opt/bifrost/nginx', { recursive: true });
+    fs.mkdirSync('/etc/nginx/conf.d/', { recursive: true });
     fs.mkdirSync('/opt/bifrost/server',  {recursive : true});
   }
 
@@ -44,7 +44,7 @@ export class ServerService {
   }
 
   private writeNginxConf(conf: string) {
-    fs.writeFileSync('/opt/bifrost/nginx/nginx.conf', conf);
+    fs.writeFileSync('/etc/nginx/conf.d//default.conf', conf);
   }
 
   private saveServerJson(server: Server) {

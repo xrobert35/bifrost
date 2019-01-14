@@ -1,5 +1,6 @@
-FROM node:10.14.2-slim
+FROM node:10.15.0-alpine
 
+# install c++
 RUN mkdir -p /app
 RUN mkdir -p /app/dist
 RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python
@@ -11,7 +12,16 @@ COPY . .
 
 RUN npm install
 
+# build application
 RUN npm run client:build
 RUN npm run server:build
+
+# install Nginx
+RUN apk add nginx
+
+# Expose Nginx port
+EXPOSE 8080
+# Expose node server port
+EXPOSE 4000
 
 CMD npm run server
