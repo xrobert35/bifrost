@@ -59,8 +59,13 @@ export class ServerPage {
     this.serverSelectionModel = new AsiTableSelectionModel('Id', true);
     forEach(this.containers, (container) => {
       container.name = container.Names[0].substring(1);
-      container.imageName = container.Image.split(':')[0];
-      container.tag = container.Image.split(':')[1];
+      if (container.Image) {
+        container.imageName = container.Image.split(':')[0];
+        container.tag = container.Image.split(':')[1];
+      } else {
+        container.imageName = 'unknown';
+        container.tag = 'unknown';
+      }
       const location = find(this.server && this.server.locations, ['name', container.name]);
       if (location) {
         if (location.activated) {

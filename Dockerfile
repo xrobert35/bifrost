@@ -24,4 +24,4 @@ EXPOSE 8080
 # Expose node server port
 EXPOSE 4000
 
-CMD npm run server
+CMD npm run server:start
