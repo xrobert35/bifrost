@@ -6,6 +6,7 @@ const config = {
   SERVER_PATH : process.env.SERVER_PATH || '/api',
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
   SWAGGER_ACTIVATED: process.env.SWAGGER_ACTIVATED || false,
-  AUTH_JWT_KEY : process.env.AUTH_JWT_KEY || 'I015U2VjcmV0SldUNCFJbmV4eXM='
+  AUTH_JWT_KEY: process.env.AUTH_JWT_KEY || 'I015U2VjcmV0SldUNCFJbmV4eXM=',
+  DOCKER_PRIVATE_REPO_BASE64_KEY : process.env.DOCKER_PRIVATE_REPO_BASE64_KEY || null
 }
 module.exports = { config: config }
