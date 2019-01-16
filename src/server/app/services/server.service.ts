@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import { Server } from '@shared/interface/server.int';
+import * as shelljs from 'shelljs';
 
 @Injectable()
 export class ServerService {
@@ -45,6 +46,8 @@ export class ServerService {
 
   private writeNginxConf(conf: string) {
     fs.writeFileSync('/etc/nginx/conf.d//default.conf', conf);
+    shelljs.exec('/usr/sbin/nginx -s reload');
+
   }
 
   private saveServerJson(server: Server) {

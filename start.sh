@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # starting nginx server
 /usr/sbin/nginx -g "daemon off;" &
 

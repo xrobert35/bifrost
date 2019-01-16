@@ -30,9 +30,15 @@ export class ServerWebService {
     return this.httpClient.post(`/api/server/container/${containerId}/start`, {});
   }
 
+  deletetContainer(containerId: string) {
+    return this.httpClient.delete(`/api/server/container/${containerId}`, {});
+  }
+
+
   recreateContainer(containerId: string, info: any) {
     return this.httpClient.post(`/api/server/container/${containerId}/recreate`, info);
   }
+
 
   createUpdate(server: Server) {
     return this.httpClient.post('/api/server', server).pipe(share());

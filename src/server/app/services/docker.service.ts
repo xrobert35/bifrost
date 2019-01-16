@@ -4,6 +4,7 @@ import { DockerContainer } from '@shared/interface/container.int';
 import { Container } from 'node-docker-api/lib/container';
 import { WinLogger } from '@common/logger/winlogger';
 import { Config } from '@config/config';
+import { Image } from 'node-docker-api/lib/image';
 
 @Injectable()
 export class DockerService {
@@ -39,7 +40,6 @@ export class DockerService {
   async recreateContainer(containerId: string, info: any) {
     this.logger.info('Recreating container ' + containerId);
     const container = await this.docker.container.get(containerId).status();
-    const dockerContainer: DockerContainer = <DockerContainer>container.data;
 
     let repo = null;
     let fromImage = info.image.split(':')[0];
@@ -55,32 +55,37 @@ export class DockerService {
       const authKey = Config.get().DOCKER_PRIVATE_REPO_BASE64_KEY;
       let auth = {};
       if (authKey) {
-        auth = { base64: authKey};
+        auth = { base64: authKey };
       }
       await this.docker.image.create(auth,
         { repo, fromImage: repo + '/' + fromImage, tag, pull: true });
     } else {
       await this.docker.image.create({}, { fromImage, tag, pull: true });
     }
-    // delete container
+    // recreate container
     await container.stop();
     await container.delete();
 
-    // recreate container
-    const newContainer = await this.createContainer(dockerContainer, info);
+    const newContainer = await this.updateContainer(info, container);
 
     await newContainer.start();
   }
 
-  private async createContainer(dockerContainer: DockerContainer, info: any): Promise<Container> {
+  private async updateContainer(info: any, container: Container): Promise<Container> {
+
+    const newImage: any = await this.docker.image.get(info.image).status();
+
+    const containerInfo: any = container.data;
     const newContainer = {
-      ...dockerContainer,
+      ...containerInfo,
     };
 
-    delete newContainer.ImageID;
+    this.logger.info('new image id ' + newImage.data.Id);
 
     newContainer.Image = info.image;
-    newContainer.name = dockerContainer.Name.substring(1);
+    newContainer.ImageID = newImage.data.Id;
+
+    newContainer.name = containerInfo.Name.substring(1);
 
     return await this.docker.container.create(newContainer);
   }
@@ -88,6 +93,12 @@ export class DockerService {
   async stopContainer(containerId: string) {
     this.logger.info('Stopping container ' + containerId);
     await this.docker.container.get(containerId).stop();
+  }
+
+  async deleteContainer(containerId: string) {
+    this.logger.info('Deleting container ' + containerId);
+    await this.docker.container.get(containerId).stop();
+    await this.docker.container.get(containerId).delete();
   }
 
   async startContainer(containerId: string) {

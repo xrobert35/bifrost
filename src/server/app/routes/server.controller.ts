@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpStatus, HttpCode, Get, UsePipes, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpCode, Get, UsePipes, Param, Delete } from '@nestjs/common';
 import { ApiUseTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from '@common/validations/custom-validation.pipe';
 import { ServerService } from '@services/server.service';
@@ -32,6 +32,13 @@ export class ServerController {
   @UsePipes(new CustomValidationPipe())
   async stopContainer(@Param('containerId') containerId: string) {
     await this.dockerService.stopContainer(containerId);
+  }
+
+  @Delete('container/:containerId')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new CustomValidationPipe())
+  async deleteContainer(@Param('containerId') containerId: string) {
+    await this.dockerService.deleteContainer(containerId);
   }
 
   @Post('container/:containerId/start')

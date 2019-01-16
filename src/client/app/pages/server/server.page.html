@@ -22,6 +22,7 @@
       <div class="flex-row">
         <asi-fa-icon *ngIf="container.State === 'running'" icon="fas fa-stop" size="1x" tooltip="stop" (click)="stopContainer(container)"></asi-fa-icon>
         <asi-fa-icon *ngIf="container.State !== 'running'" icon="fas fa-play" size="1x" tooltip="start" (click)="startContainer(container)"></asi-fa-icon>
+        <asi-fa-icon icon="fas fa-trash" size="1x" tooltip="delete" (click)="deleteContainer(container)"></asi-fa-icon>
         <asi-fa-icon icon="fas fa-sync-alt" size="1x" tooltip="recreate" (click)="recreateContainer(container)"></asi-fa-icon>
       </div>
     </asi-cell>

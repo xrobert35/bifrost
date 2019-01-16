@@ -2,19 +2,18 @@ FROM node:10.15.0-alpine
 
 # install c++
 RUN mkdir -p /app
-RUN mkdir -p /app/dist
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python
-RUN npm install --quiet node-gyp -g
+
 
 WORKDIR /app
 
-COPY . .
+COPY dist dist
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY tsconfig-paths.server.bootstrap.js tsconfig-paths.server.bootstrap.js
+COPY tsconfig.json tsconfig.json
 
-RUN npm install
-
-# build application
-RUN npm run client:build
-RUN npm run server:build
+# install production modules
+RUN npm install --production
 
 # install Nginx
 RUN apk add nginx

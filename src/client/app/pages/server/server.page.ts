@@ -18,7 +18,7 @@ export class ServerPage {
   containers: Array<DockerContainer>;
   server: Server;
 
-  serverSelectionModel = new AsiTableSelectionModel('Id', true);
+  serverSelectionModel = new AsiTableSelectionModel('name', true);
 
   constructor(private activatedRoute: ActivatedRoute,
     private bifrostNotificationService: BifrostNotificationService,
@@ -91,6 +91,13 @@ export class ServerPage {
     await this.serverWebService.stopContainer(container.Id).toPromise();
     this.asiTable.fireRefresh();
     this.bifrostNotificationService.showSuccess(`${container.name} is now stopped`);
+  }
+
+  async deleteContainer(container: DockerContainer) {
+    this.bifrostNotificationService.showInfo(`Deleting ${container.name}...`);
+    await this.serverWebService.deletetContainer(container.Id).toPromise();
+    this.asiTable.fireRefresh();
+    this.bifrostNotificationService.showSuccess(`${container.name} has been deleted`);
   }
 
   async recreateContainer(container: DockerContainer) {
