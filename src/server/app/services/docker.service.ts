@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Docker } from 'node-docker-api';
-import { DockerContainer } from '@shared/interface/container.int';
 import { Container } from 'node-docker-api/lib/container';
 import { WinLogger } from '@common/logger/winlogger';
 import { Config } from '@config/config';
-import { Image } from 'node-docker-api/lib/image';
 
 @Injectable()
 export class DockerService {
