@@ -48,11 +48,18 @@ export class ServerController {
     await this.dockerService.startContainer(containerId);
   }
 
-  @Post('container/:containerId/recreate')
+  @Post('container/:containerId/update')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new CustomValidationPipe())
-  async recreateContainer(@Param('containerId') containerId: string, @Body() info: any) {
-    await this.dockerService.recreateContainer(containerId, info);
+  async updateContainer(@Param('containerId') containerId: string, @Body() info: any) {
+    await this.dockerService.updateContainer(containerId, info);
+  }
+
+  @Post('/prune')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new CustomValidationPipe())
+  prune() {
+    return this.dockerService.prune();
   }
 
   @Get('')

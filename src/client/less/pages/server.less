@@ -4,8 +4,9 @@ server-page {
   flex-direction: column;
   flex: 1 0 auto;
 
-  margin-left: 100px;
-  margin-right: 100px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 15px;
 
   .asi-table table thead tr th {
     padding-right: 10px;
@@ -24,6 +25,32 @@ server-page {
 
     > span {
       margin: 5px;
+    }
+  }
+
+  table {
+    ul {
+      margin : 0px;
+      list-style: none;
+    }
+  }
+
+  .server-header {
+
+    padding-top: 5px;
+    height: 60px;
+
+    .asi-button > button {
+      max-height: 35px;
+      padding: 5px;
+    }
+
+    .action-button {
+
+      i {
+        margin-right: 10px;
+        color: lawngreen;
+      }
     }
   }
 
@@ -53,7 +80,7 @@ server-page {
     }
 
     .fa-sync-alt:not([disabled]) {
-      color : blue;
+      color: blue;
     }
 
   }

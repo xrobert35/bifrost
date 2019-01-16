@@ -13,8 +13,8 @@ export class DockerService {
 
 
   constructor() {
-    this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
-    // this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
+    // this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
+    this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
   }
 
   async list() {
@@ -35,7 +35,7 @@ export class DockerService {
     return imageName;
   }
 
-  async recreateContainer(containerId: string, info: any) {
+  async updateContainer(containerId: string, info: any) {
     this.logger.info('Recreating container ' + containerId);
     const container = await this.docker.container.get(containerId).status();
 
@@ -64,12 +64,12 @@ export class DockerService {
     await container.stop();
     await container.delete();
 
-    const newContainer = await this.updateContainer(info, container);
+    const newContainer = await this.recreateContainer(info, container);
 
     await newContainer.start();
   }
 
-  private async updateContainer(info: any, container: Container): Promise<Container> {
+  private async recreateContainer(info: any, container: Container): Promise<Container> {
 
     const newImage: any = await this.docker.image.get(info.image).status();
 
@@ -104,4 +104,8 @@ export class DockerService {
     await this.docker.container.get(containerId).start();
   }
 
+  async prune() {
+    this.logger.info('Starting prune');
+    return await this.docker.image.prune();
+  }
 }

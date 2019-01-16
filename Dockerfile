@@ -11,6 +11,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 COPY tsconfig-paths.server.bootstrap.js tsconfig-paths.server.bootstrap.js
 COPY tsconfig.json tsconfig.json
+COPY proxy.conf.json proxy.conf.json
 
 # install production modules
 RUN npm install --production
@@ -31,4 +32,4 @@ WORKDIR /
 ADD ./start.sh /start.sh
 RUN chmod 755 /start.sh
 
-CMD ["/start.sh"]
+CMD bin/sh ./start.sh

@@ -11,8 +11,8 @@ services:
       - "4000:4000"
       - "480:80"
     volumes:
-      - /opt/nginx/conf:/opt/bifrost/nginx
+      - /opt/bifrost:/opt/bifrost
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DOCKER_PRIVATE_REPO_BASE64_KEY="eyJ1c2VybmFtZSI6ImFkbS1hc2kiLCJwYXNzd29yZCI6IlhwZXJ0aXNlMzUifQ=="
+      - DOCKER_PRIVATE_REPO_BASE64_KEY="base64-privatekey"
     restart: always

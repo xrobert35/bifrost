@@ -1,4 +1,4 @@
-import { IsString, IsBoolean } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class ServerLocation {
   // unique ID
@@ -12,6 +12,4 @@ export class ServerLocation {
   index?: string;
   @IsString()
   proxyPass?: string;
-  @IsBoolean()
-  activated: boolean;
 }

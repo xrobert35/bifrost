@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import { Server } from '@shared/interface/server.int';
 import * as shelljs from 'shelljs';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class ServerService {
@@ -29,7 +30,7 @@ export class ServerService {
 
     const mustacheServer = { ...server};
     mustacheServer.locations = this.server.locations.filter((location) => {
-      return location.activated;
+      return !isEmpty(location.proxyPass) && !isEmpty(location.path);
     });
 
     Mustache.parse(this.nginxTemplate);
@@ -45,7 +46,7 @@ export class ServerService {
   }
 
   private writeNginxConf(conf: string) {
-    fs.writeFileSync('/etc/nginx/conf.d//default.conf', conf);
+    fs.writeFileSync('/etc/nginx/conf.d/default.conf', conf);
     shelljs.exec('/usr/sbin/nginx -s reload');
 
   }

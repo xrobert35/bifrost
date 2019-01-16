@@ -5,6 +5,7 @@ import { Server } from '@shared/interface/server.int';
 import { Observable } from 'rxjs';
 import { DockerContainer } from '@shared/interface/container.int';
 import { UniversalService } from '../universal/universal.service';
+import { PruneResult } from '@shared/interface/pruneResult.int';
 
 @Injectable()
 export class ServerWebService {
@@ -34,11 +35,13 @@ export class ServerWebService {
     return this.httpClient.delete(`/api/server/container/${containerId}`, {});
   }
 
-
-  recreateContainer(containerId: string, info: any) {
+  updateContainer(containerId: string, info: any) {
     return this.httpClient.post(`/api/server/container/${containerId}/recreate`, info);
   }
 
+  prune() {
+    return this.httpClient.post<PruneResult>('/api/server/prune', {});
+  }
 
   createUpdate(server: Server) {
     return this.httpClient.post('/api/server', server).pipe(share());

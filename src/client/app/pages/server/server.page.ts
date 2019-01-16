@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DockerContainer } from '@shared/interface/container.int';
 import { Server } from '@shared/interface/server.int';
 import { AsiTableSelectionModel, AsiTableData, AsiTable } from '@asi-ngtools/lib';
-import { find, forEach } from 'lodash';
+import { find, forEach, filter, isEmpty } from 'lodash';
 import { ServerWebService } from '@rest/server.webservice';
 import { BifrostNotificationService } from 'client/app/common/ngtools/notification/notification.service';
 
@@ -43,20 +43,22 @@ export class ServerPage {
   refreshTable = async () => {
     const tableData = new AsiTableData<DockerContainer>();
 
-    await this.updateContainers();
+    await this.initContainersInformations();
 
     tableData.results = this.containers;
 
     if (this.server.onlyActive) {
-      tableData.results = this.serverSelectionModel.itemsIncluded;
+      tableData.results = filter(tableData.results, (container: DockerContainer) => {
+        return !isEmpty(container.proxyPath);
+      });
     }
 
     return tableData;
   }
 
-  async updateContainers() {
+  async initContainersInformations() {
     this.containers = await this.serverWebService.containers().toPromise();
-    this.serverSelectionModel = new AsiTableSelectionModel('Id', true);
+    this.serverSelectionModel.itemsIncluded = [];
     forEach(this.containers, (container) => {
       container.name = container.Names[0].substring(1);
       if (container.Image) {
@@ -68,10 +70,6 @@ export class ServerPage {
       }
       const location = find(this.server && this.server.locations, ['name', container.name]);
       if (location) {
-        if (location.activated) {
-          this.serverSelectionModel.itemsIncluded.push(container);
-        }
-
         container.proxyPass = location.proxyPass;
         container.proxyPath = location.path;
       }
@@ -79,32 +77,46 @@ export class ServerPage {
   }
 
 
-  async startContainer(container: DockerContainer) {
-    this.bifrostNotificationService.showInfo(`Starting ${container.name}...`);
-    await this.serverWebService.startContainer(container.Id).toPromise();
-    this.asiTable.fireRefresh();
-    this.bifrostNotificationService.showSuccess(`${container.name} is now running`);
+  async startContainers() {
+    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
+      this.bifrostNotificationService.showInfo(`Starting ${container.name}...`);
+      await this.serverWebService.startContainer(container.Id).toPromise();
+      this.asiTable.fireRefresh();
+      this.bifrostNotificationService.showSuccess(`${container.name} is now running`);
+    });
   }
 
-  async stopContainer(container: DockerContainer) {
-    this.bifrostNotificationService.showInfo(`Stoping ${container.name}...`);
-    await this.serverWebService.stopContainer(container.Id).toPromise();
-    this.asiTable.fireRefresh();
-    this.bifrostNotificationService.showSuccess(`${container.name} is now stopped`);
+  async stopContainers() {
+    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
+      this.bifrostNotificationService.showInfo(`Stoping ${container.name}...`);
+      await this.serverWebService.stopContainer(container.Id).toPromise();
+      this.asiTable.fireRefresh();
+      this.bifrostNotificationService.showSuccess(`${container.name} is now stopped`);
+    });
   }
 
-  async deleteContainer(container: DockerContainer) {
-    this.bifrostNotificationService.showInfo(`Deleting ${container.name}...`);
-    await this.serverWebService.deletetContainer(container.Id).toPromise();
-    this.asiTable.fireRefresh();
-    this.bifrostNotificationService.showSuccess(`${container.name} has been deleted`);
+  async deleteContainers() {
+    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
+      this.bifrostNotificationService.showInfo(`Deleting ${container.name}...`);
+      await this.serverWebService.deletetContainer(container.Id).toPromise();
+      this.asiTable.fireRefresh();
+      this.bifrostNotificationService.showSuccess(`${container.name} has been deleted`);
+    });
   }
 
-  async recreateContainer(container: DockerContainer) {
-    this.bifrostNotificationService.showInfo(`Recreating ${container.name}...`);
-    await this.serverWebService.recreateContainer(container.Id, {image : container.imageName + ':' + container.tag}).toPromise();
-    this.asiTable.fireRefresh();
-    this.bifrostNotificationService.showSuccess(`${container.name} is now up-to-date`);
+  async updateContainers() {
+    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
+      this.bifrostNotificationService.showInfo(`Recreating ${container.name}...`);
+      await this.serverWebService.updateContainer(container.Id, { image: container.imageName + ':' + container.tag }).toPromise();
+      this.asiTable.fireRefresh();
+      this.bifrostNotificationService.showSuccess(`${container.name} is now up-to-date`);
+    });
+  }
+
+  async pruneDocker() {
+    this.bifrostNotificationService.showInfo(`Starting prune...`);
+    const pruneResult = await this.serverWebService.prune().toPromise();
+    this.bifrostNotificationService.showInfo(`Prune done ${pruneResult.ImagesDeleted || 0} image deleted`);
   }
 
   updateProxyConf() {
@@ -115,13 +127,12 @@ export class ServerPage {
       this.server.locations.push({
         name: container.name,
         path: container.proxyPath,
-        proxyPass: container.proxyPass,
-        activated: container['checked']
+        proxyPass: container.proxyPass
       });
     });
 
-    this.serverWebService.createUpdate(this.server).subscribe((server) => {
-      console.log(server);
+    this.serverWebService.createUpdate(this.server).subscribe(() => {
+      this.bifrostNotificationService.showSuccess(`Proxy updated`);
     });
   }
 
