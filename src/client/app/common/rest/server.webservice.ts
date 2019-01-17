@@ -36,7 +36,7 @@ export class ServerWebService {
   }
 
   updateContainer(containerId: string, info: any) {
-    return this.httpClient.post(`/api/server/container/${containerId}/recreate`, info);
+    return this.httpClient.post(`/api/server/container/${containerId}/update`, info);
   }
 
   prune() {
