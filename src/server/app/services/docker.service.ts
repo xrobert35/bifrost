@@ -106,6 +106,6 @@ export class DockerService {
 
   async prune() {
     this.logger.info('Starting prune');
-    return await this.docker.image.prunqe();
+    return await this.docker.image.prune();
   }
 }
