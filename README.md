@@ -19,8 +19,7 @@ services:
     ports:
     ports:
       - "4080:4080"
-      - "4000:4000"
-      - "480:80"
+      - "80:80"
     volumes:
       - /opt/bifrost:/opt/bifrost
       - /var/run/docker.sock:/var/run/docker.sock
