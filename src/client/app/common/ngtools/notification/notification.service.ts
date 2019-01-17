@@ -5,7 +5,7 @@ import { AsiNotificationType } from '@asi-ngtools/lib';
 import { NotificationComponent } from './notification.component';
 
 @Injectable()
-export class InexysNotificationService {
+export class BifrostNotificationService {
 
   private baseDelay = 2000;
 

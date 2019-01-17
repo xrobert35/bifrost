@@ -16,6 +16,7 @@ export class Config {
     LOG_LEVEL: string,
     SWAGGER_ACTIVATED: string,
     AUTH_JWT_KEY: string, // JWT secret key to share with an auth service
+    DOCKER_PRIVATE_REPO_BASE64_KEY: string
   };
 
   private constructor() {

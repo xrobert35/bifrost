@@ -27,7 +27,7 @@
             "styles": [
               "src/client/styles.css",
               "src/client/less/main.less",
-              "node_modules/font-awesome/css/font-awesome.css"
+              "./node_modules/@fortawesome/fontawesome-free/css/all.css"
             ],
             "scripts": []
           },

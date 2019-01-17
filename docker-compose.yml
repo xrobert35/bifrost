@@ -1,9 +1,17 @@
 version: "3.3"
 
 services:
-  univ_mongodb:
-    image: mongo:3.4
-    container_name: univ_mongodb
+
+  bifrost:
+    image: xrobert35/bifrost:latest
+    container_name: bifrost
     ports:
-      - "27017:27017"
+    ports:
+      - "4080:4080"
+      - "80:80"
+    volumes:
+      - /opt/bifrost:/opt/bifrost
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_PRIVATE_REPO_BASE64_KEY="base64-privatekey"
     restart: always

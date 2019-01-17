@@ -1,21 +1,35 @@
-FROM node:8.9.0-alpine
+FROM node:10.15.0-alpine
 
+# install c++
 RUN mkdir -p /app
-RUN mkdir -p /app/dist
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python
-RUN npm install --quiet node-gyp -g
+
 
 WORKDIR /app
 
-ADD package*.json /app/
+COPY dist dist
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY tsconfig-paths.server.bootstrap.js tsconfig-paths.server.bootstrap.js
+COPY tsconfig.json tsconfig.json
+COPY proxy.conf.json proxy.conf.json
 
-RUN npm install
+# install production modules
+RUN npm install --production
 
-COPY . .
+# install Nginx
+RUN apk add nginx
 
-RUN npm run client:build
-RUN npm run server:build
+# Expose Nginx port
+EXPOSE 8080
+# Expose node server port
+EXPOSE 4000
 
-npm run server:start
+RUN mkdir -p /run/nginx
 
-VOLUME [ "/app" ]
+WORKDIR /
+
+# Add a startup script
+ADD ./start.sh /start.sh
+RUN chmod 755 /start.sh
+
+CMD bin/sh ./start.sh

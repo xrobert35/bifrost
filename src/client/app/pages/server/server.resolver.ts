@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { ServerWebService } from '@rest/server.webservice';
 
 @Injectable()
-export class ServersResolver implements Resolve<any> {
+export class ServerResolver implements Resolve<any> {
 
   constructor(private serverWebService: ServerWebService) {
   }
 
   async resolve() {
-    return await this.serverWebService.list().toPromise();
+    const server = await this.serverWebService.get().toPromise();
+    return server;
   }
 
 }

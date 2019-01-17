@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as Mustache from 'mustache';
 import { Server } from '@shared/interface/server.int';
+import * as shelljs from 'shelljs';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class ServerService {
@@ -12,7 +14,10 @@ export class ServerService {
 
   constructor() {
     this.readNginxTemplate();
-    this.server = this.readServerJson();
+    this.readServerJson();
+
+    fs.mkdirSync('/etc/nginx/conf.d/', { recursive: true });
+    fs.mkdirSync('/opt/bifrost/server',  {recursive : true});
   }
 
   async get() {
@@ -20,12 +25,17 @@ export class ServerService {
   }
 
   async create(server: Server): Promise<Server> {
+    this.saveServerJson(server);
     this.server = server;
 
-    Mustache.parse(this.nginxTemplate);
-    const nginxConf = Mustache.render(this.nginxTemplate, server);
+    const mustacheServer = { ...server};
+    mustacheServer.locations = this.server.locations.filter((location) => {
+      return !isEmpty(location.proxyPass) && !isEmpty(location.path);
+    });
 
-    this.saveServerJson(server);
+    Mustache.parse(this.nginxTemplate);
+    const nginxConf = Mustache.render(this.nginxTemplate, mustacheServer);
+
     this.writeNginxConf(nginxConf);
 
     return server;
@@ -36,22 +46,22 @@ export class ServerService {
   }
 
   private writeNginxConf(conf: string) {
-    fs.writeFileSync('/opt/bifrost/nginx/nginx.conf', conf);
+    fs.writeFileSync('/etc/nginx/conf.d/default.conf', conf);
+    shelljs.exec('/usr/sbin/nginx -s reload');
+
   }
 
   private saveServerJson(server: Server) {
     fs.writeFileSync('/opt/bifrost/server/server.json', JSON.stringify(server));
   }
 
-  private readServerJson(): Server {
+  private readServerJson() {
     try {
       const server = fs.readFileSync('/opt/bifrost/server/server.json', 'utf8');
       if (server) {
         this.server = JSON.parse(server);
       }
-      return null;
     } catch (err) {
-      return null;
     }
   }
 }
