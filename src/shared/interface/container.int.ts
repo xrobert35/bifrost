@@ -6,6 +6,9 @@ export class DockerContainer  {
   proxyPass: string;
 
   imageName: string;
+  imageRepo?: string;
+  tooltip?: any;
+
   tag: string;
   // Real docker properties
   Command: string;

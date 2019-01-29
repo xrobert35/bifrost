@@ -52,7 +52,7 @@ export class ServerController {
   @HttpCode(HttpStatus.OK)
   @UsePipes(new CustomValidationPipe())
   async updateContainer(@Param('containerId') containerId: string, @Body() info: any) {
-    await this.dockerService.updateContainer(containerId, info);
+    return await this.dockerService.updateContainer(containerId, info);
   }
 
   @Post('/prune')

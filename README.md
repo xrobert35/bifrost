@@ -7,6 +7,8 @@ Proxify your Docker :)
 
 This project allow you to generate nginx proxypass configuration based on your docker container.
 
+It can also be used to quickly update a container to the newest version of the image tag
+
 ## Installation 
 
 ### docker compose
@@ -27,7 +29,7 @@ services:
       - /opt/bifrost:/opt/bifrost
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DOCKER_PRIVATE_REPO_BASE64_KEY="base64-privatekey"
+      - DOCKER_PRIVATE_REPO_BASE64_KEY="repo-name1:base64-privatekey1;repo-name2:base64-privatekey2"
     restart: always
 ```
 
@@ -36,6 +38,8 @@ services:
 Bifrost include a website for configuration and come when an nginx server that you will update thanks to the website
 
 The website is launched on 4080 and will list all your container. You can than edit proxy configuration for some of them and click on "update proxy"  the configuration will be created in "/etc/nginx/conf.d/default.conf" and the nginx configuration will be automatically realoded
+
+DOCKER_PRIVATE_REPO_BASE64_KEY contain a list of private repository key who will be used to update container
 
 ## Why ?
 

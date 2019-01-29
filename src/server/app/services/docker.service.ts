@@ -3,6 +3,7 @@ import { Docker } from 'node-docker-api';
 import { Container } from 'node-docker-api/lib/container';
 import { WinLogger } from '@common/logger/winlogger';
 import { Config } from '@config/config';
+import { DockerContainer } from '@shared/interface/container.int';
 
 @Injectable()
 export class DockerService {
@@ -35,31 +36,24 @@ export class DockerService {
     return imageName;
   }
 
-  async updateContainer(containerId: string, info: any) {
+  async updateContainer(containerId: string, info: any): Promise<DockerContainer> {
     this.logger.info('Recreating container ' + containerId);
     const container = await this.docker.container.get(containerId).status();
 
     let repo = null;
-    let fromImage = info.image.split(':')[0];
-    if (fromImage.indexOf('/') !== -1) {
+    if (info.image.indexOf('/') !== -1) {
       repo = info.image.split('/')[0];
-      fromImage = info.image.split('/')[1].split(':')[0];
     }
-
-    const tag = info.image.split(':')[1];
 
     // pull new version of the image
-    if (repo) {
-      const authKey = Config.get().DOCKER_PRIVATE_REPO_BASE64_KEY;
-      let auth = {};
-      if (authKey) {
-        auth = { base64: authKey };
-      }
-      await this.docker.image.create(auth,
-        { repo, fromImage: repo + '/' + fromImage, tag, pull: true });
-    } else {
-      await this.docker.image.create({}, { fromImage, tag, pull: true });
+    const authKey = this.getAuthKeyForRepo(repo);
+    let auth = null;
+    if (authKey) {
+      auth = { base64: authKey };
     }
+    this.logger.info('pull image ' + info.image + ' with authKey ' + authKey);
+    await this.docker.image.create(auth, { fromImage: info.image, pull: true });
+
     // recreate container
     await container.stop();
     await container.delete();
@@ -67,6 +61,22 @@ export class DockerService {
     const newContainer = await this.recreateContainer(info, container);
 
     await newContainer.start();
+
+    return <DockerContainer>newContainer.data;
+  }
+
+  private getAuthKeyForRepo(repoToFind: string) {
+    const strRepoKeys = Config.get().DOCKER_PRIVATE_REPO_BASE64_KEY;
+    if (strRepoKeys) {
+      const repoKeys = strRepoKeys.split(';');
+      const repoKey = repoKeys.find((key) => {
+        return key.split(':')[0] === repoToFind;
+      });
+      if (repoKey) {
+        return repoKey.split(':')[1];
+      }
+    }
+    return null;
   }
 
   private async recreateContainer(info: any, container: Container): Promise<Container> {

@@ -33,11 +33,26 @@ server-page {
       margin : 0px;
       list-style: none;
     }
+
+    .tag-col{
+      max-width : 90px;
+    }
+    .check-col{
+      max-width: 9px;
+    }
+    .port-col {
+      max-width: 160px;
+    }
+    .proxypass-col{
+      max-width: 120px;
+    }
+    .proxypath-col{
+      max-width: 120px;
+    }
   }
 
   .server-header {
 
-    padding-top: 5px;
     height: 60px;
 
     .asi-button > button {
@@ -67,10 +82,6 @@ server-page {
       }
     }
 
-    button:not([disabled]) {
-      color: grey;
-    }
-
     .fa-play:not([disabled]) {
       color: green;
     }
@@ -79,10 +90,8 @@ server-page {
       color: red;
     }
 
-    .fa-sync-alt:not([disabled]) {
-      color: blue;
+    .fa-sync:not([disabled]) {
+      color: lawngreen;
     }
-
   }
-
 }

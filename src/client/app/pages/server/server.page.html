@@ -1,4 +1,4 @@
-<div class="flex-row server-header" fxLayoutAlign="space-between" fxFlex="0 0 auto">
+<div class="flex-row server-header" fxLayoutAlign="space-between center" fxFlex="0 0 auto">
   <div class="flex-row action-button">
     <asi-button (click)="startContainers()"><i class="fas fa-play"></i><span>start</span></asi-button>
     <asi-button (click)="stopContainers()"><i class="fas fa-stop"></i><span>stop</span></asi-button>
@@ -13,10 +13,11 @@
 </div>
 
 <asi-table #containersTable [autoSort]="true" [selectionModel]="serverSelectionModel" [onRequestData]="refreshTable">
-  <asi-table-column name="proxified" type="checkbox"></asi-table-column>
+  <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
   <asi-table-column name="state" libelle="" sortName="State" [sortable]="true">
     <asi-cell *asiCellDef="let container">
-      <asi-fa-icon icon="fa fa-power-off" [ngClass]="container.State"></asi-fa-icon>
+      <asi-fa-icon *ngIf="!container.loading" icon="fa fa-power-off" [ngClass]="container.State"></asi-fa-icon>
+      <asi-fa-icon *ngIf="container.loading" icon="fa fa-spin fa-sync"></asi-fa-icon>
     </asi-cell>
   </asi-table-column>
   <asi-table-column name="name" libelle="Name" [sortable]="true">
@@ -30,36 +31,35 @@
     <asi-cell *asiCellDef="let container">
       <div class="flex-row col-center">
         <span>{{container.imageName}}</span>
-        <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.ImageID"></asi-fa-icon>
       </div>
     </asi-cell>
   </asi-table-column>
-  <asi-table-column name="port" libelle="Port">
+  <asi-table-column name="info" libelle="Info">
     <asi-cell *asiCellDef="let container">
-      <ul>
-        <li *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
-          {{port.PrivatePort + ':' + port.PublicPort}}</li>
-      </ul>
+      <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.tooltip"></asi-fa-icon>
     </asi-cell>
   </asi-table-column>
-  <asi-table-column name="proxy" libelle="Proxy - Path">
+  <asi-table-column name="port" libelle="Port" columnClass="port-col">
+    <asi-cell *asiCellDef="let container">
+      <!-- <ul> -->
+        <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
+          {{port.PrivatePort + ':' + port.PublicPort}}</span>
+      <!-- </ul> -->
+    </asi-cell>
+  </asi-table-column>
+  <asi-table-column name="proxy" libelle="Proxy - Path" columnClass="proxypath-col">
     <asi-cell *asiCellDef="let container">
       <asi-input [(ngModel)]="container.proxyPath"></asi-input>
     </asi-cell>
   </asi-table-column>
-  <asi-table-column name="proxy" libelle="ProxyPass">
+  <asi-table-column name="proxy" libelle="ProxyPass" columnClass="proxypass-col">
     <asi-cell *asiCellDef="let container">
       <asi-input [(ngModel)]="container.proxyPass"></asi-input>
     </asi-cell>
   </asi-table-column>
-  <asi-table-column name="proxy" libelle="Tag">
+  <asi-table-column name="proxy" libelle="Tag" columnClass="tag-col">
     <asi-cell *asiCellDef="let container">
       <asi-input [(ngModel)]="container.tag"></asi-input>
-    </asi-cell>
-  </asi-table-column>
-  <asi-table-column name="proxy" libelle="Info">
-    <asi-cell *asiCellDef="let container">
-      <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.tooltip"></asi-fa-icon>
     </asi-cell>
   </asi-table-column>
 </asi-table>

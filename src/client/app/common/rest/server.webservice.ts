@@ -10,47 +10,44 @@ import { PruneResult } from '@shared/interface/pruneResult.int';
 @Injectable()
 export class ServerWebService {
 
+  private baseUrl = null;
+
   constructor(private httpClient: HttpClient, private universalService: UniversalService) {
+    this.baseUrl = `${this.universalService.getApiUrl()}/server`;
   }
 
   get(): Observable<Server> {
-    if (this.universalService.isClient()) {
-      return this.httpClient.get<Server>('/api/server').pipe(share());
-    }
-    return null;
+    return this.httpClient.get<Server>(`${this.baseUrl}`).pipe(share());
   }
 
   stopContainer(containerId: string) {
     if (this.universalService.isClient()) {
-      return this.httpClient.post(`/api/server/container/${containerId}/stop`, {});
+      return this.httpClient.post(`${this.baseUrl}/container/${containerId}/stop`, {});
     }
     return null;
   }
 
   startContainer(containerId: string) {
-    return this.httpClient.post(`/api/server/container/${containerId}/start`, {});
+    return this.httpClient.post(`${this.baseUrl}/container/${containerId}/start`, {});
   }
 
   deletetContainer(containerId: string) {
-    return this.httpClient.delete(`/api/server/container/${containerId}`, {});
+    return this.httpClient.delete(`${this.baseUrl}/container/${containerId}`, {});
   }
 
   updateContainer(containerId: string, info: any) {
-    return this.httpClient.post(`/api/server/container/${containerId}/update`, info);
+    return this.httpClient.post(`${this.baseUrl}/container/${containerId}/update`, info);
   }
 
   prune() {
-    return this.httpClient.post<PruneResult>('/api/server/prune', {});
+    return this.httpClient.post<PruneResult>(`${this.baseUrl}/prune`, {});
   }
 
   createUpdate(server: Server) {
-    return this.httpClient.post('/api/server', server).pipe(share());
+    return this.httpClient.post(`${this.baseUrl}`, server).pipe(share());
   }
 
   containers() {
-    if (this.universalService.isClient()) {
-      return this.httpClient.get<Array<DockerContainer>>('/api/server/containers').pipe(share());
-    }
-    return null;
+    return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/containers`).pipe(share());
   }
 }

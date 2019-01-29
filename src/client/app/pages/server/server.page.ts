@@ -18,7 +18,7 @@ export class ServerPage {
   containers: Array<DockerContainer>;
   server: Server;
 
-  serverSelectionModel = new AsiTableSelectionModel('name', true);
+  serverSelectionModel = new AsiTableSelectionModel('name', false);
 
   constructor(private activatedRoute: ActivatedRoute,
     private bifrostNotificationService: BifrostNotificationService,
@@ -63,11 +63,19 @@ export class ServerPage {
       container.name = container.Names[0].substring(1);
       if (container.Image) {
         container.imageName = container.Image.split(':')[0];
+        if (container.imageName.includes('/')) {
+          const splitName = container.imageName.split('/');
+          container.imageRepo = splitName[0];
+          container.imageName = splitName[1];
+        }
         container.tag = container.Image.split(':')[1];
       } else {
         container.imageName = 'unknown';
         container.tag = 'unknown';
       }
+
+      // container.tooltip = this.sanitizer.bypassSecurityTrustHtml(`<div> ImageId : ${container.ImageID} </div>`);
+      container.tooltip = container.ImageID;
       const location = find(this.server && this.server.locations, ['name', container.name]);
       if (location) {
         container.proxyPass = location.proxyPass;
@@ -107,8 +115,22 @@ export class ServerPage {
   async updateContainers() {
     this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
       this.bifrostNotificationService.showInfo(`Recreating ${container.name}...`);
-      await this.serverWebService.updateContainer(container.Id, { image: container.imageName + ':' + container.tag }).toPromise();
-      this.asiTable.fireRefresh();
+
+      let fullImageName = null;
+      if (container.imageRepo) {
+        fullImageName = container.imageRepo + '/' + container.imageName;
+      } else {
+        fullImageName = container.imageName;
+      }
+
+      if (container.tag) {
+        fullImageName += ':' + container.tag;
+      }
+      container.loading = true;
+      const updatedContainer = await this.serverWebService.updateContainer(container.Id, { image: fullImageName }).toPromise();
+
+      Object.assign(container, updatedContainer);
+      container.loading = false;
       this.bifrostNotificationService.showSuccess(`${container.name} is now up-to-date`);
     });
   }

@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng run bifrost-client:serve",
+    "start:prod": "ng run  bifrost-client:serve:production",
     "test": "ng test",
     "e2e": "ng e2e",
     "e2e:watch": "watch \"ng e2e -s false\" src e2e --wait=1",
@@ -42,7 +43,7 @@
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/platform-server": "^6.1.0",
     "@angular/router": "^6.1.0",
-    "@asi-ngtools/lib": "^6.0.14",
+    "@asi-ngtools/lib": "^6.0.15",
     "@nestjs/common": "^5.0.0",
     "@nestjs/core": "^5.0.0",
     "@nestjs/passport": "^1.1.0",
