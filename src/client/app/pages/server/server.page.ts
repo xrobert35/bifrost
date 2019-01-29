@@ -75,7 +75,7 @@ export class ServerPage {
       }
 
       // container.tooltip = this.sanitizer.bypassSecurityTrustHtml(`<div> ImageId : ${container.ImageID} </div>`);
-      container.tooltip = container.ImageID;
+      container.tooltip = container.ImageDigestId || container.ImageID;
       const location = find(this.server && this.server.locations, ['name', container.name]);
       if (location) {
         container.proxyPass = location.proxyPass;
@@ -127,11 +127,16 @@ export class ServerPage {
         fullImageName += ':' + container.tag;
       }
       container.loading = true;
-      const updatedContainer = await this.serverWebService.updateContainer(container.Id, { image: fullImageName }).toPromise();
+      try {
+        const updatedContainer = await this.serverWebService.updateContainer(container.Id, { image: fullImageName }).toPromise();
+        Object.assign(container, updatedContainer);
+        this.bifrostNotificationService.showSuccess(`${container.name} is now up-to-date`);
+      } catch (err) {
+        this.bifrostNotificationService.showError(`Error while trying to update ${container.name}`);
+      } finally {
+        container.loading = false;
+      }
 
-      Object.assign(container, updatedContainer);
-      container.loading = false;
-      this.bifrostNotificationService.showSuccess(`${container.name} is now up-to-date`);
     });
   }
 

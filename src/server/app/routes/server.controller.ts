@@ -5,6 +5,7 @@ import { ServerService } from '@services/server.service';
 import { DockerService } from '@services/docker.service';
 import { Server } from '@shared/interface/server.int';
 import * as Bluebird from 'bluebird';
+import { DockerContainer } from '@shared/interface/container.int';
 
 @ApiUseTags('server')
 @Controller('server')
@@ -20,8 +21,14 @@ export class ServerController {
   public async containers() {
     const containers = await this.dockerService.list();
     const datas = await Bluebird.mapSeries(containers, async (container) => {
-      const data = <any>container.data;
-      data.Image = await this.dockerService.getImageName(data.ImageID);
+      const data = <DockerContainer>container.data;
+      const imageFullName = await this.dockerService.getImageName(data.ImageID);
+      if (imageFullName.indexOf('@') !== -1) {
+        data.Image = imageFullName.split('@')[0];
+        data.ImageDigestId = imageFullName.split('@')[1];
+      } else {
+        data.Image = imageFullName;
+      }
       return data;
     });
     return datas;

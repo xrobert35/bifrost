@@ -27,10 +27,10 @@ export class DockerService {
     const image = <any>await this.docker.image.get(imageId).status();
 
     let imageName = '';
-    if (image.data.RepoTags && image.data.RepoTags.length > 0) {
+    if (image.data.RepoDigests && image.data.RepoDigests.length > 0) {
+      imageName = image.data.RepoDigests[0];
+    } else if (image.data.RepoTags && image.data.RepoTags.length > 0) {
       imageName = image.data.RepoTags[0];
-    } else if (image.data.RepoDigests && image.data.RepoDigests.length > 0) {
-      imageName = image.data.RepoDigests[0].split('@')[0];
     }
 
     return imageName;
@@ -40,6 +40,19 @@ export class DockerService {
     this.logger.info('Recreating container ' + containerId);
     const container = await this.docker.container.get(containerId).status();
 
+    await this.pullImage(info);
+    // recreate container
+    await container.stop();
+    await container.delete();
+
+    const newContainer = await this.recreateContainer(info, container);
+
+    await newContainer.start();
+
+    return <DockerContainer>newContainer.data;
+  }
+
+  private async pullImage(info) {
     let repo = null;
     if (info.image.indexOf('/') !== -1) {
       repo = info.image.split('/')[0];
@@ -52,17 +65,13 @@ export class DockerService {
       auth = { base64: authKey };
     }
     this.logger.info('pull image ' + info.image + ' with authKey ' + authKey);
-    await this.docker.image.create(auth, { fromImage: info.image, pull: true });
+    const stream = <any>await this.docker.image.create(auth, { fromImage: info.image, pull: true });
 
-    // recreate container
-    await container.stop();
-    await container.delete();
-
-    const newContainer = await this.recreateContainer(info, container);
-
-    await newContainer.start();
-
-    return <DockerContainer>newContainer.data;
+    await new Promise((resolve, reject) => {
+      stream.on('data', data => this.logger.log(data.toString()));
+      stream.on('end', resolve);
+      stream.on('error', reject);
+    });
   }
 
   private getAuthKeyForRepo(repoToFind: string) {

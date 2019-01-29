@@ -15,6 +15,7 @@ export class DockerContainer  {
   Created: number;
   Id: string;
   Image: string;
+  ImageDigestId: string;
   ImageID: string;
   Names: Array<string>;
   Name: string;
