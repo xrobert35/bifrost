@@ -1,0 +1,48 @@
+html {
+  body {
+    app-root {
+      display: flex;
+      flex: 1;
+
+      /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#b5bdc8+0,828c95+0,28343b+100 */
+      background: rgb(181,189,200);
+      /* Old browsers */
+      background: -moz-linear-gradient(-45deg, rgba(181,189,200,1) 0%, rgba(130,140,149,1) 0%, rgba(40,52,59,1) 100%);
+      /* FF3.6-15 */
+      background: -webkit-linear-gradient(-45deg, rgba(181,189,200,1) 0%,rgba(130,140,149,1) 0%,rgba(40,52,59,1) 100%);
+      /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(135deg, rgba(181,189,200,1) 0%,rgba(130,140,149,1) 0%,rgba(40,52,59,1) 100%);
+      /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr= '#b5bdc8', endColorstr='#28343b',GradientType=1 );
+      /* IE6-9 fallback on horizontal gradient */
+
+      .flex {
+        flex: 1;
+      }
+
+      .flex-column {
+        display: flex;
+        flex-direction: column;
+        flex: 1 0 auto;
+      }
+
+      .flex-row {
+        display: flex;
+        flex-direction: row;
+        flex: 1 0 auto;
+
+        &.center {
+          justify-content: center;
+        }
+
+        &.col-center {
+          align-items: center;
+        }
+      }
+
+      .clickable {
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -3,47 +3,21 @@
 @import "./asi-ngtools-override.less";
 @import "./components/component.less";
 @import "./pages/page.less";
-
+@import "./pages/app-root.less";
 
 html {
-  height: 100%;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
   font-family: "Open sans", Futura, Arial, sans-serif;
+  height: 100%;
 
   body {
-    height: 100%;
     position: relative;
     display: flex;
-    margin : 0;
+    flex-direction: column;
+    flex: 1 0 auto;
+    margin: 0;
     flex-direction: horizontal;
-  }
-
-  app-root {
-    display: flex;
-    flex: 1;
-    .flex {
-      flex: 1;
-    }
-    .flex-column {
-      display: flex;
-      flex-direction: column;
-      flex : 1 0 auto;
-    }
-    .flex-row {
-      display: flex;
-      flex-direction: row;
-      flex : 1 0 auto;
-
-      &.center{
-        justify-content: center;
-      }
-
-      &.col-center{
-        align-items: center;
-      }
-    }
-    .clickable {
-      cursor: pointer;
-    }
   }
 }

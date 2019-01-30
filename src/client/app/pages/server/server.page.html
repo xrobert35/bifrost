@@ -5,11 +5,11 @@
     <asi-button (click)="updateContainers()"><i class="fas fa-download"></i><span>update</span></asi-button>
     <asi-button (click)="deleteContainers()"><i class="fas fa-trash"></i><span>delete</span></asi-button>
     <asi-button (click)="pruneDocker()"><i class="fas fa-snowplow"></i><span>prune images</span></asi-button>
+    <asi-button (click)="updateProxyConf()"><i class="fas fa-route"></i> <span>Update proxy</span></asi-button>
+    <asi-checkbox class="show-proxy" label="Show only proxified : " labelPosition="left" [(ngModel)]="this.server.onlyActive"
+      (onValueChange)="onShowOnlyActiveChanged()"></asi-checkbox>
   </div>
 
-  <asi-checkbox label="Show only proxified : " labelPosition="left" [(ngModel)]="this.server.onlyActive"
-    (onValueChange)="onShowOnlyActiveChanged()"></asi-checkbox>
-  <asi-button (click)="updateProxyConf()">Update proxy</asi-button>
 </div>
 
 <asi-table #containersTable [autoSort]="true" [selectionModel]="serverSelectionModel" [onRequestData]="refreshTable">
@@ -42,8 +42,8 @@
   <asi-table-column name="port" libelle="Port" columnClass="port-col">
     <asi-cell *asiCellDef="let container">
       <!-- <ul> -->
-        <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
-          {{port.PrivatePort + ':' + port.PublicPort}}</span>
+      <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
+        {{port.PrivatePort + ':' + port.PublicPort}}</span>
       <!-- </ul> -->
     </asi-cell>
   </asi-table-column>

@@ -13,5 +13,5 @@ services:
       - /opt/bifrost:/opt/bifrost
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DOCKER_PRIVATE_REPO_BASE64_KEY=repo-name1:base64-privatekey1;repo-name2:base64-privatekey2
+      - DOCKER_PRIVATE_REPO_BASE64_KEY=docker-repository-no.asi.fr:eyJ1c2VybmFtZSI6ImFkbS1hc2kiLCJwYXNzd29yZCI6IlhwZXJ0aXNlMzUifQ==
     restart: always

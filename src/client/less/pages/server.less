@@ -4,9 +4,15 @@ server-page {
   flex-direction: column;
   flex: 1 0 auto;
 
-  margin-left: 10px;
-  margin-right: 10px;
-  margin-bottom: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 15px;
+
+  .show-proxy {
+    label.input-label {
+      color: white;
+    }
+  }
 
   .asi-table table thead tr th {
     padding-right: 10px;
@@ -30,23 +36,27 @@ server-page {
 
   table {
     ul {
-      margin : 0px;
+      margin: 0;
       list-style: none;
     }
 
-    .tag-col{
-      max-width : 90px;
+    .tag-col {
+      max-width: 90px;
     }
-    .check-col{
+
+    .check-col {
       max-width: 9px;
     }
+
     .port-col {
       max-width: 160px;
     }
-    .proxypass-col{
+
+    .proxypass-col {
       max-width: 120px;
     }
-    .proxypath-col{
+
+    .proxypath-col {
       max-width: 120px;
     }
   }
@@ -61,7 +71,6 @@ server-page {
     }
 
     .action-button {
-
       i {
         margin-right: 10px;
         color: lawngreen;

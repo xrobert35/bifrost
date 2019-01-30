@@ -4,6 +4,7 @@ import { Container } from 'node-docker-api/lib/container';
 import { WinLogger } from '@common/logger/winlogger';
 import { Config } from '@config/config';
 import { DockerContainer } from '@shared/interface/container.int';
+import { Image } from 'node-docker-api/lib/image';
 
 @Injectable()
 export class DockerService {
@@ -23,17 +24,29 @@ export class DockerService {
     return this.docker.container.list({ all: true });
   }
 
-  async getImageName(imageId: string) {
-    const image = <any>await this.docker.image.get(imageId).status();
+  async getImageInfo(imageId: string) {
+    return await this.docker.image.get(imageId).status();
+  }
 
-    let imageName = '';
-    if (image.data.RepoDigests && image.data.RepoDigests.length > 0) {
-      imageName = image.data.RepoDigests[0];
-    } else if (image.data.RepoTags && image.data.RepoTags.length > 0) {
-      imageName = image.data.RepoTags[0];
+  getImageName(image: Image) {
+    const imageInfo = <any>image.data;
+    let imageName = null;
+    if (imageInfo.RepoTags && imageInfo.RepoTags.length > 0) {
+      imageName = imageInfo.RepoTags[0];
     }
-
     return imageName;
+  }
+
+  getImageDigestId(image: Image) {
+    const imageInfo = <any>image.data;
+    let imageDigestId = '';
+    if (imageInfo.RepoDigests && imageInfo.RepoDigests.length > 0) {
+      const firstDigest = imageInfo.RepoDigests[0];
+      if (firstDigest.indexOf('@') !== -1) {
+        imageDigestId = firstDigest.split('@')[1];
+      }
+    }
+    return imageDigestId;
   }
 
   async updateContainer(containerId: string, info: any): Promise<DockerContainer> {
@@ -89,13 +102,24 @@ export class DockerService {
   }
 
   private async recreateContainer(info: any, container: Container): Promise<Container> {
-
     const newImage: any = await this.docker.image.get(info.image).status();
 
     const containerInfo: any = container.data;
     const newContainer = {
       ...containerInfo,
     };
+
+    // reexpose binding port
+    const exposedPort = newContainer.ExposedPorts || {};
+    const portsBinded = Object.keys(newContainer.HostConfig.PortBindings);
+    if (portsBinded && portsBinded.length > 0) {
+      portsBinded.forEach((port) => {
+        if (!exposedPort[port]) {
+          exposedPort[port] = {};
+        }
+      });
+    }
+    newContainer.ExposedPorts = exposedPort;
 
     this.logger.info('new image id ' + newImage.data.Id);
 

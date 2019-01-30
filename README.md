@@ -22,7 +22,6 @@ services:
     image: xrobert35/bifrost:latest
     container_name: bifrost
     ports:
-    ports:
       - "4080:4080"
       - "80:80"
     volumes:

@@ -147,6 +147,7 @@ export class ServerPage {
   }
 
   updateProxyConf() {
+    this.bifrostNotificationService.showInfo(`Start updating proxy...`);
     this.server.locations = [];
 
     // Ajout des nouveaux proxy

@@ -22,13 +22,9 @@ export class ServerController {
     const containers = await this.dockerService.list();
     const datas = await Bluebird.mapSeries(containers, async (container) => {
       const data = <DockerContainer>container.data;
-      const imageFullName = await this.dockerService.getImageName(data.ImageID);
-      if (imageFullName.indexOf('@') !== -1) {
-        data.Image = imageFullName.split('@')[0];
-        data.ImageDigestId = imageFullName.split('@')[1];
-      } else {
-        data.Image = imageFullName;
-      }
+      const imageInfo = await this.dockerService.getImageInfo(data.ImageID);
+      data.Image = this.dockerService.getImageName(imageInfo);
+      data.ImageDigestId = this.dockerService.getImageDigestId(imageInfo);
       return data;
     });
     return datas;
