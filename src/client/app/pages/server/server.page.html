@@ -43,7 +43,7 @@
     <asi-cell *asiCellDef="let container">
       <!-- <ul> -->
       <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
-        {{port.PrivatePort + ':' + port.PublicPort}}</span>
+        {{port.PublicPort + ':' + port.PrivatePort}}</span>
       <!-- </ul> -->
     </asi-cell>
   </asi-table-column>

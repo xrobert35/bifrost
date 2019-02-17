@@ -16,7 +16,6 @@ export class DockerService {
 
   constructor() {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
-    // this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
   }
 
   async list() {
@@ -33,6 +32,13 @@ export class DockerService {
     let imageName = null;
     if (imageInfo.RepoTags && imageInfo.RepoTags.length > 0) {
       imageName = imageInfo.RepoTags[0];
+    } else if (imageInfo.RepoDigests && imageInfo.RepoDigests.length > 0) {
+      const firstDigest = imageInfo.RepoDigests[0];
+      if (firstDigest.indexOf('@') !== -1) {
+        imageName = firstDigest.split('@')[0];
+      } else {
+        imageName = firstDigest;
+      }
     }
     return imageName;
   }
