@@ -12,7 +12,6 @@ export class DockerService {
 
   private logger = WinLogger.get('docker-service');
 
-
   constructor() {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
     // this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
@@ -52,7 +51,7 @@ export class DockerService {
     return <DockerContainer>newContainer.data;
   }
 
-  private async pullImage(info) {
+  private async pullImage(info: any) {
     let repo = null;
     if (info.image.indexOf('/') !== -1) {
       repo = info.image.split('/')[0];
@@ -68,7 +67,7 @@ export class DockerService {
     const stream = <any>await this.docker.image.create(auth, { fromImage: info.image, pull: true });
 
     await new Promise((resolve, reject) => {
-      stream.on('data', data => this.logger.log(data.toString()));
+      stream.on('data', (data: any) => this.logger.log(data.toString()));
       stream.on('end', resolve);
       stream.on('error', reject);
     });

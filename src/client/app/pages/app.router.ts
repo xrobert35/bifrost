@@ -3,16 +3,25 @@ import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { ServerPage } from '../pages/server/server.page';
 import { UnivCommonModule } from '../common/univ-common.module';
 import { HeaderComponent } from '../pages/header/header.component';
-import { MenuComponent } from '../pages/menu/menu.component';
 import { AppPage } from '../pages/app.page.';
 import { ServerResolver } from './server/server.resolver';
 import { ContainersResolver } from './server/containers.resolver';
+import { ProxyPage } from './proxy/proxy.page';
+import { ComposePage } from './compose/compage.page';
+import { WebUploadPage } from './web-upload/web-upload.page';
+import { TaskHelperPage } from './task-helper/task-helper.page';
+import { ComposesResolver } from './compose/compose.resolver';
+import { FoldersResolver } from './web-upload/folders.resolver';
 
 const appRouter: Routes = [
   {
     path: 'app', component: AppPage,
     children: [
-      { path: 'server', component: ServerPage, resolve : { server : ServerResolver, containers : ContainersResolver} },
+      { path: 'server', component: ServerPage },
+      { path: 'proxy', component: ProxyPage, resolve: { server: ServerResolver } },
+      { path: 'compose', component: ComposePage, resolve: { composes: ComposesResolver } },
+      { path: 'web-upload', component: WebUploadPage, resolve : { folders : FoldersResolver}},
+      { path: 'task-helper', component: TaskHelperPage },
       { path: '', redirectTo: 'server', pathMatch: 'full' }
     ]
   },
@@ -23,8 +32,11 @@ const appRouter: Routes = [
   declarations: [
     AppPage,
     ServerPage,
+    ComposePage,
+    ProxyPage,
+    WebUploadPage,
+    TaskHelperPage,
     HeaderComponent,
-    MenuComponent,
   ],
   imports: [
     RouterModule.forRoot(appRouter, {
@@ -34,7 +46,7 @@ const appRouter: Routes = [
     UnivCommonModule
   ],
   providers: [
-    ServerResolver, ContainersResolver
+    ServerResolver, ContainersResolver, ComposesResolver, FoldersResolver
   ],
   exports: [
     RouterModule,

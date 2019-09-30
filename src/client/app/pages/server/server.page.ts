@@ -4,11 +4,15 @@ import { DockerContainer } from '@shared/interface/container.int';
 import { Server } from '@shared/interface/server.int';
 import { AsiTableSelectionModel, AsiTableData, AsiTable } from '@asi-ngtools/lib';
 import { find, forEach, filter, isEmpty } from 'lodash';
-import { ServerWebService } from '@rest/server.webservice';
 import { BifrostNotificationService } from 'client/app/common/ngtools/notification/notification.service';
+import { DockerWebService } from '@rest/docker.webservice';
+import { ServerWebService } from '@rest/server.webservice';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'server-page',
+  host: { 'class': 'server-page page' },
   templateUrl: './server.page.html'
 })
 export class ServerPage {
@@ -22,8 +26,8 @@ export class ServerPage {
 
   constructor(private activatedRoute: ActivatedRoute,
     private bifrostNotificationService: BifrostNotificationService,
+    private dockerWebService: DockerWebService,
     private serverWebService: ServerWebService) {
-    this.containers = this.activatedRoute.snapshot.data.containers;
     this.server = this.activatedRoute.snapshot.data.server;
 
     if (!this.server) {
@@ -57,7 +61,7 @@ export class ServerPage {
   }
 
   async initContainersInformations() {
-    this.containers = await this.serverWebService.containers().toPromise();
+    this.containers = await this.dockerWebService.list().toPromise();
     this.serverSelectionModel.itemsIncluded = [];
     forEach(this.containers, (container) => {
       container.name = container.Names[0].substring(1);
@@ -74,7 +78,6 @@ export class ServerPage {
         container.tag = 'unknown';
       }
 
-      // container.tooltip = this.sanitizer.bypassSecurityTrustHtml(`<div> ImageId : ${container.ImageID} </div>`);
       container.tooltip = container.ImageDigestId || container.ImageID;
       const location = find(this.server && this.server.locations, ['name', container.name]);
       if (location) {
@@ -88,7 +91,7 @@ export class ServerPage {
   async startContainers() {
     this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
       this.bifrostNotificationService.showInfo(`Starting ${container.name}...`);
-      await this.serverWebService.startContainer(container.Id).toPromise();
+      await this.dockerWebService.startContainer(container.Id).toPromise();
       this.asiTable.fireRefresh();
       this.bifrostNotificationService.showSuccess(`${container.name} is now running`);
     });
@@ -97,7 +100,7 @@ export class ServerPage {
   async stopContainers() {
     this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
       this.bifrostNotificationService.showInfo(`Stoping ${container.name}...`);
-      await this.serverWebService.stopContainer(container.Id).toPromise();
+      await this.dockerWebService.stopContainer(container.Id).toPromise();
       this.asiTable.fireRefresh();
       this.bifrostNotificationService.showSuccess(`${container.name} is now stopped`);
     });
@@ -106,7 +109,7 @@ export class ServerPage {
   async deleteContainers() {
     this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
       this.bifrostNotificationService.showInfo(`Deleting ${container.name}...`);
-      await this.serverWebService.deletetContainer(container.Id).toPromise();
+      await this.dockerWebService.deletetContainer(container.Id).toPromise();
       this.asiTable.fireRefresh();
       this.bifrostNotificationService.showSuccess(`${container.name} has been deleted`);
     });
@@ -128,7 +131,7 @@ export class ServerPage {
       }
       container.loading = true;
       try {
-        const updatedContainer = await this.serverWebService.updateContainer(container.Id, { image: fullImageName }).toPromise();
+        const updatedContainer = await this.dockerWebService.updateContainer(container.Id, { image: fullImageName }).toPromise();
         Object.assign(container, updatedContainer);
         this.bifrostNotificationService.showSuccess(`${container.name} is now up-to-date`);
       } catch (err) {
@@ -142,26 +145,22 @@ export class ServerPage {
 
   async pruneDocker() {
     this.bifrostNotificationService.showInfo(`Starting prune...`);
-    const pruneResult = await this.serverWebService.prune().toPromise();
+    const pruneResult = await this.dockerWebService.prune().toPromise();
     this.bifrostNotificationService.showInfo(`Prune done ${pruneResult.ImagesDeleted || 0} image deleted`);
   }
 
-  updateProxyConf() {
-    this.server.locations = [];
-
-    // Ajout des nouveaux proxy
-    forEach(this.containers, (container) => {
-      this.server.locations.push({
-        name: container.name,
-        path: container.proxyPath,
-        proxyPass: container.proxyPass
-      });
-    });
-
-    this.serverWebService.createUpdate(this.server).subscribe(() => {
-      this.bifrostNotificationService.showSuccess(`Proxy updated`);
+  addNewProxy(container: DockerContainer) {
+    this.serverWebService.addProxy({
+      name: container.name,
+      path: '/default',
+      proxyPass: 'localhost'
+    }).pipe(catchError(res => {
+      if (res.error.fonctional) {
+        this.bifrostNotificationService.showError(res.error.libelle);
+      }
+      return throwError(res);
+    })).subscribe(() => {
+      this.bifrostNotificationService.showInfo(`New proxy has been added`);
     });
   }
-
-
 }

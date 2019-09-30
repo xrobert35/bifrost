@@ -5,9 +5,9 @@ import { plainToClass } from 'class-transformer';
 @Injectable()
 export class CustomValidationPipe implements PipeTransform<any> {
 
-  constructor(private context: { transform: boolean } = { transform: true }) { }
+  constructor() {}
 
-  async transform(value, { metatype }: ArgumentMetadata) {
+  async transform(value: any, { metatype }: ArgumentMetadata) {
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
@@ -21,14 +21,10 @@ export class CustomValidationPipe implements PipeTransform<any> {
     if (errors.length > 0) {
       throw new BadRequestException('Validation failed', JSON.stringify(errors));
     }
-    if (this.context.transform) {
-      return object;
-    } else {
-      return value;
-    }
+    return object;
   }
 
-  private toValidate(metatype): boolean {
+  private toValidate(metatype: any): boolean {
     const types = [String, Boolean, Number, Array, Object];
     return !types.find((type) => metatype === type);
   }

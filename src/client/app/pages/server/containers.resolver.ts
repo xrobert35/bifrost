@@ -1,15 +1,15 @@
 import { Resolve } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { ServerWebService } from '@rest/server.webservice';
+import { DockerWebService } from '@rest/docker.webservice';
 
 @Injectable()
 export class ContainersResolver implements Resolve<any> {
 
-  constructor(private serverWebService: ServerWebService) {
+  constructor(private dockerWebService: DockerWebService) {
   }
 
-  async resolve() {
-    return await this.serverWebService.containers().toPromise();
+  resolve() {
+    return this.dockerWebService.list();
   }
 
 }

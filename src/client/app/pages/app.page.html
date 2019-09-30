@@ -1,3 +1,10 @@
-<div class="flex-row center">
+<div class="flex-column">
+  <asi-nav-group>
+    <asi-nav label="Docker" [routerLink]="['server']"></asi-nav>
+    <asi-nav label="Proxy" [routerLink]="['proxy']"> </asi-nav>
+    <asi-nav label="Compose" [routerLink]="['compose']"> </asi-nav>
+    <asi-nav label="Web Upload" [routerLink]="['web-upload']"> </asi-nav>
+    <asi-nav label="Task Helper" [routerLink]="['task-helper']"> </asi-nav>
+  </asi-nav-group>
   <router-outlet></router-outlet>
 </div>

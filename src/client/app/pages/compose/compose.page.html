@@ -1,0 +1,19 @@
+<h1> compose </h1>
+
+<div class="flex-row">
+
+  <ul class="composes-list">
+    <li *ngFor="let compose of composes" (click)="selectCompose(compose)"> {{ compose.name}}</li>
+  </ul>
+
+  <form [formGroup]="newComposeForm" class="flex-row static" (ngSubmit)="onFormSubmit()" class="flex-column">
+    <div class="flex-row static col-end">
+        <asi-input label="name (stack)" formControlName="name"></asi-input>
+        <asi-button type="submit"> {{selectedCompose ? 'Update' : 'Add' }}</asi-button>
+    </div>
+    <monaco-editor formControlName="compose"></monaco-editor>
+  </form>
+
+</div>
+
+

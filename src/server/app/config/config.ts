@@ -16,7 +16,8 @@ export class Config {
     LOG_LEVEL: string,
     SWAGGER_ACTIVATED: string,
     AUTH_JWT_KEY: string, // JWT secret key to share with an auth service
-    DOCKER_PRIVATE_REPO_BASE64_KEY: string
+    DOCKER_PRIVATE_REPO_BASE64_KEY: string,
+    SERVER_DATA: string;
   };
 
   private constructor() {
@@ -53,7 +54,7 @@ export class Config {
     }
   }
 
-  private getConfig(path, configName) {
+  private getConfig(path: string, configName: string) {
     return require(urlJoin(path, configName));
   }
 }

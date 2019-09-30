@@ -1,0 +1,7 @@
+<h1> File upload </h1>
+
+<div *ngFor="let upload of filesToUpload; let i = index">
+    <span>{{'upload.to'|translate}}{{upload.libelle}}</span>
+    <asi-file-chooser name="file" [label]="upload.label" [accept]="acceptedFiles" [(ngModel)]="uploadedFiles[i].file"></asi-file-chooser>
+    <asi-button (click)="uploadFile(upload, uploadedFiles[i])">{{'commons.upload'|translate}}</asi-button>
+</div>

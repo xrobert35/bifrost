@@ -11,7 +11,9 @@ import {
   AsiServicesModule,
   AsiMenuModule,
   AsiRadioGroupModule,
-  AsiTableModule
+  AsiTableModule,
+  AsiNavGroupModule,
+  AsiFileChooserModule
 } from '@asi-ngtools/lib';
 import { NotificationComponent } from './notification/notification.component';
 import { BifrostNotificationService } from './notification/notification.service';
@@ -29,7 +31,9 @@ const modules = [
   AsiServicesModule,
   AsiRadioGroupModule,
   AsiMenuModule,
-  AsiTableModule
+  AsiTableModule,
+  AsiNavGroupModule,
+  AsiFileChooserModule
 ];
 
 @NgModule({

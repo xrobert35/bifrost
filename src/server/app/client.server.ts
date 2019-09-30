@@ -31,7 +31,7 @@ export class ClientServer {
   constructor(_app: INestApplication) {
   }
 
-  private initServer(done) {
+  private initServer(done: Function) {
     // Faster server renders w/ Prod mode (dev mode never needed)
     enableProdMode();
     const app = express();

@@ -4,19 +4,22 @@ import { NgToolsModule } from './ngtools/ngtools.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { UniversalService } from './universal/universal.service';
+import { MonacoEditorModule } from './components/monaco/monaco.module';
 
 @NgModule({
   imports: [
     CommonModule,
     RestModule,
     NgToolsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MonacoEditorModule
   ],
   exports: [
     CommonModule,
     RestModule,
     NgToolsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MonacoEditorModule
   ],
   providers: [UniversalService]
 })
