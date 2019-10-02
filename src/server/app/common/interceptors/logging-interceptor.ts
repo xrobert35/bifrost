@@ -1,4 +1,4 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { WinLogger } from '@common/logger/winlogger';
@@ -8,7 +8,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
   private logger = WinLogger.get('docker-service');
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, call$: Observable<any>): Observable<any> {
 
     const now = Date.now();
 
@@ -16,7 +16,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     this.logger.debug(`Start request ${requestUrl}`);
 
-    return next
+    return call$
       .pipe(
         tap(() => {
           const reqTime =  Date.now() - now;

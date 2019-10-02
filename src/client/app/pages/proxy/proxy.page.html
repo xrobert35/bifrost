@@ -1,16 +1,15 @@
-<h1> compose </h1>
-
 <div class="flex-column">
 
-  <form [formGroup]="newProxyForm" class="flex-row static" (ngSubmit)="addProxy()" class="flex-row col-end static">
-      <asi-input label="name" formControlName="name"></asi-input>
-      <asi-input label="Path" formControlName="path"></asi-input>
-      <asi-input label="Proxy Path" formControlName="proxyPass"></asi-input>
-      <asi-button type="submit">Add</asi-button>
+  <form [formGroup]="newProxyForm" class="flex-row col-center static panel" (ngSubmit)="addProxy()">
+    <div class="flex-column row-start">
+      <asi-input labelPosition="left" label="Name" formControlName="name"></asi-input>
+      <asi-input labelPosition="left" label="Path" formControlName="path"></asi-input>
+      <asi-input labelPosition="left" label="Proxy Path" formControlName="proxyPass"></asi-input>
+    </div>
+    <asi-button type="submit">Add</asi-button>
   </form>
 
-  <asi-table #containersTable [autoSort]="true" [selectionModel]="proxysSelectionModel"
-    [onRequestData]="refreshTable">
+  <asi-table #containersTable [autoSort]="true" [selectionModel]="proxysSelectionModel" [onRequestData]="refreshTable">
 
     <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
 
@@ -34,33 +33,13 @@
 
     <asi-table-column name="action" libelle="" columnClass="action-col">
       <asi-cell *asiCellDef="let proxy" class="flex-row static center">
-        <asi-button (click)="edit = true">E</asi-button>
-        <asi-button (click)="removeProxy(proxy)">D</asi-button>
+        <asi-button id="proxy_edit" class="icon-action-button" (click)="editProxy(proxy)">
+          <i class="far fa-edit"></i>
+          <span>edit</span></i></asi-button>
+        <asi-button id="proxy_delete" class="icon-action-button" (click)="removeProxy(proxy)">
+          <i class="far fa-trash-alt"></i>
+          <span>delete</span></asi-button>
       </asi-cell>
     </asi-table-column>
-
-    <!-- inlined -->
-    <!-- <asi-table-column [inlineColumn]="true" columnClass="commentaire-print" [showIf]="edit">
-      <asi-table-inliner colSpan="1">
-        <asi-cell *asiCellDef=""></asi-cell>
-      </asi-table-inliner>
-      <asi-table-inliner colSpan="1">
-        <asi-cell *asiCellDef="let proxy">
-          <asi-input [(ngModel)]="proxy.name"></asi-input>
-        </asi-cell>
-      </asi-table-inliner>
-      <asi-table-inliner colSpan="1">
-        <asi-cell *asiCellDef="let proxy">
-          <asi-input [(ngModel)]="proxy.proxyPass"></asi-input>
-        </asi-cell>
-      </asi-table-inliner>
-      <asi-table-inliner colSpan="1">
-        <asi-cell *asiCellDef="let proxy">
-          <asi-input [(ngModel)]="proxy.path"></asi-input>
-        </asi-cell>
-      </asi-table-inliner>
-    </asi-table-column> -->
-
-
   </asi-table>
 </div>

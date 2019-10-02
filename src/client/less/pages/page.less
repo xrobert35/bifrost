@@ -1,6 +1,33 @@
-@import "./server.less";
-
+@import "./docker.less";
+@import "./proxy.less";
 
 app-page {
   background-color: #eeeeee;
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 15px;
+
+    h1.page-title {
+      color: @bifrost-primary-color;
+      font-family: @font-regular;
+      font-size: 3.5em;
+      margin-top: 0px;
+      margin-bottom: 10px;
+    }
+
+    .panel {
+      margin-bottom: 20px;
+
+      .input-label {
+        min-width: 100px;
+        text-align: right;
+      }
+    }
+  }
 }

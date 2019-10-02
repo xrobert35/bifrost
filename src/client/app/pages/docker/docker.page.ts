@@ -11,11 +11,11 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Component({
-  selector: 'server-page',
-  host: { 'class': 'server-page page' },
-  templateUrl: './server.page.html'
+  selector: 'docker-page',
+  host: { 'class': 'docker-page page' },
+  templateUrl: './docker.page.html'
 })
-export class ServerPage {
+export class DockerPage {
 
   @ViewChild(AsiTable) asiTable: AsiTable<DockerContainer>;
 

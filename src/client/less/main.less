@@ -3,12 +3,10 @@
 @import "./asi-ngtools-override.less";
 @import "./components/component.less";
 @import "./pages/page.less";
-@import "./pages/proxy.less";
 
 html {
   height: 100%;
   position: relative;
-  font-family: "Open sans", Futura, Arial, sans-serif;
 
   body {
     height: 100%;
@@ -23,15 +21,18 @@ html {
     display: flex;
     flex: 1 0 auto;
 
-    .page {
-      display: flex;
-      flex-direction: column;
-      flex: 1 0 auto;
+    p,
+    span,
+    div,
+    label,
+    button:not(.fa) {
+      font-family: @font-regular;
     }
 
     .flex {
       flex: 1;
     }
+
     .flex-column {
       display: flex;
       flex-direction: column;
@@ -39,6 +40,14 @@ html {
 
       &.center {
         align-items: center;
+      }
+
+      &.row-start {
+        justify-content: flex-start;
+      }
+
+      &.row-end {
+        justify-content: flex-end;
       }
 
       &.row-center {
@@ -70,6 +79,14 @@ html {
         flex: 0 0 auto;
       }
     }
+
+    .icon-action-button {
+      i {
+        margin-right: 10px;
+        color: lawngreen;
+      }
+    }
+
     .clickable {
       cursor: pointer;
     }
