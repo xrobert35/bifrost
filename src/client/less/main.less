@@ -20,6 +20,7 @@ html {
   app-root {
     display: flex;
     flex: 1 0 auto;
+    flex-direction: column;
 
     p,
     span,
@@ -67,6 +68,10 @@ html {
         justify-content: center;
       }
 
+      &.space-between {
+        justify-content: space-between;
+      }
+
       &.col-end {
         align-items: flex-end;
       }
@@ -78,6 +83,10 @@ html {
       &.static {
         flex: 0 0 auto;
       }
+    }
+
+    .icon-action {
+      color: lawngreen;
     }
 
     .icon-action-button {

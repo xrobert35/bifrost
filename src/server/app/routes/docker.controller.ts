@@ -11,7 +11,7 @@ export class DockerController {
 
   constructor(private dockerService: DockerService) { }
 
-  @Get('list')
+  @Get('containers')
   @HttpCode(HttpStatus.OK)
   public async containers() {
     const containers = await this.dockerService.list();

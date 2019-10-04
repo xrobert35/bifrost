@@ -6,10 +6,21 @@
   <asi-button type="submit">Add</asi-button>
 </form>
 
+<div class="uploadable-folder-container">
 
-<div *ngFor="let uploadableFolder of uploadableFolders; let i = index">
-    <span>{{'upload.to'|translate}}{{uploadableFolder.folder.libelle}}</span>
-    <asi-file-chooser name="file" [label]="uploadableFolder.folder.libelle" [accept]="acceptedFiles"
-    [(ngModel)]="uploadableFolder.fileToUpload"></asi-file-chooser>
-    <asi-button (click)="uploadFile(uploadableFolder)">{{'commons.upload'|translate}}</asi-button>
+  <div class="uploadable-folder" *ngFor="let uploadableFolder of uploadableFolders; let i = index">
+    <div class="flex-row space-between">
+      <strong>{{uploadableFolder.folder.libelle}}</strong>
+      <i class="far fa-edit clickable icon-action"></i>
+    </div>
+    <span>{{uploadableFolder.folder.path}}</span>
+
+    <asi-file-chooser name="file" [accept]="acceptedFiles" [(ngModel)]="uploadableFolder.fileToUpload">
+    </asi-file-chooser>
+    <asi-button id="web_upload_file" class="icon-action-button" (click)="uploadFile(uploadableFolder)">
+      <i class="far fa-trash-alt"></i>
+      <span>upload</span>
+    </asi-button>
+  </div>
+
 </div>

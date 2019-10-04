@@ -15,7 +15,7 @@ export class DockerWebService {
   }
 
   list() {
-    return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/list`).pipe(share());
+    return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/containers`).pipe(share());
   }
 
   stopContainer(containerId: string) {
