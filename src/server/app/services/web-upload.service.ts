@@ -26,7 +26,16 @@ export class WebUploadService {
    * Allow to create folder
    * @param folder
    */
-  public createFolder(folder: Folder) {
+  public async createFolder(folder: Folder) {
+    const path = folder.path;
+    try {
+      if (!fs.existsSync(path)) {
+        await fs.promises.mkdir(path, { recursive: true });
+      }
+    } catch (err) {
+      throw new TechnicalException('folder-access', `Unabled to create folder "${path}"`, err);
+    }
+
     folder.reference = shortUid.generate();
     this.folders.push(folder);
     this.saveFoldersJson();
@@ -88,18 +97,18 @@ export class WebUploadService {
    * @param file the file
    * @param reference the folder reference
    */
-  public uploadFile(file: any, reference: string): void {
+  public async uploadFile(file: any, reference: string) {
     const folder = this.getFolder(reference);
     const path = folder.path;
 
     // Récupérer le nom du fichier
     const fileName = file.originalname;
-    fs.writeFile(path + '/' + fileName, file.buffer, (err) => {
-      if (err) {
-        throw new TechnicalException('write-file', `Unabled to write file "${file.originalname}" into "${path}"`, err);
-      }
-      this.logger.error(` ${file.originalname} copied into ${path}`);
-    });
+    try {
+      await fs.promises.writeFile(path + '/' + fileName, file.buffer);
+    } catch (err) {
+      throw new TechnicalException('write-file', `Unabled to write file "${file.originalname}" into "${path}"`, err);
+    }
+    this.logger.info(` ${file.originalname} copied into ${path}`);
   }
 
   private saveFoldersJson() {
@@ -114,6 +123,7 @@ export class WebUploadService {
       }
     } catch (err) {
       this.logger.error('Unabled to read folders list', err);
+      this.folders = [];
     }
   }
 }

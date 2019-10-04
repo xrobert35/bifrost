@@ -109,6 +109,7 @@ export class TaskService {
       }
     } catch (err) {
       this.logger.error('Unabled to read folders list', err);
+      this.tasks = [];
     }
   }
 }

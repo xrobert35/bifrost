@@ -17,13 +17,13 @@ export class WebUploadController {
   @Post('folder')
   @HttpCode(HttpStatus.CREATED)
   @UsePipes(CustomValidationPipe)
-  createFolder(@Body() folder: Folder): string {
+  createFolder(@Body() folder: Folder): Promise<string> {
     return this.uploadService.createFolder(folder);
   }
 
   @Put('folder/:reference')
   @UsePipes(CustomValidationPipe)
-  updateFolder(@Param('reference') reference: string, @Body() folder: Folder): string {
+  updateFolder(@Param('reference') reference: string, @Body() folder: Folder): Promise<string> {
     if (reference !== folder.reference) {
       throw new FunctionalException('bad-folder-reference', 'Body and path param reference should be equals');
     }
@@ -42,7 +42,7 @@ export class WebUploadController {
 
   @Post('upload/:reference')
   @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: File, @Param('reference') reference: string): void {
-    this.uploadService.uploadFile(file, reference);
+  uploadFile(@UploadedFile() file: File, @Param('reference') reference: string) {
+    return this.uploadService.uploadFile(file, reference);
   }
 }

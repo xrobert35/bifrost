@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { share } from 'rxjs/operators';
+import { share, map } from 'rxjs/operators';
 import { UniversalService } from '../universal/universal.service';
 import { Folder } from '@shared/interface/folder.int';
 import { AsiFileService } from '@asi-ngtools/lib';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class WebUploadWebService {
@@ -14,6 +15,18 @@ export class WebUploadWebService {
     private asiFileService: AsiFileService,
     private universalService: UniversalService) {
     this.baseUrl = `${this.universalService.getApiUrl()}/web-upload`;
+  }
+
+  createFolder(folder: Folder): Observable<Folder> {
+    return this.httpClient.post(`${this.baseUrl}/folder`, folder, { responseType: 'text' }).pipe(share(),
+      map((reference: string) => {
+        folder.reference = reference;
+        return folder;
+      }));
+  }
+
+  delete(folder: Folder): Observable<void> {
+    return this.httpClient.delete<void>(`${this.baseUrl}/folder/${folder.reference}`).pipe(share());
   }
 
   list() {

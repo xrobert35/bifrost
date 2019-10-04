@@ -1,7 +1,15 @@
-<h1 class="page-title"> File upload </h1>
+<form [formGroup]="newFolderForm" class="flex-row col-center static panel" (ngSubmit)="createFolder()">
+  <div class="flex-column row-start">
+    <asi-input labelPosition="left" label="Name" formControlName="libelle"></asi-input>
+    <asi-input labelPosition="left" label="Path" formControlName="path"></asi-input>
+  </div>
+  <asi-button type="submit">Add</asi-button>
+</form>
 
-<div *ngFor="let upload of filesToUpload; let i = index">
-    <span>{{'upload.to'|translate}}{{upload.libelle}}</span>
-    <asi-file-chooser name="file" [label]="upload.label" [accept]="acceptedFiles" [(ngModel)]="uploadedFiles[i].file"></asi-file-chooser>
-    <asi-button (click)="uploadFile(upload, uploadedFiles[i])">{{'commons.upload'|translate}}</asi-button>
+
+<div *ngFor="let uploadableFolder of uploadableFolders; let i = index">
+    <span>{{'upload.to'|translate}}{{uploadableFolder.folder.libelle}}</span>
+    <asi-file-chooser name="file" [label]="uploadableFolder.folder.libelle" [accept]="acceptedFiles"
+    [(ngModel)]="uploadableFolder.fileToUpload"></asi-file-chooser>
+    <asi-button (click)="uploadFile(uploadableFolder)">{{'commons.upload'|translate}}</asi-button>
 </div>
