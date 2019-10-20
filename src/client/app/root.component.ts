@@ -5,7 +5,7 @@ import { Component, ViewContainerRef } from '@angular/core';
   templateUrl: './root.component.html'
 })
 export class RootComponent {
-  title = 'app';
+  title = 'bifrost';
 
   constructor(public viewContainerRef: ViewContainerRef) {}
 }

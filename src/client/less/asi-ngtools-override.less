@@ -30,3 +30,41 @@
 
 @asi-checkbox-checked-background-color : #555;
 @asi-checkbox-border: 1px solid #555;
+
+.asi-checkbox  {
+  button {
+    border-radius: 5px;
+  }
+  .checkbox {
+    box-shadow: inset 0 1px 3px rgba(0,0,0, .25);
+    &:focus {
+      border: 1px solid #3a3a3a;
+    }
+    &.checked {
+      border: none;
+      box-shadow: 0 1px 3px rgba(0,0,0, .25);
+      background-color: #0cb2a4e6;
+      .checkbox-button {
+        border-left: 1.5px solid white;
+        border-bottom: 1.5px solid white;
+      }
+    }
+  }
+}
+
+.asi-table table{
+  color: #5b5b5b;
+  thead tr {
+    background-color: #efefefe6;
+  }
+  tbody {
+    &:nth-child(odd) tr{
+      background-color: rgba(243, 243, 243, 0.5);
+    }
+  }
+  asi-input input, .asi-input input {
+    box-shadow: inset 0px 0px 3px 0px #e3e3e3 !important;
+    border: 1px solid #b8b7b7;
+    border-radius: 4px;
+  }
+}
