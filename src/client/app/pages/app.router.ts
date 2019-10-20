@@ -4,7 +4,7 @@ import { ServerPage } from '../pages/server/server.page';
 import { UnivCommonModule } from '../common/univ-common.module';
 import { HeaderComponent } from '../pages/header/header.component';
 import { MenuComponent } from '../pages/menu/menu.component';
-import { AppPage } from '../pages/app.page.';
+import { AppPage } from './app.page';
 import { ServerResolver } from './server/server.resolver';
 import { ContainersResolver } from './server/containers.resolver';
 

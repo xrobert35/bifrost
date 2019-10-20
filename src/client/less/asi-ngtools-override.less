@@ -2,15 +2,15 @@
 @asi-table-header-th-border: 2px solid grey;
 @asi-table-header-tr-border: 1px solid transparent;
 @asi-table-header-box-shadow: 0 0 1px @univ-secondary-color;
-@asi-table-header-background-color: #fefeff;
+@asi-table-header-background-color: #efefefe6;
 @asi-table-header-text-color: black;
-@asi-table-body-1-color: white;
-@asi-table-body-2-color: #fefeff;
+@asi-table-body-1-color: none;
+@asi-table-body-2-color: none;
 @asi-table-body-tr-border: 1px solid lightgrey;
 @asi-table-body-td-border: none;
-@asi-table-body-td-text-color: inherit;
+@asi-table-body-td-text-color: #5b5b5b;
 @asi-table-body-line-height: 35px;
-@asi-table-body-line1-color: transparent;
+@asi-table-body-line1-color:  transparent;
 @asi-table-body-line2-color: transparent;
 
 @asi-button-background-color: #222;
@@ -53,13 +53,13 @@
 }
 
 .asi-table table{
-  color: #5b5b5b;
-  thead tr {
-    background-color: #efefefe6;
-  }
   tbody {
+    background-color: none;
     &:nth-child(odd) tr{
-      background-color: rgba(243, 243, 243, 0.5);
+      background-color: rgba(255, 255, 255, 0.6);
+    }
+    &:nth-child(even) tr{
+      background-color: rgba(255, 255, 255, 0.5);
     }
   }
   asi-input input, .asi-input input {
