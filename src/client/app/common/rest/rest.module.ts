@@ -9,16 +9,22 @@ import { DockerWebService } from '@rest//docker.webservice';
 import { TaskWebService } from '@rest//task.webservice';
 import { ComposeWebService } from '@rest//compose.webservice';
 import { WebUploadWebService } from './web-upload.webservice';
+import { WebSocketClient } from './ws/websocket.client';
+import { TailLogComponent } from '../components/tail-log/tail-log.component';
 
-const sharedServices = [ServerWebService, DockerWebService, TaskWebService, ComposeWebService, WebUploadWebService];
+const sharedServices = [ServerWebService, DockerWebService, TaskWebService, ComposeWebService, WebUploadWebService, WebSocketClient];
+
+const sharedComponents = [TailLogComponent];
 
 @NgModule({
+  declarations : [...sharedComponents],
   imports: [
     HttpClientModule,
     NgToolsModule
   ],
   exports: [
-    HttpClientModule
+    HttpClientModule,
+    ...sharedComponents
   ],
   providers: [
     ...sharedServices,

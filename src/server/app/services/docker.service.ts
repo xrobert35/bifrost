@@ -4,6 +4,8 @@ import { Container } from 'node-docker-api/lib/container';
 import { WinLogger } from '@common/logger/winlogger';
 import { Config } from '@config/config';
 import { DockerContainer } from '@shared/interface/container.int';
+import { Observable, Observer } from 'rxjs';
+import { Stream } from 'stream';
 
 @Injectable()
 export class DockerService {
@@ -49,6 +51,33 @@ export class DockerService {
     await newContainer.start();
 
     return <DockerContainer>newContainer.data;
+  }
+
+  streamLog(containerId: string, tail: number): Observable<string> {
+    return Observable.create((obs: Observer<string>) => {
+      const logsPromise = this.docker.container.get(containerId).logs({
+        follow: true,
+        stdout: true,
+        stderr: true,
+        tail: tail
+      });
+
+      logsPromise.then((logStream: Stream) => {
+        logStream.on('data', (buffer) => {
+          // TODO 8 first byte are log status information
+          obs.next(buffer.toString('utf8', 8, buffer.length));
+        });
+        logStream.on('close', () => {
+          obs.complete();
+        });
+        logStream.on('error', (err) => {
+          this.logger.warn(`Something went wrong while reading log for container ${containerId}`, err);
+          obs.complete();
+        });
+      }).catch( (err) => {
+        this.logger.warn(`Enable to read log for container ${containerId}`, err);
+      });
+    });
   }
 
   private async pullImage(info: any) {

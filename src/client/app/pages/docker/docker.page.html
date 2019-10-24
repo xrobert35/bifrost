@@ -54,6 +54,13 @@
         <i class="fas fa-random"></i>
         <span>New proxy</span>
       </asi-button>
+      <asi-button id="docker_add_proxy" class="icon-action-button" (click)="showLogs(container)">
+        <i class="fas fa-random"></i>
+        <span>Logs</span>
+      </asi-button>
     </asi-cell>
   </asi-table-column>
 </asi-table>
+
+
+<tail-log *ngIf="logContainerId" [containerId]="logContainerId"></tail-log>

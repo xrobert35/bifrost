@@ -24,6 +24,8 @@ export class DockerPage {
 
   serverSelectionModel = new AsiTableSelectionModel('name', false);
 
+  logContainerId: string = null;
+
   constructor(private activatedRoute: ActivatedRoute,
     private bifrostNotificationService: BifrostNotificationService,
     private dockerWebService: DockerWebService,
@@ -147,6 +149,10 @@ export class DockerPage {
     this.bifrostNotificationService.showInfo(`Starting prune...`);
     const pruneResult = await this.dockerWebService.prune().toPromise();
     this.bifrostNotificationService.showInfo(`Prune done ${pruneResult.ImagesDeleted || 0} image deleted`);
+  }
+
+  showLogs(container: DockerContainer) {
+    this.logContainerId = container.Id;
   }
 
   addNewProxy(container: DockerContainer) {
