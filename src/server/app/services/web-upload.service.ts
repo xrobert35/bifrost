@@ -6,6 +6,8 @@ import { WinLogger } from '@common/logger/winlogger';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Config } from '@config/config';
 import { FunctionalException } from '@common/exception/functional.exception';
+import * as Bluebird from 'bluebird';
+import * as urljoin from 'url-join';
 
 @Injectable()
 export class WebUploadService {
@@ -20,6 +22,19 @@ export class WebUploadService {
 
   constructor() {
     this.readFoldersJson();
+  }
+
+  public async getFolder(reference: string) {
+    const folder = this.folders.find((afolder) => afolder.reference === reference);
+    const folderContent = await fs.promises.readdir(folder.path);
+    return Bluebird.map(folderContent, async (file) => {
+      const fileStat = await fs.promises.stat(urljoin(folder.path, file));
+      return {
+        name: file,
+        size: fileStat.size,
+        modifyDate: fileStat.mtime
+      };
+    });
   }
 
   /**
@@ -38,7 +53,7 @@ export class WebUploadService {
 
     folder.reference = shortUid.generate();
     this.folders.push(folder);
-    this.saveFoldersJson();
+    await this.saveFoldersJson();
 
     return folder.reference;
   }
@@ -47,8 +62,8 @@ export class WebUploadService {
    * Allow to update folder
    * @param folder
    */
-  public updateFolder(folder: Folder) {
-    const oldFolder = this.getFolder(folder.reference);
+  public async updateFolder(folder: Folder) {
+    const oldFolder = this.findFolder(folder.reference);
 
     if (!oldFolder) {
       throw new TechnicalException('folder-not-found', `No folder found with reference "${folder.reference}"`, HttpStatus.NOT_FOUND);
@@ -56,7 +71,16 @@ export class WebUploadService {
 
     Object.assign(oldFolder, folder);
 
-    this.saveFoldersJson();
+    const path = folder.path;
+    try {
+      if (!fs.existsSync(path)) {
+        await fs.promises.mkdir(path, { recursive: true });
+      }
+    } catch (err) {
+      throw new TechnicalException('folder-access', `Unabled to create folder "${path}"`, err);
+    }
+
+    await this.saveFoldersJson();
 
     return folder.reference;
   }
@@ -65,7 +89,7 @@ export class WebUploadService {
    * Allow to delete folder
    * @param reference
    */
-  public deleteFolder(reference: string) {
+  public async deleteFolder(reference: string) {
     const filteredFolder = this.folders.filter(folderToFilter => {
       return folderToFilter.reference !== reference;
     });
@@ -74,14 +98,16 @@ export class WebUploadService {
       throw new FunctionalException('folder-not-found', `Folder with the reference "${reference}" not found`);
     }
 
-    this.saveFoldersJson();
+    this.folders = filteredFolder;
+
+    await this.saveFoldersJson();
   }
 
   /**
    * Allow to get a folder
    * @param reference
    */
-  public getFolder(reference: string): Folder {
+  public findFolder(reference: string): Folder {
     return this.folders.find(f => f.reference === reference);
   }
 
@@ -98,13 +124,25 @@ export class WebUploadService {
    * @param reference the folder reference
    */
   public async uploadFile(file: any, reference: string) {
-    const folder = this.getFolder(reference);
+    const folder = this.findFolder(reference);
     const path = folder.path;
+
+    try {
+      if (!fs.existsSync(path)) {
+        await fs.promises.mkdir(path, { recursive: true });
+      }
+    } catch (err) {
+      throw new TechnicalException('folder-access', `Unabled to create folder "${path}"`, err);
+    }
 
     // Récupérer le nom du fichier
     const fileName = file.originalname;
     try {
-      await fs.promises.writeFile(path + '/' + fileName, file.buffer);
+      if (file.buffer) {
+        await fs.promises.writeFile(path + '/' + fileName, file.buffer);
+      } else {
+        await fs.promises.rename(file.path, path + '/' + fileName);
+      }
     } catch (err) {
       throw new TechnicalException('write-file', `Unabled to write file "${file.originalname}" into "${path}"`, err);
     }
@@ -112,7 +150,7 @@ export class WebUploadService {
   }
 
   private saveFoldersJson() {
-    fs.writeFileSync(WebUploadService.FOLDERS_CONFIG, JSON.stringify(this.folders));
+    return fs.promises.writeFile(WebUploadService.FOLDERS_CONFIG, JSON.stringify(this.folders));
   }
 
   private readFoldersJson() {

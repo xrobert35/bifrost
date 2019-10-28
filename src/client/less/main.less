@@ -17,6 +17,57 @@ html {
     flex-direction: column;
   }
 
+  .flex-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+
+    &.center {
+      align-items: center;
+    }
+
+    &.row-start {
+      justify-content: flex-start;
+    }
+
+    &.row-end {
+      justify-content: flex-end;
+    }
+
+    &.row-center {
+      justify-content: center;
+    }
+
+    &.static {
+      flex: 0 0 auto;
+    }
+  }
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+    flex: 1 0 auto;
+
+    &.center {
+      justify-content: center;
+    }
+
+    &.space-between {
+      justify-content: space-between;
+    }
+
+    &.col-end {
+      align-items: flex-end;
+    }
+
+    &.col-center {
+      align-items: center;
+    }
+
+    &.static {
+      flex: 0 0 auto;
+    }
+  }
+
   app-root {
     display: flex;
     flex: 1 0 auto;
@@ -34,56 +85,6 @@ html {
       flex: 1;
     }
 
-    .flex-column {
-      display: flex;
-      flex-direction: column;
-      flex: 1 0 auto;
-
-      &.center {
-        align-items: center;
-      }
-
-      &.row-start {
-        justify-content: flex-start;
-      }
-
-      &.row-end {
-        justify-content: flex-end;
-      }
-
-      &.row-center {
-        justify-content: center;
-      }
-
-      &.static {
-        flex: 0 0 auto;
-      }
-    }
-    .flex-row {
-      display: flex;
-      flex-direction: row;
-      flex: 1 0 auto;
-
-      &.center {
-        justify-content: center;
-      }
-
-      &.space-between {
-        justify-content: space-between;
-      }
-
-      &.col-end {
-        align-items: flex-end;
-      }
-
-      &.col-center {
-        align-items: center;
-      }
-
-      &.static {
-        flex: 0 0 auto;
-      }
-    }
 
     .icon-action {
       color: lawngreen;

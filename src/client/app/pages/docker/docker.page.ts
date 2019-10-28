@@ -156,7 +156,7 @@ export class DockerPage {
   }
 
   addNewProxy(container: DockerContainer) {
-    this.serverWebService.addProxy({
+    this.serverWebService.create({
       name: container.name,
       path: '/default',
       proxyPass: 'localhost'

@@ -54,6 +54,9 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
       language: 'yaml',
       automaticLayout: true,
       scrollBeyondLastLine: false,
+      minimap: {
+        enabled: false
+      }
     };
 
     if (this.options) {

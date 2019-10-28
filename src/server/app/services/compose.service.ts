@@ -59,6 +59,8 @@ export class ComposeService {
     if (filteredComposes.length === this.composes.length) {
       throw new FunctionalException('compose-not-found', `Compose with the reference "${reference}" not found`);
     }
+
+    this.composes = filteredComposes;
   }
 
   public getCompose(reference: string): Compose {

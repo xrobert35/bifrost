@@ -19,7 +19,7 @@ export class ServerWebService {
     return this.httpClient.get<Server>(`${this.baseUrl}`).pipe(share());
   }
 
-  addProxy(serverLocation: ServerLocation): Observable<ServerLocation> {
+  create(serverLocation: ServerLocation): Observable<ServerLocation> {
     return this.httpClient.post(`${this.baseUrl}/proxy`, serverLocation, { responseType: 'text' }).pipe(share(),
       map((reference: string) => {
         serverLocation.reference = reference;
@@ -27,7 +27,15 @@ export class ServerWebService {
       }));
   }
 
-  removeProxy(serverLocation: ServerLocation): Observable<void> {
+  update(serverLocation: ServerLocation): Observable<ServerLocation> {
+    return this.httpClient.put(`${this.baseUrl}/proxy/${serverLocation.reference}`, serverLocation, { responseType: 'text' }).pipe(share(),
+      map((reference: string) => {
+        serverLocation.reference = reference;
+        return serverLocation;
+      }));
+  }
+
+  delete(serverLocation: ServerLocation): Observable<void> {
     return this.httpClient.delete<void>(`${this.baseUrl}/proxy/${serverLocation.reference}`).pipe(share());
   }
 

@@ -11,13 +11,20 @@ import { ComposeWebService } from '@rest//compose.webservice';
 import { WebUploadWebService } from './web-upload.webservice';
 import { WebSocketClient } from './ws/websocket.client';
 import { TailLogComponent } from '../components/tail-log/tail-log.component';
+import { BifrostWebService } from './bifrost.webservice';
 
-const sharedServices = [ServerWebService, DockerWebService, TaskWebService, ComposeWebService, WebUploadWebService, WebSocketClient];
+const sharedServices = [ServerWebService,
+  DockerWebService,
+  TaskWebService,
+  ComposeWebService,
+  WebUploadWebService,
+  BifrostWebService,
+  WebSocketClient];
 
 const sharedComponents = [TailLogComponent];
 
 @NgModule({
-  declarations : [...sharedComponents],
+  declarations: [...sharedComponents],
   imports: [
     HttpClientModule,
     NgToolsModule

@@ -6,6 +6,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { FunctionalException } from '@common/exception/functional.exception';
 import { ComposeService } from '@services/compose.service';
 import { Compose } from '@shared/interface/compose.int';
+import { Config } from '@config/config';
 
 @ApiUseTags('compose')
 @Controller('compose')
@@ -30,8 +31,8 @@ export class ComposeController {
   }
 
   @Delete('/:reference')
-  deleteCompose(@Param('reference') reference: string): void {
-    this.composeService.deleteCompose(reference);
+  deleteCompose(@Param('reference') reference: string) {
+    return this.composeService.deleteCompose(reference);
   }
 
   @Get('list')

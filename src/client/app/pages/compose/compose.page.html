@@ -1,19 +1,33 @@
-<h1> compose </h1>
-
 <div class="flex-row">
 
-  <ul class="composes-list">
-    <li *ngFor="let compose of composes" (click)="selectCompose(compose)"> {{ compose.name}}</li>
-  </ul>
+  <div class="asi-list">
+    <ul class="list-container">
+      <li class="list-item" *ngFor="let compose of composes" (click)="selectCompose(compose)"> {{ compose.name}}</li>
+    </ul>
+  </div>
 
-  <form [formGroup]="newComposeForm" class="flex-row static" (ngSubmit)="onFormSubmit()" class="flex-column">
+  <form [formGroup]="composeForm" class="flex-row static" (ngSubmit)="onFormSubmit()" class="flex-column">
+    <span>Default compose folder : {{ defaultComposeFolder }}</span>
     <div class="flex-row static col-end">
-        <asi-input label="name (stack)" formControlName="name"></asi-input>
-        <asi-button type="submit"> {{selectedCompose ? 'Update' : 'Add' }}</asi-button>
+      <asi-input label="name (stack)" formControlName="name"></asi-input>
+      <asi-button type="submit" *ngIf="!selectedCompose" class="icon-action-button">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add</span>
+      </asi-button>
+      <asi-button type="submit" *ngIf="selectedCompose" class="icon-action-button">
+        <i class="fas fa-edit"></i>
+        <span>Update</span>
+      </asi-button>
+      <asi-button (click)="endEditCompose()" *ngIf="selectedCompose" class="icon-action-button">
+        <i class="fas fa-ban"></i>
+        <span>Cancel</span>
+      </asi-button>
+      <asi-button (click)="deleteCompose()" *ngIf="selectedCompose" class="icon-action-button">
+        <i class="fas fa-trash"></i>
+        <span>Delete</span>
+      </asi-button>
     </div>
     <monaco-editor formControlName="compose"></monaco-editor>
   </form>
 
 </div>
-
-

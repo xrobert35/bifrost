@@ -23,7 +23,9 @@ export class ProxyPage {
   server: Server;
   newProxy: ServerLocation = { name: null, path: null, proxyPass: null };
   proxysSelectionModel = new AsiTableSelectionModel('name', false);
-  newProxyForm: FormGroup;
+  proxyForm: FormGroup;
+
+  editedProxy: ServerLocation;
 
   constructor(private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -31,10 +33,11 @@ export class ProxyPage {
     private bifrostNotificationService: BifrostNotificationService) {
     this.server = this.activatedRoute.snapshot.data.server || {};
 
-    this.newProxyForm = this.formBuilder.group({
+    this.proxyForm = this.formBuilder.group({
       name: [null, Validators.required],
       proxyPass: [null, Validators.required],
-      path: [null, Validators.required]
+      path: [null, Validators.required],
+      reference: null
     });
   }
 
@@ -44,26 +47,71 @@ export class ProxyPage {
     return tableData;
   }
 
-  /** Add a new proxy */
-  addProxy() {
-    if (this.newProxyForm.valid) {
-      const newProxy: ServerLocation = this.newProxyForm.value;
-      this.serverWebService.addProxy(newProxy).pipe(catchError(res => {
-        if (res.error.fonctional) {
-          this.bifrostNotificationService.showError(res.error.libelle);
-        }
-        return throwError(res);
-      })).subscribe((proxy) => {
-        this.server.locations.push(proxy);
-        this.bifrostNotificationService.showInfo(`New proxy has been added`);
-        this.asiTable.fireRefresh();
-      });
+  submitProxy() {
+    if (this.proxyForm.valid) {
+      if (!this.editedProxy) {
+        this.createProxy();
+      } else {
+        this.editProxy();
+      }
     }
   }
 
+  /** Add a new proxy */
+  createProxy() {
+    const newProxy: ServerLocation = this.proxyForm.value;
+    this.serverWebService.create(newProxy).pipe(catchError(res => {
+      if (res.error.fonctional) {
+        this.bifrostNotificationService.showError(res.error.libelle);
+      }
+      return throwError(res);
+    })).subscribe((proxy) => {
+      this.proxyForm.reset();
+      this.server.locations.push(proxy);
+      this.bifrostNotificationService.showInfo(`New proxy has been added`);
+      this.asiTable.fireRefresh();
+    });
+  }
+
+  /** Edit a proxy */
+  editProxy() {
+    const proxy: ServerLocation = this.proxyForm.value;
+    this.serverWebService.update(proxy).pipe(catchError(res => {
+      if (res.error.fonctional) {
+        this.bifrostNotificationService.showError(res.error.libelle);
+      }
+      return throwError(res);
+    })).subscribe(() => {
+      Object.assign(this.editedProxy, proxy);
+      this.proxyForm.reset();
+      this.bifrostNotificationService.showInfo(`Proxy "${proxy.name} has been updated`);
+      this.asiTable.fireRefresh();
+    });
+  }
+
+  startEditProxy(proxy: ServerLocation) {
+    this.editedProxy = proxy;
+    this.proxyForm.setValue({
+      name: proxy.name,
+      proxyPass: proxy.proxyPass,
+      path: proxy.path,
+      reference: proxy.reference
+    });
+  }
+
+  endEditProxy() {
+    this.editedProxy = null;
+    this.proxyForm.reset();
+  }
+
   /** Delete an existing proxy */
-  removeProxy(proxyToDelete: ServerLocation) {
-    this.serverWebService.removeProxy(proxyToDelete).subscribe(() => {
+  deleteProxy(proxyToDelete: ServerLocation) {
+    this.serverWebService.delete(proxyToDelete).pipe(catchError(res => {
+      if (res.error.fonctional) {
+        this.bifrostNotificationService.showError(res.error.libelle);
+      }
+      return throwError(res);
+    })).subscribe(() => {
       remove(this.server.locations, (proxy) => proxy === proxyToDelete);
       this.bifrostNotificationService.showInfo(`Proxy has been removed`);
       this.asiTable.fireRefresh();

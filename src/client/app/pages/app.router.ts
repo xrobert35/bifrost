@@ -12,6 +12,7 @@ import { WebUploadPage } from './web-upload/web-upload.page';
 import { TaskHelperPage } from './task-helper/task-helper.page';
 import { ComposesResolver } from './compose/compose.resolver';
 import { FoldersResolver } from './web-upload/folders.resolver';
+import { FolderContentDialog } from './web-upload/folder-content/folder-content.dialog';
 
 const appRouter: Routes = [
   {
@@ -20,7 +21,7 @@ const appRouter: Routes = [
       { path: 'docker', component: DockerPage },
       { path: 'proxy', component: ProxyPage, resolve: { server: ServerResolver } },
       { path: 'compose', component: ComposePage, resolve: { composes: ComposesResolver } },
-      { path: 'web-upload', component: WebUploadPage, resolve : { folders : FoldersResolver}},
+      { path: 'web-upload', component: WebUploadPage, resolve: { folders: FoldersResolver } },
       { path: 'task-helper', component: TaskHelperPage },
       { path: '', redirectTo: 'docker', pathMatch: 'full' }
     ]
@@ -37,6 +38,7 @@ const appRouter: Routes = [
     WebUploadPage,
     TaskHelperPage,
     HeaderComponent,
+    FolderContentDialog
   ],
   imports: [
     RouterModule.forRoot(appRouter, {
@@ -48,6 +50,7 @@ const appRouter: Routes = [
   providers: [
     ServerResolver, ContainersResolver, ComposesResolver, FoldersResolver
   ],
+  entryComponents: [FolderContentDialog],
   exports: [
     RouterModule,
     HeaderComponent,

@@ -1,0 +1,35 @@
+<div class="dialog-header">
+  Folder content
+</div>
+
+<div class="dialog-content">
+  <asi-table #filesTable [autoSort]="true" [selectionModel]="filesSelectionModel" [onRequestData]="refreshTable">
+    <!-- name -->
+    <asi-table-column name="name" libelle="Name" [sortable]="true">
+      <asi-cell *asiCellDef="let file">
+        <div class="flex-row col-center">
+          <span>{{ file.name }}</span>
+        </div>
+      </asi-cell>
+    </asi-table-column>
+    <!-- size -->
+    <asi-table-column name="size" libelle="size">
+      <asi-cell *asiCellDef="let file">
+        <div class="flex-row col-center">
+          <span>{{file.size + ' mo'}}</span>
+        </div>
+      </asi-cell>
+    </asi-table-column>
+    <!-- date -->
+    <asi-table-column name="modifyDate" libelle="Date" [sortable]="true">
+      <asi-cell *asiCellDef="let file">
+        <span>{{file.modifyDate | asiDate : 'DD/MM/YYYY HH:mm'}}</span>
+      </asi-cell>
+    </asi-table-column>
+  </asi-table>
+</div>
+
+<div class="dialog-action flex-row center">
+  <asi-button (click)="dialog.close('Jack')">Close</asi-button>
+  <asi-button (click)="dialog.cancel()" design="bordered">Cancel</asi-button>
+</div>

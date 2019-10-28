@@ -79,6 +79,8 @@ export class TaskService {
       throw new FunctionalException('task-not-found', `Task with the reference "${reference}" not found`);
     }
 
+    this.tasks = filteredTasks;
+
     this.saveTasksJson();
   }
 

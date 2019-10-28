@@ -19,13 +19,27 @@
     "baseUrl": "./src",
     "skipLibCheck": true,
     "paths": {
-      "@shared/*" : ["./shared/*"],
-      "@common/*" : ["./server/app/common/*"],
-      "@services/*" : ["./server/app/services/*"],
-      "@schema/*" : ["./server/app/schema/*"],
-      "@config/*" : ["./server/app/config/*"],
-      "@environments/*": ["./client/environments/*"],
-      "@rest/*" : ["./client/app/common/rest/*"]
+      "@shared/*": [
+        "./shared/*"
+      ],
+      "@common/*": [
+        "./server/app/common/*"
+      ],
+      "@services/*": [
+        "./server/app/services/*"
+      ],
+      "@schema/*": [
+        "./server/app/schema/*"
+      ],
+      "@config/*": [
+        "./server/app/config/*"
+      ],
+      "@environments/*": [
+        "./client/environments/*"
+      ],
+      "@rest/*": [
+        "./client/app/common/rest/*"
+      ]
     }
   }
 }
