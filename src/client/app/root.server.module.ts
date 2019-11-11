@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
 import { RootModule } from './root.module';
 import { RootComponent } from './root.component';
-import { FlexLayoutServerModule } from '@angular/flex-layout/server';
 import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -13,8 +12,7 @@ import { BrowserModule } from '@angular/platform-browser';
     RootModule,
     ServerModule,
     ServerTransferStateModule,
-    ModuleMapLoaderModule,
-    FlexLayoutServerModule,
+    ModuleMapLoaderModule
   ],
   bootstrap: [RootComponent],
 })

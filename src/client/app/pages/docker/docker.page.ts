@@ -17,7 +17,7 @@ import { throwError } from 'rxjs';
 })
 export class DockerPage {
 
-  @ViewChild(AsiTable) asiTable: AsiTable<DockerContainer>;
+  @ViewChild(AsiTable, {static: true}) asiTable: AsiTable<DockerContainer>;
 
   containers: Array<DockerContainer>;
   server: Server;

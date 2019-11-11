@@ -6,8 +6,8 @@
     </ul>
   </div>
 
-  <form [formGroup]="composeForm" class="flex-row static" (ngSubmit)="onFormSubmit()" class="flex-column">
-    <span>Default compose folder : {{ defaultComposeFolder }}</span>
+  <form [formGroup]="composeForm" class="flex-column" (ngSubmit)="onFormSubmit()">
+    <span class="ml-5">default compose folder : {{ defaultComposeFolder }}</span>
     <div class="flex-row static col-end">
       <asi-input label="name (stack)" formControlName="name"></asi-input>
       <asi-button type="submit" *ngIf="!selectedCompose" class="icon-action-button">

@@ -25,13 +25,16 @@
     <div class="flex-row space-between">
       <strong>{{uploadableFolder.folder.libelle}}</strong>
       <div class="flex-row static">
-          <button [disabled]="uploadableFolder.progress" (click)="showFolderContent(uploadableFolder.folder)">
-              <i class="far fa-list clickable icon-action"></i>
-            </button>
-        <button [disabled]="uploadableFolder.progress" (click)="startEditFolder(uploadableFolder.folder)">
+        <button id="show-content" class="small-icon-action-button" [disabled]="uploadableFolder.progress"
+          (click)="showFolderContent(uploadableFolder.folder)">
+          <i class="fas fa-list clickable icon-action"></i>
+        </button>
+        <button id="start-edit" class="small-icon-action-button" [disabled]="uploadableFolder.progress"
+          (click)="startEditFolder(uploadableFolder.folder)">
           <i class="far fa-edit clickable icon-action"></i>
         </button>
-        <button [disabled]="uploadableFolder.progress" (click)="deleteFolder(uploadableFolder.folder)">
+        <button id="delete-folder" class="small-icon-action-button" [disabled]="uploadableFolder.progress"
+          (click)="deleteFolder(uploadableFolder.folder)">
           <i class="far fa-trash-alt clickable icon-action"></i>
         </button>
       </div>

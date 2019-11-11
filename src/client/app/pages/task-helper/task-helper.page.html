@@ -1,1 +1,26 @@
-<h1 class="page-title"> Task Helper </h1>
+<form [formGroup]="taskForm" class="flex-column" (ngSubmit)="onFormSubmit()">
+  <div class="flex-row static col-end">
+    <div class="flex-column">
+      <asi-input label="name" formControlName="name"></asi-input>
+      <asi-input label="cron" formControlName="cron"></asi-input>
+    </div>
+    <asi-button type="submit" *ngIf="!selectedTask" class="icon-action-button">
+      <i class="fas fa-plus-circle"></i>
+      <span>Add</span>
+    </asi-button>
+    <asi-button type="submit" *ngIf="selectedTask" class="icon-action-button">
+      <i class="fas fa-edit"></i>
+      <span>Update</span>
+    </asi-button>
+    <asi-button (click)="endEditTask()" *ngIf="selectedTask" class="icon-action-button">
+      <i class="fas fa-ban"></i>
+      <span>Cancel</span>
+    </asi-button>
+    <asi-button (click)="deleteTask()" *ngIf="selectedTask" class="icon-action-button">
+      <i class="fas fa-trash"></i>
+      <span>Delete</span>
+    </asi-button>
+  </div>
+
+  <monaco-editor formControlName="script"></monaco-editor>
+</form>

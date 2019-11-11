@@ -3,7 +3,7 @@
 </div>
 
 <div class="dialog-content">
-  <asi-table #filesTable [autoSort]="true" [selectionModel]="filesSelectionModel" [onRequestData]="refreshTable">
+  <asi-table #filesTable [autoSort]="true" [onRequestData]="refreshTable">
     <!-- name -->
     <asi-table-column name="name" libelle="Name" [sortable]="true">
       <asi-cell *asiCellDef="let file">

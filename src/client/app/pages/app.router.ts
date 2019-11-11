@@ -13,6 +13,7 @@ import { TaskHelperPage } from './task-helper/task-helper.page';
 import { ComposesResolver } from './compose/compose.resolver';
 import { FoldersResolver } from './web-upload/folders.resolver';
 import { FolderContentDialog } from './web-upload/folder-content/folder-content.dialog';
+import { SshPage } from './ssh/ssh.page';
 
 const appRouter: Routes = [
   {
@@ -23,6 +24,7 @@ const appRouter: Routes = [
       { path: 'compose', component: ComposePage, resolve: { composes: ComposesResolver } },
       { path: 'web-upload', component: WebUploadPage, resolve: { folders: FoldersResolver } },
       { path: 'task-helper', component: TaskHelperPage },
+      { path: 'ssh', component: SshPage },
       { path: '', redirectTo: 'docker', pathMatch: 'full' }
     ]
   },
@@ -37,6 +39,7 @@ const appRouter: Routes = [
     ProxyPage,
     WebUploadPage,
     TaskHelperPage,
+    SshPage,
     HeaderComponent,
     FolderContentDialog
   ],

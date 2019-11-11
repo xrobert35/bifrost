@@ -37,9 +37,13 @@
             "styles": [
               "src/client/styles.css",
               "src/client/less/main.less",
+              "./node_modules/prismjs/themes/prism-okaidia.css",
               "./node_modules/@fortawesome/fontawesome-free/css/all.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/prismjs/prism.js",
+              "./node_modules/prismjs/components/prism-shell-session.min.js"
+            ]
           },
           "configurations": {
             "production": {

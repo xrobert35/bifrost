@@ -18,7 +18,7 @@ import { throwError } from 'rxjs';
 })
 export class ProxyPage {
 
-  @ViewChild(AsiTable) asiTable: AsiTable<DockerContainer>;
+  @ViewChild(AsiTable, {static: true}) asiTable: AsiTable<DockerContainer>;
 
   server: Server;
   newProxy: ServerLocation = { name: null, path: null, proxyPass: null };

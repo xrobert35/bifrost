@@ -30,7 +30,7 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
 
   private _windowResizeSubscription: Subscription;
 
-  @ViewChild('editor') editorContent: ElementRef;
+  @ViewChild('editor', {static: true}) editorContent: ElementRef;
 
   constructor(private monacoEditorService: MonacoEditorService) {
     super();
