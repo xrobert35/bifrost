@@ -6,7 +6,6 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { FunctionalException } from '@common/exception/functional.exception';
 import { ComposeService } from '@services/compose.service';
 import { Compose } from '@shared/interface/compose.int';
-import { Config } from '@config/config';
 
 @ApiUseTags('compose')
 @Controller('compose')

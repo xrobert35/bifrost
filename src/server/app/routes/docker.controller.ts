@@ -24,6 +24,7 @@ export class DockerController {
       } else {
         data.Image = imageFullName;
       }
+      data.stack = data.Labels['com.docker.compose.project'];
       return data;
     });
     return datas;

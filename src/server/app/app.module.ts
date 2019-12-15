@@ -13,15 +13,15 @@ import { DefaultExceptionFilter } from '@common/exception/default-exception.filt
   providers: [
     {
       provide: APP_FILTER,
+      useClass: DefaultExceptionFilter
+    },
+    {
+      provide: APP_FILTER,
       useClass: FunctionalExceptionFilter,
     },
     {
       provide: APP_FILTER,
       useClass: TechnicalExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: DefaultExceptionFilter
     },
     {
       provide: APP_INTERCEPTOR,

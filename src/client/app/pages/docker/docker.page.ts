@@ -1,14 +1,15 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DockerContainer } from '@shared/interface/container.int';
 import { Server } from '@shared/interface/server.int';
-import { AsiTableSelectionModel, AsiTableData, AsiTable } from '@asi-ngtools/lib';
+import { AsiTableSelectionModel, AsiTableData, AsiTable, AsiTableRequest } from '@asi-ngtools/lib';
 import { find, forEach, filter, isEmpty } from 'lodash';
 import { BifrostNotificationService } from 'client/app/common/ngtools/notification/notification.service';
 import { DockerWebService } from '@rest/docker.webservice';
 import { ServerWebService } from '@rest/server.webservice';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { DockerStack } from '@shared/interface/stack.int';
 
 @Component({
   selector: 'docker-page',
@@ -17,14 +18,16 @@ import { throwError } from 'rxjs';
 })
 export class DockerPage {
 
-  @ViewChild(AsiTable, {static: true}) asiTable: AsiTable<DockerContainer>;
+  @ViewChildren(AsiTable) asiTable: QueryList<AsiTable<DockerStack>>;
 
-  containers: Array<DockerContainer>;
+  stacks: Array<DockerStack>;
   server: Server;
 
   serverSelectionModel = new AsiTableSelectionModel('name', false);
 
   logContainerId: string = null;
+
+  display: 'list' | 'stack' = 'stack';
 
   constructor(private activatedRoute: ActivatedRoute,
     private bifrostNotificationService: BifrostNotificationService,
@@ -42,30 +45,65 @@ export class DockerPage {
     }
   }
 
-  onShowOnlyActiveChanged() {
-    this.asiTable.fireRefresh();
+  ngOnInit() {
+    this.refreshContainerInformation(this.display);
   }
 
-  refreshTable = async () => {
+  onShowOnlyActiveChanged() {
+    this.asiTable.toArray().forEach(asiTable => asiTable.fireRefresh());
+  }
+
+  async refreshContainerInformation(display: 'list' | 'stack') {
+    const containers = await this.initContainersInformations();
+
+    if (display === 'list') {
+      this.stacks = [{
+        name: 'all containers',
+        started: !!containers.find(container => container.State === 'running'),
+        containers: containers
+      }];
+    } else {
+      this.stacks = containers.reduce((stacks, container) => {
+        const stack = find(stacks, (aStack) => aStack.name === container.stack);
+        if (!stack) {
+          stacks.push({
+            name: container.stack,
+            started: container.State === 'running',
+            containers: [container]
+          });
+        } else {
+          stack.containers.push(container);
+          stack.started = !!stack.containers.find(aContainer => aContainer.State === 'running');
+        }
+        return stacks;
+      }, <DockerStack[]>[]);
+    }
+  }
+
+  refreshTable = async (tableRequest: AsiTableRequest) => {
     const tableData = new AsiTableData<DockerContainer>();
 
-    await this.initContainersInformations();
-
-    tableData.results = this.containers;
-
-    if (this.server.onlyActive) {
-      tableData.results = filter(tableData.results, (container: DockerContainer) => {
-        return !isEmpty(container.proxyPath);
-      });
+    let stack: DockerStack;
+    if (tableRequest.identifier) {
+      stack = find(this.stacks, (aStack) => aStack.name === tableRequest.identifier);
+    } else {
+      stack = this.stacks[0];
     }
+
+    let containers = stack.containers;
+    if (this.server.onlyActive) {
+      containers = filter(containers, (container: DockerContainer) => !isEmpty(container.proxyPath));
+    }
+
+    tableData.results = containers;
 
     return tableData;
   }
 
   async initContainersInformations() {
-    this.containers = await this.dockerWebService.list().toPromise();
+    const containers = await this.dockerWebService.list().toPromise();
     this.serverSelectionModel.itemsIncluded = [];
-    forEach(this.containers, (container) => {
+    forEach(containers, (container) => {
       container.name = container.Names[0].substring(1);
       if (container.Image) {
         container.imageName = container.Image.split(':')[0];
@@ -87,37 +125,62 @@ export class DockerPage {
         container.proxyPath = location.path;
       }
     });
+    return containers;
   }
 
-
-  async startContainers() {
-    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
-      this.bifrostNotificationService.showInfo(`Starting ${container.name}...`);
-      await this.dockerWebService.startContainer(container.Id).toPromise();
-      this.asiTable.fireRefresh();
-      this.bifrostNotificationService.showSuccess(`${container.name} is now running`);
-    });
+  async displayStack() {
+    await this.refreshContainerInformation('stack');
+    this.display = 'stack';
   }
 
-  async stopContainers() {
-    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
-      this.bifrostNotificationService.showInfo(`Stoping ${container.name}...`);
-      await this.dockerWebService.stopContainer(container.Id).toPromise();
-      this.asiTable.fireRefresh();
-      this.bifrostNotificationService.showSuccess(`${container.name} is now stopped`);
-    });
+  async displayList() {
+    await this.refreshContainerInformation('list');
+    this.display = 'list';
   }
 
-  async deleteContainers() {
-    this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
-      this.bifrostNotificationService.showInfo(`Deleting ${container.name}...`);
-      await this.dockerWebService.deletetContainer(container.Id).toPromise();
-      this.asiTable.fireRefresh();
-      this.bifrostNotificationService.showSuccess(`${container.name} has been deleted`);
-    });
+  async startStack(stack: DockerStack) {
+    await this.startContainers(stack.containers);
+    await this.refreshContainerInformation(this.display);
+    this.asiTable.toArray()
+      .find((asiTable) => asiTable.identifier === stack.name)
+      .fireRefresh();
   }
 
-  async updateContainers() {
+  async stopStack(stack: DockerStack) {
+    await this.stopContainers(stack.containers);
+    await this.refreshContainerInformation(this.display);
+    this.asiTable.toArray()
+      .find((asiTable) => asiTable.identifier === stack.name)
+      .fireRefresh();
+  }
+
+  async deleteStack(stack: DockerStack) {
+    await this.deleteContainers(stack.containers);
+    await this.refreshContainerInformation(this.display);
+    this.asiTable.toArray()
+      .find((asiTable) => asiTable.identifier === stack.name)
+      .fireRefresh();
+  }
+
+  async startSelectedContainers() {
+    await this.startContainers(this.serverSelectionModel.itemsIncluded);
+    await this.refreshContainerInformation(this.display);
+    this.asiTable.toArray().forEach(asiTable => asiTable.fireRefresh());
+  }
+
+  async stopSelectedContainers() {
+    await this.stopContainers(this.serverSelectionModel.itemsIncluded);
+    await this.refreshContainerInformation(this.display);
+    this.asiTable.toArray().forEach(asiTable => asiTable.fireRefresh());
+  }
+
+  async deleteSelectedContainers() {
+    await this.deleteContainers(this.serverSelectionModel.itemsIncluded);
+    await this.refreshContainerInformation(this.display);
+    this.asiTable.toArray().forEach(asiTable => asiTable.fireRefresh());
+  }
+
+  async updateSelectedContainers() {
     this.serverSelectionModel.itemsIncluded.forEach(async (container) => {
       this.bifrostNotificationService.showInfo(`Recreating ${container.name}...`);
 
@@ -141,8 +204,58 @@ export class DockerPage {
       } finally {
         container.loading = false;
       }
-
     });
+  }
+
+  private startContainers(containers: DockerContainer[]) {
+    const startingContainers = containers.map(async (container) => {
+      this.bifrostNotificationService.showInfo(`Starting ${container.name}...`);
+      try {
+        await this.dockerWebService.startContainer(container.Id).toPromise();
+        this.bifrostNotificationService.showSuccess(`${container.name} is now running`);
+      } catch (exception) {
+        if (exception.error.code) {
+          this.bifrostNotificationService.showError(`Can't start ${container.name} : ${exception.error.libelle}`);
+        } else {
+          this.bifrostNotificationService.showError(`Can't start ${container.name} : unknow error`);
+        }
+      }
+    });
+    return Promise.all(startingContainers);
+  }
+
+  private stopContainers(containers: DockerContainer[]) {
+    const stopppingContainers = containers.map(async (container) => {
+      this.bifrostNotificationService.showInfo(`Stoping ${container.name}...`);
+      try {
+        await this.dockerWebService.stopContainer(container.Id).toPromise();
+        this.bifrostNotificationService.showSuccess(`${container.name} is now stopped`);
+      } catch (exception) {
+        if (exception.error.code) {
+          this.bifrostNotificationService.showError(`Can't stop ${container.name} : ${exception.error.libelle}`);
+        } else {
+          this.bifrostNotificationService.showError(`Can't stop ${container.name} : unknow error`);
+        }
+      }
+    });
+    return Promise.all(stopppingContainers);
+  }
+
+  private deleteContainers(containers: DockerContainer[]) {
+    const deletingContainers = containers.map(async (container) => {
+      this.bifrostNotificationService.showInfo(`Deleting ${container.name}...`);
+      try {
+        await this.dockerWebService.deleteContainer(container.Id).toPromise();
+        this.bifrostNotificationService.showSuccess(`${container.name} has been deleted`);
+      } catch (exception) {
+        if (exception.error.code) {
+          this.bifrostNotificationService.showError(`Can't delete ${container.name} : ${exception.error.libelle}`);
+        } else {
+          this.bifrostNotificationService.showError(`Can't delete ${container.name} : unknow error`);
+        }
+      }
+    });
+    return Promise.all(deletingContainers);
   }
 
   async pruneDocker() {

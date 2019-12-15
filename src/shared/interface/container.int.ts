@@ -9,7 +9,10 @@ export class DockerContainer  {
   imageRepo?: string;
   tooltip?: any;
 
+
   tag: string;
+  stack?: string;
+
   // Real docker properties
   Command: string;
   Created: number;
@@ -18,6 +21,7 @@ export class DockerContainer  {
   ImageDigestId: string;
   ImageID: string;
   Names: Array<string>;
+  Labels: any;
   Name: string;
   State: string;
   Status: string;

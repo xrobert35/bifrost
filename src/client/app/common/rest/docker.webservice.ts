@@ -29,7 +29,7 @@ export class DockerWebService {
     return this.httpClient.post(`${this.baseUrl}/container/${containerId}/start`, {});
   }
 
-  deletetContainer(containerId: string) {
+  deleteContainer(containerId: string) {
     return this.httpClient.delete(`${this.baseUrl}/container/${containerId}`, {});
   }
 

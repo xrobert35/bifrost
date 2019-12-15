@@ -1,66 +1,110 @@
 <div class="flex-row space-between col-center static server-header">
   <div class="flex-row">
-    <asi-button id="docker_start" type="button"class="icon-action-button" (click)="startContainers()"><i class="fas fa-play"></i><span>start</span></asi-button>
-    <asi-button id="docker_stop" type="button"  class="icon-action-button" (click)="stopContainers()"><i class="fas fa-stop"></i><span>stop</span></asi-button>
-    <asi-button id="docker_update" type="button"  class="icon-action-button" (click)="updateContainers()"><i class="fas fa-download"></i><span>update</span></asi-button>
-    <asi-button id="docker_delete" type="button"  class="icon-action-button" (click)="deleteContainers()"><i class="fas fa-trash"></i><span>delete</span></asi-button>
-    <asi-button id="docker_prune" type="button"  class="icon-action-button" (click)="pruneDocker()"><i class="fas fa-snowplow"></i><span>prune images</span></asi-button>
+    <asi-button id="docker_start" type="button" class="icon-action-button" (click)="startSelectedContainers()">
+      <i class="fas fa-play"></i><span>start</span>
+    </asi-button>
+    <asi-button id="docker_stop" type="button" class="icon-action-button" (click)="stopSelectedContainers()">
+      <i class="fas fa-stop"></i><span>stop</span>
+    </asi-button>
+    <asi-button id="docker_update" type="button" class="icon-action-button" (click)="updateSelectedContainers()">
+      <i class="fas fa-download"></i><span>update</span>
+    </asi-button>
+    <asi-button id="docker_delete" type="button" class="icon-action-button" (click)="deleteSelectedContainers()">
+      <i class="fas fa-trash-alt"></i><span>delete</span>
+    </asi-button>
+    <asi-button id="docker_prune" type="button" class="icon-action-button" (click)="pruneDocker()">
+      <i class="fas fa-snowplow"></i><span>prune images</span>
+    </asi-button>
+  </div>
+  <div class="flex-row">
+    <asi-button id="display_list" [disabled]="display === 'list'" type="button" class="icon-action-button"
+      (click)="displayList()">
+      <i class="fas fa-list-ul"></i>
+    </asi-button>
+    <asi-button id="display_stack" [disabled]="display === 'stack'" type="button" class="icon-action-button"
+      (click)="displayStack()">
+      <i class="fas fa-layer-group"></i>
+    </asi-button>
   </div>
 </div>
 
-<asi-table #containersTable [autoSort]="true" [selectionModel]="serverSelectionModel" [onRequestData]="refreshTable">
-  <!-- checkbox -->
-  <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
-  <!-- state -->
-  <asi-table-column name="state" libelle="" sortName="State" [sortable]="true">
-    <asi-cell *asiCellDef="let container">
-      <asi-fa-icon *ngIf="!container.loading" icon="fa fa-power-off" [ngClass]="container.State"></asi-fa-icon>
-      <asi-fa-icon *ngIf="container.loading" icon="fa fa-spin fa-sync"></asi-fa-icon>
-    </asi-cell>
-  </asi-table-column>
-  <!-- name -->
-  <asi-table-column name="name" libelle="Name" [sortable]="true">
-    <asi-cell *asiCellDef="let container">
+
+<asi-collapse *ngFor="let stack of stacks" [collapsed]="display === 'stack'">
+  <asi-header *asiCollapseHeaderDef="let data">
+    <div class="flex-row col-center space-between static">
       <div class="flex-row col-center">
-        <span>{{ container.name }}</span>
+        <asi-fa-icon *ngIf="display === 'stack'" icon="fa fa-power-off" [ngClass]="{'running' : stack.started}"></asi-fa-icon>
+        <strong> {{ stack.name }} </strong>
       </div>
-    </asi-cell>
-  </asi-table-column>
-  <!-- image -->
-  <asi-table-column name="image" libelle="Image">
-    <asi-cell *asiCellDef="let container">
-      <div class="flex-row col-center">
-        <span>{{container.imageName}}</span>
+      <div class="flex-row col-center static" *ngIf="display === 'stack'">
+        <button id="stack_start" type="button" class="small-icon-action-button" (click)="startStack(stack)">
+          <i class="fas fa-play clickable icon-action"></i>
+        </button>
+        <button id="stack_stop" type="button" class="small-icon-action-button" (click)="stopStack(stack)">
+          <i class="fas fa-stop clickable icon-action"></i>
+        </button>
+        <button id="stack_delete" type="button" class="small-icon-action-button" (click)="deleteStack(stack)">
+          <i class="fas fa-trash-alt clickable icon-action"></i>
+        </button>
       </div>
-    </asi-cell>
-  </asi-table-column>
-  <!-- info -->
-  <asi-table-column name="info" libelle="Info">
-    <asi-cell *asiCellDef="let container">
-      <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.tooltip"></asi-fa-icon>
-    </asi-cell>
-  </asi-table-column>
-  <!-- port -->
-  <asi-table-column name="port" libelle="Port" columnClass="port-col">
-    <asi-cell *asiCellDef="let container">
-      <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
-        {{port.PrivatePort + ':' + port.PublicPort}}</span>
-    </asi-cell>
-  </asi-table-column>
-  <!-- action -->
-  <asi-table-column name="action" libelle="action" columnClass="port-col">
-    <asi-cell *asiCellDef="let container" class="flex-row static">
-      <asi-button id="docker_add_proxy" class="icon-action-button" (click)="addNewProxy(container)">
-        <i class="fas fa-random"></i>
-        <span>New proxy</span>
-      </asi-button>
-      <asi-button id="docker_add_proxy" class="icon-action-button" (click)="showLogs(container)">
-        <i class="fas fa-random"></i>
-        <span>Logs</span>
-      </asi-button>
-    </asi-cell>
-  </asi-table-column>
-</asi-table>
+    </div>
+  </asi-header>
+
+  <asi-table #containersTable [identifier]="stack.name" [autoSort]="true" [selectionModel]="serverSelectionModel"
+    [onRequestData]="refreshTable">
+    <!-- checkbox -->
+    <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
+    <!-- state -->
+    <asi-table-column name="state" libelle="" sortName="State" [sortable]="true">
+      <asi-cell *asiCellDef="let container">
+        <asi-fa-icon *ngIf="!container.loading" icon="fa fa-power-off" [ngClass]="container.State"></asi-fa-icon>
+        <asi-fa-icon *ngIf="container.loading" icon="fa fa-spin fa-sync"></asi-fa-icon>
+      </asi-cell>
+    </asi-table-column>
+    <!-- name -->
+    <asi-table-column name="name" libelle="Name" [sortable]="true">
+      <asi-cell *asiCellDef="let container">
+        <div class="flex-row col-center">
+          <span>{{ container.name }}</span>
+        </div>
+      </asi-cell>
+    </asi-table-column>
+    <!-- image -->
+    <asi-table-column name="image" libelle="Image">
+      <asi-cell *asiCellDef="let container">
+        <div class="flex-row col-center">
+          <span>{{container.imageName}}</span>
+        </div>
+      </asi-cell>
+    </asi-table-column>
+    <!-- info -->
+    <asi-table-column name="info" libelle="Info">
+      <asi-cell *asiCellDef="let container">
+        <asi-fa-icon icon="fa fa-info-circle" size="1x" [tooltip]="container.tooltip"></asi-fa-icon>
+      </asi-cell>
+    </asi-table-column>
+    <!-- port -->
+    <asi-table-column name="port" libelle="Port" columnClass="port-col">
+      <asi-cell *asiCellDef="let container">
+        <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
+          {{port.PrivatePort + ':' + port.PublicPort}}</span>
+      </asi-cell>
+    </asi-table-column>
+    <!-- action -->
+    <asi-table-column name="action" libelle="action" columnClass="port-col">
+      <asi-cell *asiCellDef="let container" class="flex-row static">
+        <asi-button id="docker_add_proxy" class="icon-action-button" (click)="addNewProxy(container)">
+          <i class="fas fa-random"></i>
+          <span>New proxy</span>
+        </asi-button>
+        <asi-button id="docker_add_proxy" class="icon-action-button" (click)="showLogs(container)">
+          <i class="fas fa-random"></i>
+          <span>Logs</span>
+        </asi-button>
+      </asi-cell>
+    </asi-table-column>
+  </asi-table>
+</asi-collapse>
 
 
 <tail-log *ngIf="logContainerId" [containerId]="logContainerId"></tail-log>

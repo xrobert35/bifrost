@@ -24,22 +24,17 @@ export class TailLogComponent implements OnChanges, OnDestroy {
     if (this.socketSubscription) {
       this.socketSubscription.unsubscribe();
     }
-    this.socketSubscription = this.webSocketClient.open('ws://localhost:4081/events', this.containerId).subscribe((msg) => {
-      msg = msg.replace(/\u0000/g , ' ');
-      msg = msg.replace(/\u0001/g , ' ');
-      msg = msg.replace(/\u0002/g , ' ');
+    this.socketSubscription = this.webSocketClient.open('ws://localhost:4081/dockerlogs', this.containerId)
+    .subscribe((msg) => {
       this.logs.push(msg);
     });
   }
 
-  ngOnInit() {
-    console.log(this.logs);
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     if (this.socketSubscription) {
       this.socketSubscription.unsubscribe();
     }
   }
-
 }

@@ -1,7 +1,7 @@
 import { WinLogger } from '../common/logger/winlogger';
 
-const urlJoin = require('url-join');
-const jsonOverride = require('json-override');
+import * as urljoin from 'url-join';
+import * as jsonOverride from 'json-override';
 
 export class Config {
 
@@ -57,6 +57,6 @@ export class Config {
   }
 
   private getConfig(path: string, configName: string) {
-    return require(urlJoin(path, configName));
+    return require(urljoin(path, configName));
   }
 }

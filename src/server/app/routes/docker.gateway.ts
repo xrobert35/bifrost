@@ -8,7 +8,7 @@ import { WinLogger } from '@common/logger/winlogger';
 import { DockerService } from '@services/docker.service';
 import { Socket } from 'net';
 
-@WebSocketGateway(4081, { namespace: 'events' })
+@WebSocketGateway(4081, { namespace: 'dockerlogs' })
 export class DockerGateway implements OnGatewayConnection {
 
   private logger = WinLogger.get('docker-service');
@@ -21,10 +21,10 @@ export class DockerGateway implements OnGatewayConnection {
     this.logger.info('New client socket');
   }
 
-  @SubscribeMessage('events')
+  @SubscribeMessage('dockerlogs')
   handleEvent(socket: Socket, socketData: any): string {
     this.dockerService.streamLog(socketData.containerId, 100).subscribe( (logs) => {
-      socket.emit('events', logs);
+      socket.emit('dockerlogs', logs);
     });
     return 'ok';
   }

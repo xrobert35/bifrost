@@ -10,6 +10,7 @@ import { UnivErrorHandler } from './common/error.handler';
 import { AppRoutingModule } from './pages/app.router';
 import { UniversalService } from './common/universal/universal.service';
 import { TranslateUniversalLoader } from './common/universal/universal.loader';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const translateLoader = (transferState: TransferState, universalService: UniversalService, httpClient: HttpClient) => {
   return new TranslateUniversalLoader(transferState, universalService, httpClient);
@@ -23,6 +24,7 @@ const translateLoader = (transferState: TransferState, universalService: Univers
   imports: [
     AppRoutingModule,
     UnivCommonModule,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -9,8 +9,8 @@ export class WebSocketClient {
     // const subject = webSocket('ws://localhost:4081');
     return Observable.create((observer: Observer<string>) => {
       const socket = socketio.connect(socketUrl);
-      socket.emit('events', { containerId : containerId});
-      socket.on('events', (evt: string) => {
+      socket.emit('dockerlogs', { containerId : containerId});
+      socket.on('dockerlogs', (evt: string) => {
         observer.next(evt);
       });
     });

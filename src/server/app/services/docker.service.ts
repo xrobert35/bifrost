@@ -6,6 +6,7 @@ import { Config } from '@config/config';
 import { DockerContainer } from '@shared/interface/container.int';
 import { Observable, Observer } from 'rxjs';
 import { Stream } from 'stream';
+import { TechnicalException } from '@common/exception/technical.exception';
 
 @Injectable()
 export class DockerService {
@@ -74,7 +75,7 @@ export class DockerService {
           this.logger.warn(`Something went wrong while reading log for container ${containerId}`, err);
           obs.complete();
         });
-      }).catch( (err) => {
+      }).catch((err) => {
         this.logger.warn(`Enable to read log for container ${containerId}`, err);
       });
     });
@@ -148,7 +149,15 @@ export class DockerService {
 
   async startContainer(containerId: string) {
     this.logger.info('Starting container ' + containerId);
-    await this.docker.container.get(containerId).start();
+    try {
+      await this.docker.container.get(containerId).start();
+    } catch (err) {
+      this.logger.error(err);
+      if (err.statusCode === 404) {
+        throw new TechnicalException('container-not-found', err.message);
+      }
+      throw err;
+    }
   }
 
   async prune() {
