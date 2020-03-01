@@ -1,15 +1,18 @@
-<div class="flex-row">
+<div class="flex-column">
 
-  <div class="asi-list">
-    <ul class="list-container">
-      <li class="list-item" *ngFor="let compose of composes" (click)="selectCompose(compose)"> {{ compose.name}}</li>
-    </ul>
+  <div class="flex-row static">
+    <asi-select label="Compose" labelPosition="top" [data]="composes" (onValueChange)="selectCompose($event)">
+      <asi-empty *asiEmptyDef="let data">Please select or add a new compose</asi-empty>
+      <asi-selected *asiSelectedDef="let data">{{data?.name}}</asi-selected>
+      <asi-option *asiOptionDef="let data">{{data?.name}}</asi-option>
+    </asi-select>
   </div>
 
+  <br />
+  <span class="ml-5">default compose folder : {{ defaultComposeFolder }}</span>
   <form [formGroup]="composeForm" class="flex-column" (ngSubmit)="onFormSubmit()">
-    <span class="ml-5">default compose folder : {{ defaultComposeFolder }}</span>
     <div class="flex-row static col-end">
-      <asi-input label="name (stack)" formControlName="name"></asi-input>
+      <asi-input label="Name (stack)" formControlName="name"></asi-input>
       <asi-button type="submit" *ngIf="!selectedCompose" class="icon-action-button">
         <i class="fas fa-plus-circle"></i>
         <span>Add</span>

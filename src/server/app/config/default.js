@@ -1,7 +1,7 @@
 const config = {
   SERVER_PORT: process.env.SERVER_PORT || '4000',
   CLIENT_PORT: process.env.CLIENT_PORT || '4090',
-  CLIENT_ACTIVATED: process.env.CLIENT_ACTIVATED || true,
+  CLIENT_ACTIVATED: process.env.CLIENT_ACTIVATED || false,
   CLIENT_PROXY_ACTIVATED: process.env.CLIENT_PROXY_ACTIVATED || true,
   SERVER_PATH : process.env.SERVER_PATH || '/api',
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',

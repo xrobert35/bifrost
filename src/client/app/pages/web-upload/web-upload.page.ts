@@ -18,7 +18,7 @@ import { FolderContentDialog } from './folder-content/folder-content.dialog';
 })
 export class WebUploadPage {
 
-  uploadableFolders: { folder: Folder, fileToUpload: File }[];
+  uploadableFolders: { folder: Folder, fileToUpload: File }[] = [];
   uploadedFiles: any[];
   folderForm: FormGroup;
 

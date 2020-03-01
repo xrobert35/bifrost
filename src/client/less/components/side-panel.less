@@ -1,0 +1,125 @@
+side-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 150px;
+
+  max-width: 200px;
+  margin: 15px 5px 15px 15px;
+
+  .logo-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: white;
+    box-shadow: 1px 1px 5px black;
+
+    .logo {
+      height: 70px;
+      width: auto;
+      margin-left: 20px;
+    }
+
+    label {
+      margin-left: 15px;
+      margin-top: 15px;
+      color: steelblue;
+      text-align: center;
+      font-family: @font-bold;
+    }
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+
+  .nav-panel {
+    background-color: white;
+    box-shadow: 1px 1px 5px black;
+
+    .menu-icon {
+      height: 25px;
+      width: 25px;
+      margin-right: 15px;
+
+      background-size: 25px 25px;
+      background-repeat: no-repeat;
+
+      &.docker {
+        background-image: url("../../assets/icons/docker-menu.png");
+      }
+
+      &.proxy {
+        background-image: url("../../assets/icons/proxy-menu.png");
+      }
+
+      &.compose {
+        background-image: url("../../assets/icons/compose-menu.png");
+      }
+
+
+      &.upload {
+        background-image: url("../../assets/icons/upload-menu.png");
+      }
+
+      &.task {
+        background-image: url("../../assets/icons/task-menu.png");
+      }
+
+      &.ssh {
+        background-image: url("../../assets/icons/ssh-menu.png");
+      }
+    }
+
+    .active {
+      .menu-icon {
+        &.docker {
+          background-image: url("../../assets/icons/docker-menu-active.png");
+        }
+
+        &.proxy {
+          background-image: url("../../assets/icons/proxy-menu-active.png");
+        }
+
+        &.compose {
+          background-image: url("../../assets/icons/compose-menu-active.png");
+        }
+
+        &.upload {
+          background-image: url("../../assets/icons/upload-menu-active.png");
+        }
+
+        &.task {
+          background-image: url("../../assets/icons/task-menu-active.png");
+        }
+
+        &.ssh {
+          background-image: url("../../assets/icons/ssh-menu-active.png");
+        }
+      }
+    }
+
+    .asi-nav-group {
+      .asi-nav-group-container {
+        .asi-nav-header {
+          flex-direction: column;
+
+          min-height: 0px;
+          max-height: none;
+          border-bottom: none;
+          background-color: none;
+
+          button {
+            font-family: @font-bold;
+            box-shadow: none;
+            &.active {
+              box-shadow: none;
+            }
+            &:focus {
+              border: none;
+              border-bottom: 1px solid #3d566f;
+            }
+          }
+        }
+      }
+    }
+  }
+}

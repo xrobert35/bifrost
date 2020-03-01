@@ -15,10 +15,24 @@ html {
     margin: 0;
     flex: 1 0 auto;
     flex-direction: column;
+
+    background: #0f2027; /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to right,
+      #2c5364,
+      #203a43,
+      #0f2027
+    ); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to right,
+      #2c5364,
+      #203a43,
+      #0f2027
+    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
 
   .ml-5 {
-    margin-left : 5px;
+    margin-left: 5px;
   }
 
   .small-icon-action-button {
@@ -41,20 +55,24 @@ html {
     flex-direction: column;
     flex: 1 0 auto;
 
-    &.center {
-      align-items: center;
-    }
-
-    &.row-start {
+    &.start {
       justify-content: flex-start;
     }
 
+    &.center {
+      justify-content: center;
+    }
+
+    &.row-start {
+      align-items: flex-start;
+    }
+
     &.row-end {
-      justify-content: flex-end;
+      align-items: flex-end;
     }
 
     &.row-center {
-      justify-content: center;
+      align-items: center;
     }
 
     &.static {
@@ -103,7 +121,6 @@ html {
     .flex {
       flex: 1;
     }
-
 
     .icon-action {
       color: lawngreen;

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { DockerPage } from '../pages/docker/docker.page';
 import { UnivCommonModule } from '../common/univ-common.module';
-import { HeaderComponent } from '../pages/header/header.component';
 import { AppPage } from '../pages/app.page.';
 import { ServerResolver } from './proxy/server.resolver';
 import { ContainersResolver } from './docker/containers.resolver';
@@ -14,6 +13,7 @@ import { ComposesResolver } from './compose/compose.resolver';
 import { FoldersResolver } from './web-upload/folders.resolver';
 import { FolderContentDialog } from './web-upload/folder-content/folder-content.dialog';
 import { SshPage } from './ssh/ssh.page';
+import { SidePanelComponent } from './side/side-panel.component';
 
 const appRouter: Routes = [
   {
@@ -40,7 +40,7 @@ const appRouter: Routes = [
     WebUploadPage,
     TaskHelperPage,
     SshPage,
-    HeaderComponent,
+    SidePanelComponent,
     FolderContentDialog
   ],
   imports: [
@@ -55,8 +55,7 @@ const appRouter: Routes = [
   ],
   entryComponents: [FolderContentDialog],
   exports: [
-    RouterModule,
-    HeaderComponent,
+    RouterModule
   ],
 })
 export class AppRoutingModule { }

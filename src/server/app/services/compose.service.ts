@@ -16,11 +16,9 @@ export class ComposeService {
 
   private static COMPOSES_CONFIG = `${Config.get().SERVER_DATA}/composes.json`;
 
-  composes: Compose[] = [];
+  private composes: Compose[] = [];
 
-  nginxTemplate: string;
-
-  private logger = WinLogger.get('compose-service');
+  private readonly logger = WinLogger.get('compose-service');
 
   constructor(private dockerService: DockerService) {
     this.readComposesJson();
@@ -94,7 +92,9 @@ export class ComposeService {
     if (composeOption.compatibility) {
       option += '--compatibility ';
     }
-    const cmd = `docker-compose ${option} -f '/opt/docker/compose/${compose.name}/docker-compose.yml' up -d`;
+
+    const defaultComposeFolder = Config.get().DEFAULT_COMPOSE_FOLDER;
+    const cmd = `docker-compose ${option} -f '${defaultComposeFolder}/${compose.name}/docker-compose.yml' up -d`;
 
     this.logger.info(`> running : ${cmd}`);
 
@@ -104,7 +104,7 @@ export class ComposeService {
     });
 
     return {
-      reference : logSocketId
+      reference: logSocketId
     };
   }
 
@@ -121,7 +121,9 @@ export class ComposeService {
     if (composeOption.compatibility) {
       option += '--compatibility ';
     }
-    const cmd = `docker-compose ${option} -f '/opt/docker/compose/${compose.name}/docker-compose.yml' down`;
+
+    const defaultComposeFolder = Config.get().DEFAULT_COMPOSE_FOLDER;
+    const cmd = `docker-compose ${option} -f '${defaultComposeFolder}/${compose.name}/docker-compose.yml' down`;
 
     this.logger.info(`> running : ${cmd}`);
 
@@ -131,7 +133,7 @@ export class ComposeService {
     });
 
     return {
-      reference : logSocketId
+      reference: logSocketId
     };
   }
 
@@ -140,22 +142,24 @@ export class ComposeService {
     fs.writeFileSync(ComposeService.COMPOSES_CONFIG, JSON.stringify(this.composes));
 
     const defaultComposeFolder = Config.get().DEFAULT_COMPOSE_FOLDER;
-    this.composes.forEach( (compose) => {
+    this.composes.forEach((compose) => {
       let composeFolder = `${defaultComposeFolder} / ${compose.name}`;
       if (!fs.existsSync(composeFolder)) {
         fs.mkdirSync(composeFolder, { recursive: true });
       }
 
-      composeFolder = `${defaultComposeFolder} / ${compose.name} / docker - compose.yml`;
+      composeFolder = `${defaultComposeFolder}/${compose.name}/docker-compose.yml`;
       fs.writeFileSync(composeFolder, compose.compose);
     });
   }
 
   private readComposesJson() {
     try {
-      const composes = fs.readFileSync(ComposeService.COMPOSES_CONFIG, 'utf8');
-      if (composes) {
-        this.composes = JSON.parse(composes);
+      if (fs.existsSync(ComposeService.COMPOSES_CONFIG)) {
+        const composes = fs.readFileSync(ComposeService.COMPOSES_CONFIG, 'utf8');
+        if (composes) {
+          this.composes = JSON.parse(composes);
+        }
       }
     } catch (err) {
       this.logger.error('Unabled to read composes list', err);

@@ -14,11 +14,9 @@ export class WebUploadService {
 
   private static FOLDERS_CONFIG = `${Config.get().SERVER_DATA}/folders.json`;
 
-  folders: Folder[];
+  private folders: Folder[] =  [];
 
-  nginxTemplate: string;
-
-  private logger = WinLogger.get('web-upload-service');
+  private readonly logger = WinLogger.get('web-upload-service');
 
   constructor() {
     this.readFoldersJson();
@@ -143,7 +141,7 @@ export class WebUploadService {
     // Récupérer le nom du fichier
     const fileName = file.originalname;
     try {
-      if (file.buffer) {
+        if (file.buffer) {
         await fs.promises.writeFile(path + '/' + fileName, file.buffer);
       } else {
         await fs.promises.rename(file.path, path + '/' + fileName);
@@ -160,13 +158,14 @@ export class WebUploadService {
 
   private readFoldersJson() {
     try {
-      const folders = fs.readFileSync(WebUploadService.FOLDERS_CONFIG, 'utf8');
-      if (folders) {
-        this.folders = JSON.parse(folders);
+      if (fs.existsSync(WebUploadService.FOLDERS_CONFIG)) {
+        const folders = fs.readFileSync(WebUploadService.FOLDERS_CONFIG, 'utf8');
+        if (folders) {
+          this.folders = JSON.parse(folders);
+        }
       }
     } catch (err) {
       this.logger.error('Unabled to read folders list', err);
-      this.folders = [];
     }
   }
 }

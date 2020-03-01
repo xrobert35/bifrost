@@ -12,11 +12,9 @@ export class TaskService {
 
   private static TASKS_CONFIG = `${Config.get().SERVER_DATA}/tasks.json`;
 
-  tasks: Task[] = [];
+  private tasks: Task[] = [];
 
-  nginxTemplate: string;
-
-  private logger = WinLogger.get('task-service');
+  private readonly logger = WinLogger.get('task-service');
 
   constructor() {
     this.readTasksJson();
@@ -105,13 +103,14 @@ export class TaskService {
 
   private readTasksJson() {
     try {
-      const tasks = fs.readFileSync(TaskService.TASKS_CONFIG, 'utf8');
-      if (tasks) {
-        this.tasks = JSON.parse(tasks);
+      if (fs.existsSync(TaskService.TASKS_CONFIG)) {
+        const tasks = fs.readFileSync(TaskService.TASKS_CONFIG, 'utf8');
+        if (tasks) {
+          this.tasks = JSON.parse(tasks);
+        }
       }
     } catch (err) {
       this.logger.error('Unabled to read folders list', err);
-      this.tasks = [];
     }
   }
 }

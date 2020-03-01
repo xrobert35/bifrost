@@ -11,9 +11,9 @@ import { TechnicalException } from '@common/exception/technical.exception';
 @Injectable()
 export class DockerService {
 
-  docker: Docker;
+  private docker: Docker;
 
-  private logger = WinLogger.get('docker-service');
+  private readonly logger = WinLogger.get('docker-service');
 
   constructor() {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });

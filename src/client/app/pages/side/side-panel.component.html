@@ -1,0 +1,45 @@
+<div class="logo-panel">
+  <img class="logo" src="./assets/docker.png" />
+  <label> Bifröst </label>
+</div>
+
+<div class="nav-panel flex">
+  <asi-nav-group>
+    <asi-nav [routerLink]="['docker']">
+      <div *asiTabHeaderDef="let data" class="flex-row col-center">
+        <div class="menu-icon docker"></div>
+        <span> Docker </span>
+      </div>
+    </asi-nav>
+    <asi-nav [routerLink]="['proxy']">
+      <div *asiTabHeaderDef="let data" class="flex-row col-center">
+        <div class="menu-icon proxy"></div>
+        <span> Proxy </span>
+      </div>
+    </asi-nav>
+    <asi-nav [routerLink]="['compose']">
+      <div *asiTabHeaderDef="let data" class="flex-row col-center">
+        <div class="menu-icon compose"></div>
+        <span> Compose </span>
+      </div>
+    </asi-nav>
+    <asi-nav [routerLink]="['web-upload']">
+      <div *asiTabHeaderDef="let data" class="flex-row col-center">
+        <div class="menu-icon upload"> </div>
+        <span> Web Upload </span>
+      </div>
+    </asi-nav>
+    <asi-nav [routerLink]="['task-helper']">
+      <div *asiTabHeaderDef="let data" class="flex-row col-center">
+        <div class="menu-icon task"></div>
+        <span> Task </span>
+      </div>
+    </asi-nav>
+    <asi-nav [routerLink]="['ssh']">
+      <div *asiTabHeaderDef="let data" class="flex-row col-center">
+        <div class="menu-icon ssh"></div>
+        <span> SSH </span>
+      </div>
+    </asi-nav>
+  </asi-nav-group>
+</div>

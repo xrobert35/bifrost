@@ -1,18 +1,19 @@
 <form [formGroup]="folderForm" class="flex-row col-center static panel" (ngSubmit)="submitFolder()">
-  <div class="flex-column row-start">
-    <asi-input labelPosition="left" label="Name" formControlName="libelle"></asi-input>
-    <asi-input labelPosition="left" label="Path" formControlName="path"></asi-input>
-  </div>
-  <asi-button type="submit" *ngIf="!editedFolder" class="icon-action-button">
-    <i class="fas fa-plus-circle"></i>
-    <span>Add</span>
-  </asi-button>
-  <div class="flex-column static" *ngIf="editedFolder">
-    <asi-button type="submit" class="icon-action-button">
+  <div class="flex-row col-end">
+    <asi-input labelPosition="left" label="Folder name" labelPosition="top" formControlName="libelle"></asi-input>
+    <asi-input labelPosition="left" label="Path" labelPosition="top" formControlName="path"></asi-input>
+    <!-- add -->
+    <asi-button type="submit" *ngIf="!editedFolder" class="icon-action-button">
+      <i class="fas fa-plus-circle"></i>
+      <span>Add</span>
+    </asi-button>
+    <!-- valid edit -->
+    <asi-button type="submit" class="icon-action-button" *ngIf="editedFolder">
       <i class="fas fa-edit"></i>
       <span>Update</span>
     </asi-button>
-    <asi-button (click)="endEditFolder()" class="icon-action-button">
+    <!-- cancel edit -->
+    <asi-button (click)="endEditFolder()" class="icon-action-button" *ngIf="editedFolder">
       <i class="fas fa-ban"></i>
       <span>Cancel</span>
     </asi-button>

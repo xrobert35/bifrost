@@ -108,13 +108,19 @@ export class ServerService {
    * Read the save file server.json to init the service
    */
   private readServerJson() {
-    try {
-      const server = fs.readFileSync(ServerService.SERVER_CONFIG, 'utf8');
-      if (server) {
-        this.server = JSON.parse(server);
+    if (fs.existsSync(ServerService.SERVER_CONFIG)) {
+      try {
+        const server = fs.readFileSync(ServerService.SERVER_CONFIG, 'utf8');
+        if (server) {
+          this.server = JSON.parse(server);
+        } else {
+          this.server = { onlyActive: false, locations: [] };
+        }
+      } catch (err) {
+        this.logger.error('Unabled to read server configuration', err);
       }
-    } catch (err) {
-      this.logger.error('Unabled to read server configuration', err);
+    } else {
+      this.server = { onlyActive: false, locations: [] };
     }
   }
 }

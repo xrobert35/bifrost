@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, ChangeDetectionStrategy, forwardRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, ChangeDetectionStrategy, forwardRef, NgZone } from '@angular/core';
 import { MonacoEditorService } from './monaco.service';
 import { take, filter } from 'rxjs/operators';
 import { DefaultControlValueAccessor } from '@asi-ngtools/lib';
@@ -30,9 +30,9 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
 
   private _windowResizeSubscription: Subscription;
 
-  @ViewChild('editor', {static: true}) editorContent: ElementRef;
+  @ViewChild('editor', { static: true }) editorContent: ElementRef;
 
-  constructor(private monacoEditorService: MonacoEditorService) {
+  constructor(private monacoEditorService: MonacoEditorService, private ngZone: NgZone) {
     super();
   }
 
@@ -62,43 +62,47 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
     if (this.options) {
       opts = Object.assign({}, opts, this.options);
     }
-    this.editor = monaco.editor.create(this.container, opts);
-    this.editor.layout();
 
-    monaco.editor.defineTheme('monokai', await this.monacoEditorService.getTheme());
-    monaco.editor.setTheme('monokai');
 
-    this.editor.onDidChangeModelContent(() => {
-      this.value = this.editor.getValue();
-    });
+    this.ngZone.runOutsideAngular(async () => {
+      this.editor = monaco.editor.create(this.container, opts);
+      this.editor.layout();
 
-    this.editor.onDidChangeModelDecorations(() => {
-      const pastParseError = this.parseError;
+      monaco.editor.defineTheme('monokai', await this.monacoEditorService.getTheme());
+      monaco.editor.setTheme('monokai');
 
-      if (monaco.editor.getModelMarkers({}).map((m: any) => m.message).join(', ')) {
-        this.parseError = true;
-      } else {
-        this.parseError = false;
+      this.editor.onDidChangeModelContent(() => {
+        this.value = this.editor.getValue();
+      });
+
+      this.editor.onDidChangeModelDecorations(() => {
+        const pastParseError = this.parseError;
+
+        if (monaco.editor.getModelMarkers({}).map((m: any) => m.message).join(', ')) {
+          this.parseError = true;
+        } else {
+          this.parseError = false;
+        }
+
+        if (pastParseError !== this.parseError) {
+          // this.onErrorStatusChange();
+        }
+      });
+
+      this.editor.onDidBlurEditorText(() => {
+        this.onTouched();
+      });
+
+
+      //efsh layout on resize event.
+      if (this._windowResizeSubscription) {
+        this._windowResizeSubscription.unsubscribe();
       }
-
-      if (pastParseError !== this.parseError) {
-        // this.onErrorStatusChange();
-      }
-    });
-
-    this.editor.onDidBlurEditorText(() => {
-      this.onTouched();
-    });
-
-
-    // refresh layout on resize event.
-    if (this._windowResizeSubscription) {
-      this._windowResizeSubscription.unsubscribe();
-    }
-    this._windowResizeSubscription = fromEvent(window, 'resize').subscribe(() => {
-      this.editor.layout({
-        width: this.container.offsetWidth,
-        height: this.container.offsetHeight
+      this._windowResizeSubscription = fromEvent(window, 'resize').subscribe(() => {
+        this.editor.layout({
+          width: this.container.offsetWidth,
+          height: this.container.offsetHeight
+        });
       });
     });
   }

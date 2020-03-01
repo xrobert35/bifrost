@@ -1,32 +1,34 @@
 <div class="flex-column">
 
   <form [formGroup]="proxyForm" class="flex-row col-center static panel" (ngSubmit)="submitProxy()">
-    <div class="flex-column row-start">
-      <asi-input labelPosition="left" label="Name" formControlName="name"></asi-input>
-      <asi-input labelPosition="left" label="Path" formControlName="path"></asi-input>
-      <asi-input labelPosition="left" label="Proxy Path" formControlName="proxyPass"></asi-input>
-    </div>
-    <asi-button type="submit" *ngIf="!editedProxy" class="icon-action-button">
-      <i class="fas fa-plus-circle"></i>
-      <span>Add</span>
-    </asi-button>
-    <div class="flex-column static" *ngIf="editedProxy">
-      <asi-button type="submit" class="icon-action-button">
+    <div class="flex-row col-end">
+      <asi-input labelPosition="left" label="Name" labelPosition="top" formControlName="name"></asi-input>
+      <asi-input labelPosition="left" label="Path" labelPosition="top" formControlName="path"></asi-input>
+      <asi-input labelPosition="left" label="Proxy Path" labelPosition="top" formControlName="proxyPass"></asi-input>
+      <!-- add -->
+      <asi-button type="submit" *ngIf="!editedProxy" class="icon-action-button">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add</span>
+      </asi-button>
+      <!-- valid edit -->
+      <asi-button type="submit" class="icon-action-button" *ngIf="editedProxy">
         <i class="fas fa-edit"></i>
         <span>Update</span>
       </asi-button>
-      <asi-button (click)="endEditProxy()" class="icon-action-button">
+      <!-- cancel edit -->
+      <asi-button (click)="endEditProxy()" class="icon-action-button" *ngIf="editedProxy">
         <i class="fas fa-ban"></i>
         <span>Cancel</span>
       </asi-button>
     </div>
+
   </form>
 
   <asi-table #containersTable [autoSort]="true" [selectionModel]="proxysSelectionModel" [onRequestData]="refreshTable">
 
     <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
 
-    <asi-table-column name="name" libelle="Name" sortName="State" [sortable]="true" columnClass="name-col">
+    <asi-table-column name="name" libelle="Name" [sortable]="true" columnClass="name-col">
       <asi-cell *asiCellDef="let proxy">
         <span> {{proxy.name }} </span>
       </asi-cell>
@@ -38,7 +40,7 @@
       </asi-cell>
     </asi-table-column>
 
-    <asi-table-column name="proxy" libelle="ProxyPass" columnClass="proxypass-col">
+    <asi-table-column name="proxy" libelle="ProxyPass" [sortable]="true" columnClass="proxypass-col">
       <asi-cell *asiCellDef="let proxy">
         <span> {{proxy.proxyPass }} </span>
       </asi-cell>
