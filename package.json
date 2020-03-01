@@ -42,7 +42,7 @@
     "@angular/platform-browser-dynamic": "^8.2.12",
     "@angular/platform-server": "^8.2.12",
     "@angular/router": "^8.2.12",
-    "@asi-ngtools/lib": "^8.0.1",
+    "@asi-ngtools/lib": "^8.0.3",
     "@nestjs/common": "^6.8.4",
     "@nestjs/core": "^6.8.4",
     "@nestjs/passport": "^6.1.0",
