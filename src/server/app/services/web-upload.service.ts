@@ -26,15 +26,20 @@ export class WebUploadService {
 
   public async getFolder(reference: string) {
     const folder = this.folders.find((afolder) => afolder.reference === reference);
-    const folderContent = await fs.promises.readdir(folder.path);
-    return Bluebird.map(folderContent, async (file) => {
-      const fileStat = await fs.promises.stat(urljoin(folder.path, file));
-      return {
-        name: file,
-        size: fileStat.size,
-        modifyDate: fileStat.mtime
-      };
-    });
+    try {
+      const folderContent = await fs.promises.readdir(folder.path);
+      return Bluebird.map(folderContent, async (file) => {
+        const fileStat = await fs.promises.stat(urljoin(folder.path, file));
+        return {
+          name: file,
+          size: fileStat.size,
+          modifyDate: fileStat.mtime
+        };
+      });
+    } catch (exp) {
+      this.logger.error(`Error while reading directory content ${folder.path}`, exp);
+      throw new FunctionalException('folder-not-found', `Folder with the path "${folder.path}" not found`);
+    }
   }
 
   /**

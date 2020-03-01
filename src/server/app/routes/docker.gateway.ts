@@ -21,10 +21,10 @@ export class DockerGateway implements OnGatewayConnection {
     this.logger.info('New client socket');
   }
 
-  @SubscribeMessage('dockerlogs')
+  @SubscribeMessage('getlog')
   handleEvent(socket: Socket, socketData: any): string {
     this.dockerService.streamLog(socketData.containerId, 100).subscribe( (logs) => {
-      socket.emit('dockerlogs', logs);
+      socket.emit('asynclog', logs);
     });
     return 'ok';
   }

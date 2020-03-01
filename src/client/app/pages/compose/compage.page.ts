@@ -59,9 +59,21 @@ export class ComposePage implements OnInit {
 
   deleteCompose() {
     this.composeService.delete(this.selectedCompose).subscribe(() => {
-      this.bifrostNotificationService.showInfo(`Docker compose "${this.selectCompose.name}" has been deleted`);
+      this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' has been deleted`);
       remove(this.composes, (compose) => compose === this.selectedCompose);
-      this.composeForm.reset();
+      this.endEditCompose();
+    });
+  }
+
+  upCompose() {
+    this.composeService.up(this.selectedCompose, {compatibility : true}).subscribe( () => {
+      this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' is up`);
+    });
+  }
+
+  downCompose() {
+    this.composeService.down(this.selectedCompose, {compatibility : true}).subscribe( () => {
+      this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' is down`);
     });
   }
 

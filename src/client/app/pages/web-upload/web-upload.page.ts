@@ -45,7 +45,7 @@ export class WebUploadPage {
   }
 
   submitFolder() {
-    if (!this.editFolder) {
+    if (!this.editedFolder) {
       this.createFolder();
     } else {
       this.editFolder();
@@ -107,7 +107,12 @@ export class WebUploadPage {
   }
 
   showFolderContent(folder: Folder) {
-    this.webUploadWebService.get(folder.reference).subscribe(folderContent => {
+    this.webUploadWebService.get(folder.reference).pipe(catchError(err => {
+      if (err.error.code) {
+        this.bifrostNotificationService.showError(err.error.libelle);
+      }
+      return throwError(err);
+    })).subscribe(folderContent => {
       const asiDialog = this.asiDialogService.fromComponent(FolderContentDialog, {});
       asiDialog.getComponent().filesInformation = folderContent;
     });

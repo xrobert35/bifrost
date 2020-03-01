@@ -1,8 +1,8 @@
 <form [formGroup]="taskForm" class="flex-column" (ngSubmit)="onFormSubmit()">
-  <div class="flex-row static col-end">
+  <div class="flex-row static col-end panel">
     <div class="flex-column">
-      <asi-input label="name" formControlName="name"></asi-input>
-      <asi-input label="cron" formControlName="cron"></asi-input>
+      <asi-input labelPosition="left" label="name" formControlName="name"></asi-input>
+      <asi-input labelPosition="left" label="cron" formControlName="cron"></asi-input>
     </div>
     <asi-button type="submit" *ngIf="!selectedTask" class="icon-action-button">
       <i class="fas fa-plus-circle"></i>

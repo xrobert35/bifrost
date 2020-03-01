@@ -6,6 +6,7 @@ import { ApiUseTags } from '@nestjs/swagger';
 import { FunctionalException } from '@common/exception/functional.exception';
 import { ComposeService } from '@services/compose.service';
 import { Compose } from '@shared/interface/compose.int';
+import { ComposeOption } from '@shared/interface/compose.option.int';
 
 @ApiUseTags('compose')
 @Controller('compose')
@@ -27,6 +28,18 @@ export class ComposeController {
       throw new FunctionalException('bad-compose-reference', 'Body and path param reference should be equals');
     }
     return this.composeService.updateCompose(compose);
+  }
+
+  @Post('/up/:reference')
+  @UsePipes(CustomValidationPipe)
+  composeUp(@Param('reference') reference: string, @Body() compose: ComposeOption) {
+    return this.composeService.composeUp(reference, compose);
+  }
+
+  @Post('/down/:reference')
+  @UsePipes(CustomValidationPipe)
+  composeDown(@Param('reference') reference: string, @Body() compose: ComposeOption) {
+    return this.composeService.composeDown(reference, compose);
   }
 
   @Delete('/:reference')

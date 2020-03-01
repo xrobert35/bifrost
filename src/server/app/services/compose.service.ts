@@ -4,8 +4,12 @@ import { Config } from '@config/config';
 import { FunctionalException } from '@common/exception/functional.exception';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Compose } from '@shared/interface/compose.int';
+import { ComposeOption } from '@shared/interface/compose.option.int';
+import { DockerService } from './docker.service';
 import * as shortUid from 'short-uuid';
 import * as fs from 'fs';
+import * as shelljs from 'shelljs';
+import { SocketInfo } from '@shared/interface/socket-into.int';
 
 @Injectable()
 export class ComposeService {
@@ -18,7 +22,7 @@ export class ComposeService {
 
   private logger = WinLogger.get('compose-service');
 
-  constructor() {
+  constructor(private dockerService: DockerService) {
     this.readComposesJson();
   }
 
@@ -64,15 +68,87 @@ export class ComposeService {
   }
 
   public getCompose(reference: string): Compose {
-    return this.composes.find(compose => compose.reference === reference);
+    const compose = this.composes.find(aCompose => aCompose.reference === reference);
+
+    if (!compose) {
+      throw new TechnicalException('compose-not-found', `No commose found with reference "${compose.reference}"`, HttpStatus.NOT_FOUND);
+    }
+
+    return compose;
   }
 
   public listComposes(): Compose[] {
     return this.composes;
   }
 
+  public composeUp(reference: string, composeOption: ComposeOption) {
+    this.logger.debug(`Running composeUp with reference : ${reference}`);
+
+    const compose = this.getCompose(reference);
+
+    if (!compose) {
+      throw new TechnicalException('compose-not-found', `No commose found with reference "${compose.reference}"`, HttpStatus.NOT_FOUND);
+    }
+
+    let option = '';
+    if (composeOption.compatibility) {
+      option += '--compatibility ';
+    }
+    const cmd = `docker-compose ${option} -f '/opt/docker/compose/${compose.name}/docker-compose.yml' up -d`;
+
+    this.logger.info(`> running : ${cmd}`);
+
+    const logSocketId = `up-log-${shortUid}`;
+    shelljs.exec(cmd, (code, stdout, stderr) => {
+      this.logger.info(`${code} ${stdout || stderr}`);
+    });
+
+    return {
+      reference : logSocketId
+    };
+  }
+
+  public composeDown(reference: string, composeOption: ComposeOption): SocketInfo {
+    this.logger.debug(`Running composeUp with reference : ${reference}`);
+
+    const compose = this.getCompose(reference);
+
+    if (!compose) {
+      throw new TechnicalException('compose-not-found', `No commose found with reference "${compose.reference}"`, HttpStatus.NOT_FOUND);
+    }
+
+    let option = '';
+    if (composeOption.compatibility) {
+      option += '--compatibility ';
+    }
+    const cmd = `docker-compose ${option} -f '/opt/docker/compose/${compose.name}/docker-compose.yml' down`;
+
+    this.logger.info(`> running : ${cmd}`);
+
+    const logSocketId = `up-log-${shortUid}`;
+    shelljs.exec(cmd, (code, stdout, stderr) => {
+      this.logger.info(`${code} ${stdout || stderr}`);
+    });
+
+    return {
+      reference : logSocketId
+    };
+  }
+
   private saveComposesJson() {
+    this.logger.debug(`Save compose.json into : ${ComposeService.COMPOSES_CONFIG}`);
     fs.writeFileSync(ComposeService.COMPOSES_CONFIG, JSON.stringify(this.composes));
+
+    const defaultComposeFolder = Config.get().DEFAULT_COMPOSE_FOLDER;
+    this.composes.forEach( (compose) => {
+      let composeFolder = `${defaultComposeFolder} / ${compose.name}`;
+      if (!fs.existsSync(composeFolder)) {
+        fs.mkdirSync(composeFolder, { recursive: true });
+      }
+
+      composeFolder = `${defaultComposeFolder} / ${compose.name} / docker - compose.yml`;
+      fs.writeFileSync(composeFolder, compose.compose);
+    });
   }
 
   private readComposesJson() {

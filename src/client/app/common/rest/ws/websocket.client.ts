@@ -5,12 +5,12 @@ import * as socketio from 'socket.io-client';
 @Injectable()
 export class WebSocketClient {
 
-  open(socketUrl: string, containerId: string): Observable<string> {
+  open(socketUrl: string, reference: string): Observable<string> {
     // const subject = webSocket('ws://localhost:4081');
     return Observable.create((observer: Observer<string>) => {
       const socket = socketio.connect(socketUrl);
-      socket.emit('dockerlogs', { containerId : containerId});
-      socket.on('dockerlogs', (evt: string) => {
+      socket.emit('asynclog', { reference : reference});
+      socket.on('asynclog', (evt: string) => {
         observer.next(evt);
       });
     });

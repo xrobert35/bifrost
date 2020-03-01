@@ -22,6 +22,14 @@
         <i class="fas fa-ban"></i>
         <span>Cancel</span>
       </asi-button>
+      <asi-button (click)="upCompose()" *ngIf="selectedCompose" class="icon-action-button">
+        <i class="fas fa-trash"></i>
+        <span>Up</span>
+      </asi-button>
+      <asi-button (click)="downCompose()" *ngIf="selectedCompose" class="icon-action-button">
+        <i class="fas fa-trash"></i>
+        <span>Down</span>
+      </asi-button>
       <asi-button (click)="deleteCompose()" *ngIf="selectedCompose" class="icon-action-button">
         <i class="fas fa-trash"></i>
         <span>Delete</span>

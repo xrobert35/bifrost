@@ -38,7 +38,8 @@
               "src/client/styles.css",
               "src/client/less/main.less",
               "./node_modules/prismjs/themes/prism-okaidia.css",
-              "./node_modules/@fortawesome/fontawesome-free/css/all.css"
+              "./node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "src/client/assets/icons/glyphter-font/css/bifrost.css"
             ],
             "scripts": [
               "./node_modules/prismjs/prism.js",
