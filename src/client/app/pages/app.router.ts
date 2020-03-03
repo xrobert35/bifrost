@@ -14,6 +14,7 @@ import { FoldersResolver } from './web-upload/folders.resolver';
 import { FolderContentDialog } from './web-upload/folder-content/folder-content.dialog';
 import { SshPage } from './ssh/ssh.page';
 import { SidePanelComponent } from './side/side-panel.component';
+import { StackDisplayComponent } from './docker/stack/stack-display.component';
 
 const appRouter: Routes = [
   {
@@ -35,6 +36,7 @@ const appRouter: Routes = [
   declarations: [
     AppPage,
     DockerPage,
+    StackDisplayComponent,
     ComposePage,
     ProxyPage,
     WebUploadPage,

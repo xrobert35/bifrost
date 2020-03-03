@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { share } from 'rxjs/operators';
+import { share, tap } from 'rxjs/operators';
 import { DockerContainer } from '@shared/interface/container.int';
 import { UniversalService } from '../universal/universal.service';
 import { PruneResult } from '@shared/interface/pruneResult.int';
+import { forEach } from 'lodash';
 
 @Injectable()
 export class DockerWebService {
@@ -14,8 +15,31 @@ export class DockerWebService {
     this.baseUrl = `${this.universalService.getApiUrl()}/docker`;
   }
 
-  list() {
-    return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/containers`).pipe(share());
+  list(stack?: string) {
+    const params: any = {};
+    if (stack) {
+      params.stack = stack;
+    }
+    return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/containers`, { params: params })
+      .pipe(share(), tap(containers => {
+        forEach(containers, (container) => {
+          container.name = container.Names[0].substring(1);
+          if (container.Image) {
+            container.imageName = container.Image.split(':')[0];
+            if (container.imageName.includes('/')) {
+              const splitName = container.imageName.split('/');
+              container.imageRepo = splitName[0];
+              container.imageName = splitName[1];
+            }
+            container.tag = container.Image.split(':')[1];
+          } else {
+            container.imageName = 'unknown';
+            container.tag = 'unknown';
+          }
+
+          container.tooltip = container.ImageDigestId || container.ImageID;
+        });
+      }));
   }
 
   stopContainer(containerId: string) {

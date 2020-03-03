@@ -20,9 +20,16 @@ export class DockerService {
     // this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
   }
 
-  async list() {
+  async list(stack: string) {
     this.logger.info('Listing container ');
-    return this.docker.container.list({ all: true });
+    const containers = await this.docker.container.list({ all: true });
+    if (stack) {
+      return containers.filter(container => {
+        return (<DockerContainer>container.data).Labels['com.docker.compose.project'] === stack;
+      });
+    } else {
+      return containers;
+    }
   }
 
   async getImageName(imageId: string) {

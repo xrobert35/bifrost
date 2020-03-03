@@ -40,14 +40,20 @@ html {
     justify-content: center;
     align-items: center;
 
-    background: black;
+    color: @bifrost-primary-color;
+
+    background: white;
     padding: 6px;
     border-radius: 20px;
-    border: none;
+    border: 1px solid @bifrost-secondary-color;
     margin: 3px;
-    box-shadow: 1px 1px 2px grey;
+
     width: 30px;
     height: 30px;
+
+    &:hover {
+      color: @bifrost-active-color;
+    }
   }
 
   .flex-column {
@@ -88,6 +94,14 @@ html {
       justify-content: center;
     }
 
+    &.start {
+      justify-content: flex-start;
+    }
+
+    &.end {
+      justify-content: flex-end;
+    }
+
     &.space-between {
       justify-content: space-between;
     }
@@ -123,13 +137,18 @@ html {
     }
 
     .icon-action {
-      color: lawngreen;
+      color: @bifrost-primary-color;
     }
 
     .icon-action-button {
       i {
         margin-right: 10px;
-        color: lawngreen;
+        color: @bifrost-primary-color;
+      }
+      &:hover {
+        i {
+          color: @bifrost-active-color;
+        }
       }
     }
 

@@ -1,11 +1,18 @@
 docker-page {
-
   display: flex;
   flex-direction: column;
   flex: 1 0 auto;
 
   .asi-table table thead tr th {
     padding-right: 10px;
+  }
+
+  .display-panel {
+    margin: 10px;
+  }
+
+  .all-container-panel {
+    padding: 10px;
   }
 
   .container {
@@ -26,29 +33,49 @@ docker-page {
 
   table {
     ul {
-      margin : 0px;
+      margin: 0px;
       list-style: none;
     }
 
-    .tag-col{
-      max-width : 90px;
+    .check-col {
+      width: 35px;
     }
-    .check-col{
-      max-width: 9px;
+
+    .state-col {
+      width: 35px;
+      asi-cell {
+        justify-content: center;
+      }
+      .header {
+        justify-content: center !important;
+      }
     }
+
+    .info-col {
+      width: 35px;
+      asi-cell {
+        justify-content: center;
+      }
+      .header {
+        justify-content: center !important;
+      }
+    }
+
     .port-col {
       max-width: 160px;
     }
-    .proxypass-col{
-      max-width: 120px;
-    }
-    .proxypath-col{
-      max-width: 120px;
+    .action-col {
+      width: 80px;
+      asi-cell {
+        justify-content: center;
+      }
+      .header {
+        justify-content: center !important;
+      }
     }
   }
 
   .server-header {
-
     height: 60px;
 
     .asi-button > button {
@@ -60,7 +87,7 @@ docker-page {
   .asi-fa-icon {
     &.running {
       .fa-power-off:not([disabled]) {
-        color: lawngreen;
+        color: @bifrost-active-color;
       }
     }
 
@@ -71,7 +98,7 @@ docker-page {
     }
 
     .fa-play:not([disabled]) {
-      color: lawngreen;
+      color: @bifrost-primary-color;
     }
 
     .fa-stop:not([disabled]) {
@@ -79,7 +106,7 @@ docker-page {
     }
 
     .fa-sync:not([disabled]) {
-      color: lawngreen;
+      color: @bifrost-primary-color;
     }
   }
 }

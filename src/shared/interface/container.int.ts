@@ -2,8 +2,6 @@
 export class DockerContainer  {
   name: string;
   proxified: boolean;
-  proxyPath: string;
-  proxyPass: string;
 
   imageName: string;
   imageRepo?: string;

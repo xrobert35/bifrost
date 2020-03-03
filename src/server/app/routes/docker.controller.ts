@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpStatus, HttpCode, Get, UsePipes, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, HttpCode, Get, UsePipes, Param, Delete, Query } from '@nestjs/common';
 import { ApiUseTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from '@common/validations/custom-validation.pipe';
 import { DockerService } from '@services/docker.service';
@@ -13,8 +13,8 @@ export class DockerController {
 
   @Get('containers')
   @HttpCode(HttpStatus.OK)
-  public async containers() {
-    const containers = await this.dockerService.list();
+  public async containers(@Query('stack') stack: string) {
+    const containers = await this.dockerService.list(stack);
     const datas = await Bluebird.mapSeries(containers, async (container) => {
       const data = <DockerContainer>container.data;
       const imageFullName = await this.dockerService.getImageName(data.ImageID);

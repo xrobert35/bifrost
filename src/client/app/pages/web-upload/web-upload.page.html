@@ -23,7 +23,7 @@
 <div class="uploadable-folder-container">
 
   <div class="uploadable-folder" *ngFor="let uploadableFolder of uploadableFolders; let i = index">
-    <div class="flex-row space-between">
+    <div class="flex-row col-center space-between">
       <strong>{{uploadableFolder.folder.libelle}}</strong>
       <div class="flex-row static">
         <button id="show-content" class="small-icon-action-button" [disabled]="uploadableFolder.progress"

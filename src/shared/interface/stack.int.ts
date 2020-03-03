@@ -5,7 +5,7 @@ import { DockerContainer } from './container.int';
  * #used by front only
  */
 export class DockerStack {
-  name: string;
+  name?: string;
   started: boolean;
   containers: DockerContainer[];
 }
