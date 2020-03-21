@@ -5,7 +5,6 @@ import { FunctionalException } from '@common/exception/functional.exception';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Compose } from '@shared/interface/compose.int';
 import { ComposeOption } from '@shared/interface/compose.option.int';
-import { DockerService } from './docker.service';
 import * as shortUid from 'short-uuid';
 import * as fs from 'fs';
 import * as shelljs from 'shelljs';
@@ -20,7 +19,7 @@ export class ComposeService {
 
   private readonly logger = WinLogger.get('compose-service');
 
-  constructor(private dockerService: DockerService) {
+  constructor() {
     this.readComposesJson();
   }
 

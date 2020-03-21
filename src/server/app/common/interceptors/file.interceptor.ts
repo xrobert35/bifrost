@@ -4,7 +4,7 @@ import * as multer from 'multer';
 import { Config } from '@config/config';
 import * as fs from 'fs';
 import { WinLogger } from '@common/logger/winlogger';
-import * as urlJoin from 'url-join';
+import urlJoin from 'url-join';
 
 @Injectable()
 export class BifrostFileInterceptor implements NestInterceptor {

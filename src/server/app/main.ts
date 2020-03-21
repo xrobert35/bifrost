@@ -34,11 +34,11 @@ async function bootstrap() {
   await app.listen(Config.get().SERVER_PORT);
 
   let clientStarted = false;
-  if (Config.get().CLIENT_ACTIVATED) {
-    const ClientServer = require('./client.server');
+  // if (Config.get().CLIENT_ACTIVATED) {
+    const { ClientServer } = require('./client.server');
     await ClientServer.bootstrap(app);
     clientStarted = true;
-  }
+  // }
 
   if (clientStarted) {
     logger.info(`Client server listening on http://localhost:${Config.get().CLIENT_PORT}`);

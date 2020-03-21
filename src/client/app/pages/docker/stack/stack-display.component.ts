@@ -2,7 +2,6 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { DockerStack } from '@shared/interface/stack.int';
 import { AsiTable, AsiTableSelectionModel, AsiTableRequest, AsiTableData } from '@asi-ngtools/lib';
 import { DockerContainer } from '@shared/interface/container.int';
-import { filter, isEmpty } from 'lodash';
 import { BifrostNotificationService } from 'client/app/common/ngtools/notification/notification.service';
 import { DockerWebService } from '@rest/docker.webservice';
 import { ServerWebService } from '@rest/server.webservice';

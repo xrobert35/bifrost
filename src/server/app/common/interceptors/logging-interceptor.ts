@@ -16,6 +16,8 @@ export class LoggingInterceptor implements NestInterceptor {
 
     this.logger.debug(`Start request ${request.method} ${request.url}`);
 
+    this.logger.debug('Headers :', request.headers);
+
     return next
       .handle().pipe(
         tap(() => {
@@ -30,11 +32,11 @@ export class LoggingInterceptor implements NestInterceptor {
   private logRequest(now: number) {
     const reqTime = Date.now() - now;
     if (reqTime > 200) {
-      this.logger.error(`End request ${reqTime}ms\n`);
+      this.logger.error(`;End; request; $;{reqTime;}ms;\n`);
     } else if (reqTime > 100) {
-      this.logger.warn(`End request ${reqTime}ms\n`);
+      this.logger.warn(`;End; request; $;{reqTime;}ms;\n`);
     } else {
-      this.logger.debug(`End request ${reqTime}ms\n`);
+      this.logger.debug(`;End; request; $;{reqTime;}ms;\n`);
     }
   }
 }

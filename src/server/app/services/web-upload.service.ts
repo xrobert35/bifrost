@@ -6,15 +6,15 @@ import { WinLogger } from '@common/logger/winlogger';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Config } from '@config/config';
 import { FunctionalException } from '@common/exception/functional.exception';
-import * as Bluebird from 'bluebird';
-import * as urljoin from 'url-join';
+import Bluebird = require('bluebird');
+import urlJoin = require('url-join');
 
 @Injectable()
 export class WebUploadService {
 
   private static FOLDERS_CONFIG = `${Config.get().SERVER_DATA}/folders.json`;
 
-  private folders: Folder[] =  [];
+  private folders: Folder[] = [];
 
   private readonly logger = WinLogger.get('web-upload-service');
 
@@ -26,8 +26,8 @@ export class WebUploadService {
     const folder = this.folders.find((afolder) => afolder.reference === reference);
     try {
       const folderContent = await fs.promises.readdir(folder.path);
-      return Bluebird.map(folderContent, async (file) => {
-        const fileStat = await fs.promises.stat(urljoin(folder.path, file));
+      return Bluebird.map(folderContent, async (file: any) => {
+        const fileStat = await fs.promises.stat(urlJoin(folder.path, file));
         return {
           name: file,
           size: fileStat.size,
@@ -141,7 +141,7 @@ export class WebUploadService {
     // Récupérer le nom du fichier
     const fileName = file.originalname;
     try {
-        if (file.buffer) {
+      if (file.buffer) {
         await fs.promises.writeFile(path + '/' + fileName, file.buffer);
       } else {
         await fs.promises.rename(file.path, path + '/' + fileName);

@@ -2,7 +2,7 @@ import { Controller, Post, Body, HttpStatus, HttpCode, Get, UsePipes, Param, Del
 import { ApiUseTags } from '@nestjs/swagger';
 import { CustomValidationPipe } from '@common/validations/custom-validation.pipe';
 import { DockerService } from '@services/docker.service';
-import * as Bluebird from 'bluebird';
+import Bluebird = require('bluebird');
 import { DockerContainer } from '@shared/interface/container.int';
 
 @ApiUseTags('docker')

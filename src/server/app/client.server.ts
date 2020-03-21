@@ -1,19 +1,22 @@
 // GitHub source: server.js
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
-import * as express from 'express';
+
+import express = require('express');
+import cookieParser = require('cookie-parser');
+
 import { join } from 'path';
 import { enableProdMode } from '@angular/core';
 import { Config } from '@config/config';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import { WinLogger } from '@common/logger/winlogger';
 import { INestApplication } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
 
 const DIST_FOLDER = join(process.cwd(), 'dist/client');
 const { RootServerModuleNgFactory, LAZY_MODULE_MAP } = require(join(DIST_FOLDER, 'server/main'));
 const { provideModuleMap } = require('@nguniversal/module-map-ngfactory-loader');
 const proxyMiddleware = require('http-proxy-middleware');
+
 export class ClientServer {
 
   static clientInstance: ClientServer;

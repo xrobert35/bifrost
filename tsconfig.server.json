@@ -6,9 +6,11 @@
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "typeRoots": [ "./src/server/types", "../node_modules/@types"]
   },
   "include": [
-    "src/server/app/**/*"
+    "src/server/types.d.ts",
+    "src/server/app/**/*",
   ],
   "exclude": [
     "node_modules",

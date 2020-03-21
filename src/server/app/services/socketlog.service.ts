@@ -16,7 +16,7 @@ export class SocketLogService {
   }
 
   observeLogs(reference: string) {
-    return this.socketlogs[reference].subscribe((log) => {
+    return this.socketlogs[reference].subscribe((_log) => {
 
     });
   }
