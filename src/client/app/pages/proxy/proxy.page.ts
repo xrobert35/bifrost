@@ -68,7 +68,7 @@ export class ProxyPage {
     })).subscribe((proxy) => {
       this.proxyForm.reset();
       this.server.locations.push(proxy);
-      this.bifrostNotificationService.showInfo(`New proxy has been added`);
+      this.bifrostNotificationService.showSuccess(`New proxy has been added`);
       this.asiTable.fireRefresh();
     });
   }
@@ -113,7 +113,7 @@ export class ProxyPage {
       return throwError(res);
     })).subscribe(() => {
       remove(this.server.locations, (proxy) => proxy === proxyToDelete);
-      this.bifrostNotificationService.showInfo(`Proxy has been removed`);
+      this.bifrostNotificationService.showSuccess(`Proxy has been removed`);
       this.asiTable.fireRefresh();
     });
   }

@@ -9,6 +9,8 @@ import * as shortUid from 'short-uuid';
 import * as fs from 'fs';
 import * as shelljs from 'shelljs';
 import { SocketInfo } from '@shared/interface/socket-into.int';
+import Bluebird = require('bluebird');
+import urlJoin = require('url-join');
 
 @Injectable()
 export class ComposeService {
@@ -23,7 +25,7 @@ export class ComposeService {
     this.readComposesJson();
   }
 
-  public createCompose(composeToCreate: Compose) {
+  public async createCompose(composeToCreate: Compose) {
     const aCompose = this.composes.find(compose => compose.name === composeToCreate.name);
     if (aCompose) {
       throw new FunctionalException('unique-compose-name', `Compose with name "${composeToCreate.name}" already exist`,
@@ -32,11 +34,12 @@ export class ComposeService {
 
     composeToCreate.reference = shortUid.generate();
 
-    this.composes.push(composeToCreate);
-
     this.saveComposesJson();
 
+    this.composes.push(composeToCreate);
+
     return composeToCreate.reference;
+
   }
 
   public updateCompose(compose: Compose): string {
@@ -62,6 +65,7 @@ export class ComposeService {
     }
 
     this.composes = filteredComposes;
+
   }
 
   public getCompose(reference: string): Compose {
@@ -75,6 +79,37 @@ export class ComposeService {
   }
 
   public listComposes(): Compose[] {
+    return this.composes;
+  }
+
+  public async scanComposes(): Promise<Compose[]> {
+    const defaultComposeFolder = Config.get().DEFAULT_COMPOSE_FOLDER;
+    this.logger.debug(`Scanning compose folder ${defaultComposeFolder}`);
+
+    // looking for folder with a docker-compose file
+    const dirContent = await fs.promises.readdir(defaultComposeFolder);
+
+    // get only folder
+    const composeFolders =  await Bluebird.filter(dirContent, async fileName => {
+      const filePath = urlJoin(defaultComposeFolder, fileName);
+      const fileInfo = await fs.promises.stat(filePath);
+      if (fileInfo.isDirectory()) {
+        return (await fs.promises.readdir(filePath)).find(afileName => afileName === 'docker-compose.yml') != null;
+      }
+      return false;
+    });
+
+
+    this.composes = await Bluebird.map(composeFolders, async composeFolder => {
+      return {
+        reference: shortUid.generate(),
+        name: composeFolder,
+        compose: await fs.promises.readFile(urlJoin(defaultComposeFolder, composeFolder, 'docker-compose.yml'),  'utf8')
+      };
+    });
+
+    this.saveComposesJson();
+
     return this.composes;
   }
 
@@ -136,13 +171,16 @@ export class ComposeService {
     };
   }
 
+  /**
+   * Save docker compose configuration and every docker-compose.yml files
+   */
   private saveComposesJson() {
     this.logger.debug(`Save compose.json into : ${ComposeService.COMPOSES_CONFIG}`);
     fs.writeFileSync(ComposeService.COMPOSES_CONFIG, JSON.stringify(this.composes));
 
     const defaultComposeFolder = Config.get().DEFAULT_COMPOSE_FOLDER;
     this.composes.forEach((compose) => {
-      let composeFolder = `${defaultComposeFolder} / ${compose.name}`;
+      let composeFolder = `${defaultComposeFolder}/${compose.name}`;
       if (!fs.existsSync(composeFolder)) {
         fs.mkdirSync(composeFolder, { recursive: true });
       }
@@ -152,6 +190,9 @@ export class ComposeService {
     });
   }
 
+  /**
+   * Read the docker compose configuration
+   */
   private readComposesJson() {
     try {
       if (fs.existsSync(ComposeService.COMPOSES_CONFIG)) {

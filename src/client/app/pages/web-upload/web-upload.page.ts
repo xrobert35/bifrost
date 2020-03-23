@@ -128,7 +128,8 @@ export class WebUploadPage {
         })).subscribe((progress) => {
           switch (progress.type) {
             case HttpEventType.Sent:
-              console.log(`Uploading file "${uploadableFolder.fileToUpload.name}" of size ${uploadableFolder.fileToUpload.size}.`);
+              this.bifrostNotificationService.showInfo(`Start uploading file "${uploadableFolder.fileToUpload.name}"
+              of size ${uploadableFolder.fileToUpload.size}.`);
               break;
             case HttpEventType.UploadProgress:
               // Compute and show the % done:
@@ -136,7 +137,7 @@ export class WebUploadPage {
               uploadableFolder.progress = percentDone;
               break;
             case HttpEventType.Response:
-              this.bifrostNotificationService.showInfo(`File "${uploadableFolder.fileToUpload.name}" is uploaded`);
+              this.bifrostNotificationService.showSuccess(`File "${uploadableFolder.fileToUpload.name}" is uploaded`);
               uploadableFolder.progress = null;
               uploadableFolder.fileToUpload = null;
               break;

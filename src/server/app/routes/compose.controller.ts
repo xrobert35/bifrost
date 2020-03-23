@@ -17,7 +17,7 @@ export class ComposeController {
   @Post('')
   @HttpCode(HttpStatus.CREATED)
   @UsePipes(CustomValidationPipe)
-  createTask(@Body() compose: Compose): string {
+  createTask(@Body() compose: Compose) {
     return this.composeService.createCompose(compose);
   }
 
@@ -48,7 +48,12 @@ export class ComposeController {
   }
 
   @Get('list')
-  uploadInfos(): Compose[] {
+  listComposes(): Compose[] {
     return this.composeService.listComposes();
+  }
+
+  @Get('scan')
+  scanComposes(): Promise<Compose[]> {
+    return this.composeService.scanComposes();
   }
 }

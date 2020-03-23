@@ -2,26 +2,26 @@
   <div class="flex-row col-end">
     <asi-input labelPosition="left" label="Folder name" labelPosition="top" formControlName="libelle"></asi-input>
     <asi-input labelPosition="left" label="Path" labelPosition="top" formControlName="path"></asi-input>
+
     <!-- add -->
-    <asi-button type="submit" *ngIf="!editedFolder" class="icon-action-button">
+    <button id="folder_add" type="submit" *ngIf="!editedFolder" class="small-icon-action-button">
       <i class="fas fa-plus-circle"></i>
-      <span>Add</span>
-    </asi-button>
-    <!-- valid edit -->
-    <asi-button type="submit" class="icon-action-button" *ngIf="editedFolder">
-      <i class="fas fa-edit"></i>
-      <span>Update</span>
-    </asi-button>
+    </button>
+
+    <!-- valide edit -->
+    <button id="folder_edit_valid" type="submit" *ngIf="editedFolder" class="small-icon-action-button">
+      <i class="fas fa-check"></i>
+    </button>
+
     <!-- cancel edit -->
-    <asi-button (click)="endEditFolder()" class="icon-action-button" *ngIf="editedFolder">
-      <i class="fas fa-ban"></i>
-      <span>Cancel</span>
-    </asi-button>
+    <button id="proxy_edit_cancel" type="button" (click)="endEditFolder()" *ngIf="editedFolder"
+      class="small-icon-action-button">
+      <i class="fas fa-times"></i>
+    </button>
   </div>
 </form>
 
 <div class="uploadable-folder-container">
-
   <div class="uploadable-folder" *ngFor="let uploadableFolder of uploadableFolders; let i = index">
     <div class="flex-row col-center space-between">
       <strong>{{uploadableFolder.folder.libelle}}</strong>
@@ -42,16 +42,16 @@
     </div>
     <div class="flex-row space-between">
       <span>{{uploadableFolder.folder.path}}</span>
-      <span [hidden]="!uploadableFolder.progress"> {{uploadableFolder.progress}}%</span>
+      <span [hidden]="!uploadableFolder.progress">
+        {{uploadableFolder.progress}}%</span>
     </div>
     <asi-file-chooser name="file" [accept]="acceptedFiles" [disabled]="uploadableFolder.progress"
       [(ngModel)]="uploadableFolder.fileToUpload">
     </asi-file-chooser>
-    <asi-button id="web_upload_file" [disabled]="uploadableFolder.progress" class="icon-action-button"
-      (click)="!uploadableFolder.progress && uploadFile(uploadableFolder)">
-      <i class="far fa-trash-alt"></i>
+    <asi-button id="web_upload_file" [disabled]="!uploadableFolder.fileToUpload || uploadableFolder.progress"
+      class="icon-action-button" (click)="!uploadableFolder.progress && uploadFile(uploadableFolder)">
+      <i class="fas fa-upload"></i>
       <span>upload</span>
     </asi-button>
   </div>
-
 </div>

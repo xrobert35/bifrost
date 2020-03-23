@@ -4,8 +4,9 @@ import { ComposeWebService } from '@rest/compose.webservice';
 import { BifrostNotificationService } from 'client/app/common/ngtools/notification/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { Compose } from '@shared/interface/compose.int';
-import { remove } from 'lodash';
 import { BifrostWebService } from '@rest/bifrost.webservice';
+import { AsiDialogService } from '@asi-ngtools/lib';
+import { ConfirmDialog } from 'client/app/common/components/dialog/confirm.dialog';
 
 @Component({
   selector: 'compose-page',
@@ -23,7 +24,8 @@ export class ComposePage implements OnInit {
     private composeService: ComposeWebService,
     private bifrostNotificationService: BifrostNotificationService,
     private bifrostWebService: BifrostWebService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private asiDialogService: AsiDialogService) {
 
     this.composes = this.activatedRoute.snapshot.data.composes;
 
@@ -46,7 +48,8 @@ export class ComposePage implements OnInit {
       if (!this.selectedCompose) {
         this.composeService.create(compose).subscribe((createdCompose) => {
           this.bifrostNotificationService.showInfo(`New docker compose has been added`);
-          this.composes.push(createdCompose);
+          this.composes = this.composes.concat([createdCompose]);
+          this.selectedCompose = createdCompose;
         });
       } else {
         this.composeService.update(compose).subscribe(() => {
@@ -58,21 +61,26 @@ export class ComposePage implements OnInit {
   }
 
   deleteCompose() {
-    this.composeService.delete(this.selectedCompose).subscribe(() => {
-      this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' has been deleted`);
-      remove(this.composes, (compose) => compose === this.selectedCompose);
-      this.endEditCompose();
+    const dialog = this.asiDialogService.fromComponent(ConfirmDialog, {});
+    dialog.getComponent().title = 'Please confirm';
+    dialog.getComponent().message = 'Are your sure you want to delete this docker compose ?';
+    dialog.onDialogClose().subscribe(() => {
+      this.composeService.delete(this.selectedCompose).subscribe(() => {
+        this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' has been deleted`);
+        this.composes = this.composes.filter(compose => compose !== this.selectedCompose);
+        this.endEditCompose();
+      });
     });
   }
 
   upCompose() {
-    this.composeService.up(this.selectedCompose, {compatibility : true}).subscribe( () => {
+    this.composeService.up(this.selectedCompose, { compatibility: true }).subscribe(() => {
       this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' is up`);
     });
   }
 
   downCompose() {
-    this.composeService.down(this.selectedCompose, {compatibility : true}).subscribe( () => {
+    this.composeService.down(this.selectedCompose, { compatibility: true }).subscribe(() => {
       this.bifrostNotificationService.showInfo(`Docker compose '${this.selectedCompose.name}' is down`);
     });
   }
@@ -85,5 +93,12 @@ export class ComposePage implements OnInit {
   selectCompose(compose: Compose) {
     this.selectedCompose = compose;
     this.composeForm.setValue(compose);
+  }
+
+  scanComposes() {
+    this.composeService.scan().subscribe(composes => {
+      this.composes = composes;
+      this.bifrostNotificationService.showSuccess(`Scan complete : ${composes.length} docker-compose found`);
+    });
   }
 }

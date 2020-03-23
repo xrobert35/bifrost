@@ -22,31 +22,17 @@ export class DockerWebService {
     }
     return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/containers`, { params: params })
       .pipe(share(), tap(containers => {
-        forEach(containers, (container) => {
-          container.name = container.Names[0].substring(1);
-          if (container.Image) {
-            container.imageName = container.Image.split(':')[0];
-            if (container.imageName.includes('/')) {
-              const splitName = container.imageName.split('/');
-              container.imageRepo = splitName[0];
-              container.imageName = splitName[1];
-            }
-            container.tag = container.Image.split(':')[1];
-          } else {
-            container.imageName = 'unknown';
-            container.tag = 'unknown';
-          }
-
-          container.tooltip = container.ImageDigestId || container.ImageID;
-        });
+        forEach(containers, container => this.addDetail(container));
       }));
   }
 
+  getContainer(containerId: string) {
+    return this.httpClient.get<DockerContainer>(`${this.baseUrl}/container/${containerId}`)
+      .pipe(share(), tap(container => this.addDetail(container)));
+  }
+
   stopContainer(containerId: string) {
-    if (this.universalService.isClient()) {
-      return this.httpClient.post(`${this.baseUrl}/container/${containerId}/stop`, {});
-    }
-    return null;
+    return this.httpClient.post(`${this.baseUrl}/container/${containerId}/stop`, {});
   }
 
   startContainer(containerId: string) {
@@ -63,5 +49,27 @@ export class DockerWebService {
 
   prune() {
     return this.httpClient.post<PruneResult>(`${this.baseUrl}/prune`, {});
+  }
+
+  private addDetail(container: DockerContainer) {
+    if (container.Name) {
+      container.name = container.Name.substring(1);
+    } else {
+      container.name = container.Names[0].substring(1);
+    }
+    if (container.Image) {
+      container.imageName = container.Image.split(':')[0];
+      if (container.imageName.includes('/')) {
+        const splitName = container.imageName.split('/');
+        container.imageRepo = splitName[0];
+        container.imageName = splitName[1];
+      }
+      container.tag = container.Image.split(':')[1];
+    } else {
+      container.imageName = 'unknown';
+      container.tag = 'unknown';
+    }
+
+    container.tooltip = container.ImageDigestId || container.ImageID;
   }
 }

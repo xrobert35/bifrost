@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { DockerPage } from '../pages/docker/docker.page';
-import { UnivCommonModule } from '../common/univ-common.module';
+import { BifrostCommonModule } from '../common/univ-common.module';
 import { AppPage } from '../pages/app.page.';
 import { ServerResolver } from './proxy/server.resolver';
 import { ContainersResolver } from './docker/containers.resolver';
@@ -15,12 +15,15 @@ import { FolderContentDialog } from './web-upload/folder-content/folder-content.
 import { SshPage } from './ssh/ssh.page';
 import { SidePanelComponent } from './side/side-panel.component';
 import { StackDisplayComponent } from './docker/stack/stack-display.component';
+import { DockerLogsPage } from './docker/logs/docker-logs.page';
+import { ContainerResolver } from '../common/resolver/container.resolver';
 
 const appRouter: Routes = [
   {
     path: 'app', component: AppPage,
     children: [
       { path: 'docker', component: DockerPage },
+      { path: 'docker/logs/:containerId', component: DockerLogsPage, resolve: { container: ContainerResolver } },
       { path: 'proxy', component: ProxyPage, resolve: { server: ServerResolver } },
       { path: 'compose', component: ComposePage, resolve: { composes: ComposesResolver } },
       { path: 'web-upload', component: WebUploadPage, resolve: { folders: FoldersResolver } },
@@ -43,14 +46,15 @@ const appRouter: Routes = [
     TaskHelperPage,
     SshPage,
     SidePanelComponent,
-    FolderContentDialog
+    FolderContentDialog,
+    DockerLogsPage
   ],
   imports: [
     RouterModule.forRoot(appRouter, {
       preloadingStrategy: PreloadAllModules,
       initialNavigation: true
     }),
-    UnivCommonModule
+    BifrostCommonModule
   ],
   providers: [
     ServerResolver, ContainersResolver, ComposesResolver, FoldersResolver

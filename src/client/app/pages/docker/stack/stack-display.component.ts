@@ -27,11 +27,21 @@ export class StackDisplayComponent {
   @Input()
   paginate = false;
 
+  nbElementByPage = 20;
+
   containerSelectionModel = new AsiTableSelectionModel('name', false);
 
   constructor(private bifrostNotificationService: BifrostNotificationService,
     private dockerWebService: DockerWebService,
     private serverWebService: ServerWebService) {
+  }
+
+  ngOnInit() {
+    if (this.stack) {
+      this.nbElementByPage = 100;
+    } else {
+      this.nbElementByPage = 20;
+    }
   }
 
   refreshTable = async (_tableRequest: AsiTableRequest) => {
@@ -156,7 +166,7 @@ export class StackDisplayComponent {
       }
       return throwError(res);
     })).subscribe(() => {
-      this.bifrostNotificationService.showInfo(`New proxy has been added`);
+      this.bifrostNotificationService.showSuccess(`New proxy has been added`);
     });
   }
 

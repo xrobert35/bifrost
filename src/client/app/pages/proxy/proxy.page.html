@@ -6,22 +6,20 @@
       <asi-input labelPosition="left" label="Path" labelPosition="top" formControlName="path"></asi-input>
       <asi-input labelPosition="left" label="Proxy Path" labelPosition="top" formControlName="proxyPass"></asi-input>
       <!-- add -->
-      <asi-button type="submit" *ngIf="!editedProxy" class="icon-action-button">
+      <button id="proxy_add" type="submit"  *ngIf="!editedProxy" class="small-icon-action-button">
         <i class="fas fa-plus-circle"></i>
-        <span>Add</span>
-      </asi-button>
-      <!-- valid edit -->
-      <asi-button type="submit" class="icon-action-button" *ngIf="editedProxy">
-        <i class="fas fa-edit"></i>
-        <span>Update</span>
-      </asi-button>
-      <!-- cancel edit -->
-      <asi-button (click)="endEditProxy()" class="icon-action-button" *ngIf="editedProxy">
-        <i class="fas fa-ban"></i>
-        <span>Cancel</span>
-      </asi-button>
-    </div>
+      </button>
 
+      <!-- valid edit -->
+      <button id="proxy_valide_edit" type="submit" *ngIf="editedProxy" class="small-icon-action-button">
+        <i class="fas fa-check"></i>
+      </button>
+
+      <!-- cancel edit -->
+      <button id="proxy_valide_cancel" type="button" (click)="endEditProxy()" *ngIf="editedProxy" class="small-icon-action-button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
   </form>
 
   <asi-table #containersTable [autoSort]="true" [selectionModel]="proxysSelectionModel" [onRequestData]="refreshTable">
@@ -48,13 +46,14 @@
 
     <asi-table-column name="action" libelle="" columnClass="action-col">
       <asi-cell *asiCellDef="let proxy" class="flex-row static center">
-        <asi-button id="proxy_edit" class="icon-action-button" (click)="startEditProxy(proxy)">
-          <i class="far fa-edit"></i>
-          <span>edit</span>
-        </asi-button>
-        <asi-button id="proxy_delete" class="icon-action-button" (click)="deleteProxy(proxy)">
-          <i class="far fa-trash-alt"></i>
-          <span>delete</span></asi-button>
+        <button id="proxy_edit" type="button" class="small-icon-action-button"
+        (click)="startEditProxy(proxy)()">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button id="proxy_delete" type="button" class="small-icon-action-button"
+        (click)="deleteProxy(proxy)()">
+          <i class="fas fa-trash-alt"></i>
+        </button>
       </asi-cell>
     </asi-table-column>
   </asi-table>

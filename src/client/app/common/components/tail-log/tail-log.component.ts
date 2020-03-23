@@ -1,40 +1,75 @@
-import { Input, Component, SimpleChanges, OnChanges, OnDestroy } from '@angular/core';
+import { Input, Component, SimpleChanges, OnChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { WebSocketClient } from '@rest/ws/websocket.client';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'tail-log',
   templateUrl: './tail-log.component.html'
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TailLogComponent implements OnChanges, OnDestroy {
 
   @Input()
   containerId: string;
 
-  logs: Array<string> = [];
+  displayLogs: string[] = [];
+  originalLogs: string[] = [];
 
-  private socketSubscription: Subscription;
+  logLength = 100;
+  firstLoad = true;
 
-  constructor(private webSocketClient: WebSocketClient) {
-  }
+  showTimeStamp = true;
+
+  @ViewChild('logsContainer', { static: false }) logsContainer: ElementRef<HTMLDivElement>;
+
+  private socket: SocketIOClient.Socket;
+  private receiveLogSub: Subscription;
+
+  constructor(private webSocketClient: WebSocketClient) { }
 
   ngOnChanges(_simpleChange: SimpleChanges) {
-    this.logs = [];
-    if (this.socketSubscription) {
-      this.socketSubscription.unsubscribe();
-    }
-    this.socketSubscription = this.webSocketClient.open('ws://localhost:4081/dockerlogs', this.containerId)
-    .subscribe((msg) => {
-      this.logs.push(msg);
+    this.displayLogs = [];
+    this.originalLogs = [];
+
+    this.socket = this.webSocketClient.open('dockerlogs');
+    this.webSocketClient.emit(this.socket, 'getlogs', { containerId: this.containerId, logLength: this.logLength });
+
+    this.receiveLogSub = this.webSocketClient.onEvent(this.socket, `asynclog/${this.containerId}`).subscribe((msg) => {
+      this.originalLogs.push(msg);
+      this.displayLogs.push(this.toDisplayLog(msg));
+      if (this.firstLoad || this.logsContainer.nativeElement.scrollTop === this.logsContainer.nativeElement.scrollHeight) {
+        this.firstLoad = false;
+        setTimeout(() => {
+          this.getBottom();
+        });
+      }
     });
   }
 
-  ngOnInit() {}
+  private toDisplayLog(originalLog: string) {
+    if (!this.showTimeStamp) {
+      return originalLog.substring(31);
+    }
+    return originalLog;
+  }
+
+  showTimeStampChanged() {
+    this.displayLogs = this.originalLogs.map((log) => this.toDisplayLog(log));
+  }
+
+  plusHundred() {
+    this.originalLogs = [];
+    this.displayLogs = [];
+
+    this.logLength += 100;
+    this.webSocketClient.emit(this.socket, 'getlogs', { containerId: this.containerId, logLength: this.logLength });
+  }
+
+  getBottom() {
+    this.logsContainer.nativeElement.scrollTop = this.logsContainer.nativeElement.scrollHeight;
+  }
 
   ngOnDestroy() {
-    if (this.socketSubscription) {
-      this.socketSubscription.unsubscribe();
-    }
+    this.receiveLogSub.unsubscribe();
+    this.socket.disconnect();
   }
 }

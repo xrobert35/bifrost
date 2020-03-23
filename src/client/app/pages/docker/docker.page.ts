@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DockerContainer } from '@shared/interface/container.int';
 import { Server } from '@shared/interface/server.int';
 import { find } from 'lodash';
 import { BifrostNotificationService } from 'client/app/common/ngtools/notification/notification.service';
@@ -72,10 +71,6 @@ export class DockerPage {
   async pruneDocker() {
     this.bifrostNotificationService.showInfo(`Starting prune...`);
     const pruneResult = await this.dockerWebService.prune().toPromise();
-    this.bifrostNotificationService.showInfo(`Prune done ${pruneResult.ImagesDeleted || 0} image deleted`);
-  }
-
-  showLogs(container: DockerContainer) {
-    this.logContainerId = container.Id;
+    this.bifrostNotificationService.showSuccess(`Prune done ${pruneResult.ImagesDeleted || 0} image deleted`);
   }
 }

@@ -66,11 +66,11 @@ export class ClientServer {
     app.set('views', join(DIST_FOLDER, 'browser'));
 
     // Server static files from /browser
-    app.use('/views', express.static(join(DIST_FOLDER, 'browser'), {
+    app.use('/bifrost', express.static(join(DIST_FOLDER, 'browser'), {
       maxAge: '1y'
     }));
 
-    app.get('/views/*', async (req: any, _res: any, next: any) => {
+    app.get('/bifrost/*', async (req: any, _res: any, next: any) => {
       req.asiNgtools = {
         language: req.headers['accept-language']
       };
@@ -92,7 +92,7 @@ export class ClientServer {
     app.use(this.manageError);
 
     app.get('*', (_req: any, res: any) => {
-      res.redirect('/views');
+      res.redirect('/bifrost');
     });
 
     // Start up the Node server

@@ -7,6 +7,7 @@ import { DockerContainer } from '@shared/interface/container.int';
 import { Observable, Observer } from 'rxjs';
 import { Stream } from 'stream';
 import { TechnicalException } from '@common/exception/technical.exception';
+import Bluebird = require('bluebird');
 
 @Injectable()
 export class DockerService {
@@ -20,15 +21,30 @@ export class DockerService {
     // this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
   }
 
-  async list(stack: string) {
+  async list(stack: string): Promise<DockerContainer[]> {
     this.logger.info('Listing container ');
-    const containers = await this.docker.container.list({ all: true });
+    let containers = await this.docker.container.list({ all: true });
     if (stack) {
-      return containers.filter(container => {
-        return (<DockerContainer>container.data).Labels['com.docker.compose.project'] === stack;
-      });
-    } else {
-      return containers;
+      containers = containers.filter(container =>
+        (<DockerContainer>container.data).Labels['com.docker.compose.project'] === stack
+      );
+    }
+
+    return await Bluebird.mapSeries(containers, async (container) => {
+      return await this.getContainerDetail(container);
+    });
+  }
+
+  async getContainer(containerId: string) {
+    try {
+      const container = await this.docker.container.get(containerId).status();
+      return this.getContainerDetail(container);
+    } catch (err) {
+      this.logger.error(err);
+      if (err.statusCode === 404) {
+        throw new TechnicalException('container-not-found', err.message);
+      }
+      throw err;
     }
   }
 
@@ -67,13 +83,15 @@ export class DockerService {
         follow: true,
         stdout: true,
         stderr: true,
-        tail: tail
+        tail: tail,
+        timestamps : true
       });
 
       logsPromise.then((logStream: Stream) => {
         logStream.on('data', (buffer) => {
           // TODO 8 first byte are log status information
-          obs.next(buffer.toString('utf8', 8, buffer.length));
+          const log = buffer.toString('utf8', 8, buffer.length);
+          obs.next(log);
         });
         logStream.on('close', () => {
           obs.complete();
@@ -170,5 +188,20 @@ export class DockerService {
   async prune() {
     this.logger.info('Starting prune');
     return await this.docker.image.prune();
+  }
+
+  private async getContainerDetail(container: Container): Promise<DockerContainer> {
+    const dockerContainer = <DockerContainer>container.data;
+    const imageFullName = await this.getImageName(dockerContainer.ImageID || dockerContainer.Image);
+    if (imageFullName.indexOf('@') !== -1) {
+      dockerContainer.Image = imageFullName.split('@')[0];
+      dockerContainer.ImageDigestId = imageFullName.split('@')[1];
+    } else {
+      dockerContainer.Image = imageFullName;
+    }
+    if  (dockerContainer.Labels ) {
+      dockerContainer.stack = dockerContainer.Labels['com.docker.compose.project'];
+    }
+    return dockerContainer;
   }
 }

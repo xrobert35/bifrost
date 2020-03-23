@@ -15,7 +15,7 @@
           "options": {
             "outputPath": "dist/client/browser",
             "index": "src/client/index.html",
-            "baseHref": "/views/",
+            "baseHref": "/bifrost/",
             "main": "src/client/main.ts",
             "polyfills": "src/client/polyfills.ts",
             "tsConfig": "src/client/tsconfig.app.json",

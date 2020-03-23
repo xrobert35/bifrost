@@ -5,14 +5,23 @@ import * as socketio from 'socket.io-client';
 @Injectable()
 export class WebSocketClient {
 
-  open(socketUrl: string, reference: string): Observable<string> {
-    // const subject = webSocket('ws://localhost:4081');
+  open(socketName: string): SocketIOClient.Socket {
+    return socketio.connect(`ws://localhost:4081/${socketName}`);
+  }
+
+  emit(socket: SocketIOClient.Socket, event: string, data: any) {
+    socket.emit(event, data);
+  }
+
+  onEvent(socket: SocketIOClient.Socket, event: string): Observable<string> {
     return Observable.create((observer: Observer<string>) => {
-      const socket = socketio.connect(socketUrl);
-      socket.emit('asynclog', { reference : reference});
-      socket.on('asynclog', (evt: string) => {
+      socket.on(event, (evt: string) => {
         observer.next(evt);
       });
     });
+  }
+
+  close(socket: SocketIOClient.Socket) {
+    socket.close();
   }
 }

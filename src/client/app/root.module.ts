@@ -1,7 +1,7 @@
 import { TransferState } from '@angular/platform-browser';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { RootComponent } from './root.component';
-import { UnivCommonModule } from './common/univ-common.module';
+import { BifrostCommonModule } from './common/univ-common.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -23,7 +23,7 @@ const translateLoader = (transferState: TransferState, universalService: Univers
   ],
   imports: [
     AppRoutingModule,
-    UnivCommonModule,
+    BifrostCommonModule,
     BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {

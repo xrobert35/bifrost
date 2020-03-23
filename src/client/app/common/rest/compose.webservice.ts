@@ -44,6 +44,9 @@ export class ComposeWebService {
     return this.httpClient.post<void>(`${this.baseUrl}/down/${compose.reference}`, composeOptions).pipe(share());
   }
 
+  scan() {
+    return this.httpClient.get<Array<Compose>>(`${this.baseUrl}/scan`).pipe(share());
+  }
 
   list() {
     return this.httpClient.get<Array<Compose>>(`${this.baseUrl}/list`).pipe(share());

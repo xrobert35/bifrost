@@ -1,44 +1,63 @@
 <div class="flex-column">
-
   <div class="flex-row static">
-    <asi-select label="Compose" labelPosition="top" [data]="composes" (onValueChange)="selectCompose($event)">
+    <asi-select label="Compose" labelPosition="top" [data]="composes" [(ngModel)]="selectedCompose"
+      (onValueChange)="selectCompose($event)">
       <asi-empty *asiEmptyDef="let data">Please select or add a new compose</asi-empty>
       <asi-selected *asiSelectedDef="let data">{{data?.name}}</asi-selected>
       <asi-option *asiOptionDef="let data">{{data?.name}}</asi-option>
     </asi-select>
   </div>
-
   <br />
   <span class="ml-5">default compose folder : {{ defaultComposeFolder }}</span>
   <form [formGroup]="composeForm" class="flex-column" (ngSubmit)="onFormSubmit()">
     <div class="flex-row static col-end">
       <asi-input label="Name (stack)" formControlName="name"></asi-input>
-      <asi-button type="submit" *ngIf="!selectedCompose" class="icon-action-button">
-        <i class="fas fa-plus-circle"></i>
-        <span>Add</span>
-      </asi-button>
-      <asi-button type="submit" *ngIf="selectedCompose" class="icon-action-button">
-        <i class="fas fa-edit"></i>
-        <span>Update</span>
-      </asi-button>
-      <asi-button (click)="endEditCompose()" *ngIf="selectedCompose" class="icon-action-button">
-        <i class="fas fa-ban"></i>
-        <span>Cancel</span>
-      </asi-button>
-      <asi-button (click)="upCompose()" *ngIf="selectedCompose" class="icon-action-button">
-        <i class="fas fa-trash"></i>
-        <span>Up</span>
-      </asi-button>
-      <asi-button (click)="downCompose()" *ngIf="selectedCompose" class="icon-action-button">
-        <i class="fas fa-trash"></i>
-        <span>Down</span>
-      </asi-button>
-      <asi-button (click)="deleteCompose()" *ngIf="selectedCompose" class="icon-action-button">
-        <i class="fas fa-trash"></i>
-        <span>Delete</span>
-      </asi-button>
-    </div>
-    <monaco-editor formControlName="compose"></monaco-editor>
-  </form>
+      <div class="flex-row static" *ngIf="!selectedCompose">
 
+        <!-- add -->
+        <button id="compose_add" type="submit" class="small-icon-action-button">
+          <i class="fas fa-plus-circle"></i>
+        </button>
+
+        <!-- scan -->
+        <button id="compose_scan" type="button" (click)="scanComposes()" class="small-icon-action-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+      <div class="flex-row static" *ngIf="selectedCompose">
+
+        <!-- valid edit -->
+        <button id="compose_edit_valid" type="submit" class="small-icon-action-button">
+          <i class="fas fa-check"></i>
+        </button>
+
+        <!-- cancel edit -->
+        <button id="compose_edit_cancel" type="button" (click)="endEditCompose()" class="small-icon-action-button">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <!-- up -->
+        <button id="compose_up" type="button" (click)="upCompose()" class="small-icon-action-button">
+          <i class="fas fa-arrow-alt-circle-up"></i>
+        </button>
+
+        <!-- down -->
+        <button id="compose_down" type="button" (click)="downCompose()" class="small-icon-action-button">
+          <i class="fas fa-arrow-alt-circle-down"></i>
+        </button>
+
+        <!-- down -->
+        <button id="compose_delete" type="button" (click)="deleteCompose()" class="small-icon-action-button">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="flex-column">
+      <error-messages forName="compose">
+        <message error="required" value="Compose should not be empty" [onSubmit]="true"></message>
+      </error-messages>
+      <monaco-editor formControlName="compose"></monaco-editor>
+    </div>
+  </form>
 </div>

@@ -1,4 +1,4 @@
-<div class="flex-row end col-center stack-action">
+<div class="flex-row start col-center stack-action">
   <!-- start -->
   <button id="stack_start" type="button" class="small-icon-action-button clickable" (click)="startSelectedContainers()">
     <i class="g-play"></i>
@@ -15,12 +15,11 @@
   <!-- delete -->
   <button id="stack_delete" type="button" class="small-icon-action-button clickable"
     (click)="deleteSelectedContainers()">
-    <i class="far fa-trash-alt"></i>
+    <i class="fas fa-trash-alt"></i>
   </button>
 </div>
 
-
-<asi-table #containersTable [identifier]="stack.name" [autoSort]="true" [autoPaginate]="true" [nbElementParPage]="10"
+<asi-table #containersTable [identifier]="stack.name" [autoSort]="true" [autoPaginate]="true" [nbElementParPage]="nbElementByPage"
   [selectionModel]="containerSelectionModel" [onRequestData]="refreshTable">
   <!-- checkbox -->
   <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
@@ -63,12 +62,14 @@
   <!-- action -->
   <asi-table-column name="action" libelle="action" columnClass="action-col">
     <asi-cell *asiCellDef="let container" class="flex-row">
+      <!-- add proxy -->
       <button id="docker_add_proxy" class="small-icon-action-button" (click)="addNewProxy(container)">
         <i class="fas fa-random"></i>
       </button>
-      <button id="docker_add_proxy" class="small-icon-action-button" (click)="showLogs(container)">
-        <i class="far fa-file-alt"></i>
-      </button>
+      <!-- show logs -->
+      <a id="docker_add_proxy" class="small-icon-action-button" [href]="'/bifrost/app/docker/logs/'+container.Id">
+        <i class="fas fa-file-alt"></i>
+      </a>
     </asi-cell>
   </asi-table-column>
 </asi-table>
