@@ -1,7 +1,6 @@
 # Bifröst Project
 
-
-![biforst](https://github.com/xrobert35/bifrost/blob/master/docker.png)
+<img src="https://github.com/xrobert35/bifrost/blob/master/docker.png" data-canonical-src="https://github.com/xrobert35/bifrost/blob/master/docker.png" width="250" height="auto" />
 
 Proxify your Docker :)
 
@@ -17,11 +16,9 @@ It can also be used to quickly update a container to the newest version of the i
 version: "3.3"
 
 services:
-
   bifrost:
     image: xrobert35/bifrost:latest
     container_name: bifrost
-    ports:
     ports:
       - "4080:4080"
       - "80:80"
@@ -39,7 +36,13 @@ Bifrost include a website for configuration and come when an nginx server that y
 
 The website is launched on 4080 and will list all your container. You can than edit proxy configuration for some of them and click on "update proxy"  the configuration will be created in "/etc/nginx/conf.d/default.conf" and the nginx configuration will be automatically realoded
 
+### Options 
+
 DOCKER_PRIVATE_REPO_BASE64_KEY contain a list of private repository key who will be used to update container
+```
+    environment:
+      - DOCKER_PRIVATE_REPO_BASE64_KEY=repo-name1:base64-privatekey1;repo-name2:base64-privatekey2
+```
 
 ## Why ?
 
