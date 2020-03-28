@@ -15,8 +15,7 @@ export class Config {
     SERVER_PATH: string,
     LOG_LEVEL: string,
     SWAGGER_ACTIVATED: string,
-    AUTH_JWT_KEY: string, // JWT secret key to share with an auth service
-    DOCKER_PRIVATE_REPO_BASE64_KEY: string,
+    DOCKER_REPO_KEYS: string,
     SERVER_DATA: string;
     DEFAULT_COMPOSE_FOLDER: string;
   };

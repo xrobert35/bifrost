@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import { WinLogger } from './common/logger/winlogger';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DockerService } from '@services/docker.service';
 
 const logger = WinLogger.get('main');
 
@@ -39,6 +40,11 @@ async function bootstrap() {
     const { ClientServer } = require('./client.server');
     await ClientServer.bootstrap(app);
     clientStarted = true;
+  }
+
+  if (Config.get().DOCKER_REPO_KEYS) {
+    const dockerService = app.get(DockerService);
+    await dockerService.manageCredentials();
   }
 
   if (clientStarted) {

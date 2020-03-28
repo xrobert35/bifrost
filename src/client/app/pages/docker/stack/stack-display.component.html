@@ -48,7 +48,7 @@
   <asi-table-column name="image" libelle="Image">
     <asi-cell *asiCellDef="let container">
       <div class="flex-row col-center">
-        <span>{{container.imageName}}</span>
+        <span>{{container.imageName + ':' + container.tag}}</span>
       </div>
     </asi-cell>
   </asi-table-column>

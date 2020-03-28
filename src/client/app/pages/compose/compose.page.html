@@ -1,5 +1,5 @@
 <div class="flex-column">
-  <div class="flex-row static">
+  <div class="flex-row col-end static">
     <asi-select label="Compose" labelPosition="top" [data]="composes" [(ngModel)]="selectedCompose"
       (onValueChange)="selectCompose($event)">
       <asi-empty *asiEmptyDef="let data">Please select or add a new compose</asi-empty>

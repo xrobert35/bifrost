@@ -59,10 +59,11 @@ export class DockerWebService {
     }
     if (container.Image) {
       container.imageName = container.Image.split(':')[0];
-      if (container.imageName.includes('/')) {
-        const splitName = container.imageName.split('/');
-        container.imageRepo = splitName[0];
-        container.imageName = splitName[1];
+
+      const slashIndex = container.imageName.indexOf('/');
+      if (slashIndex !== -1) {
+        container.imageRepo = container.imageName.substring(0, slashIndex);
+        container.imageName = container.imageName.substring(slashIndex +  1);
       }
       container.tag = container.Image.split(':')[1];
     } else {

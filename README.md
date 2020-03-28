@@ -29,8 +29,6 @@ services:
       - /opt/bifrost:/opt/bifrost #bifrost data
       - /var/run/docker.sock:/var/run/docker.sock #give access to docker
       - /opt/docker:/opt/docker #your docker management folder 
-    environment:
-      - DOCKER_PRIVATE_REPO_BASE64_KEY=repo-name1:base64-privatekey1;repo-name2:base64-privatekey2
     restart: always
 ```
 
@@ -42,10 +40,10 @@ The website is launched on 4080 and will list all your container. You can than e
 
 ### Options 
 
-DOCKER_PRIVATE_REPO_BASE64_KEY contain a list of private repository key who will be used to update container
+DOCKER_REPO_KEYS contain a list of private repository key who will be used to update container
 ```
     environment:
-      - DOCKER_PRIVATE_REPO_BASE64_KEY=repo-name1:base64-privatekey1;repo-name2:base64-privatekey2
+      - DOCKER_REPO_KEYS=repo-name1:login|mdp;repo-name2:login|mdp
 ```
 
 ### Docker

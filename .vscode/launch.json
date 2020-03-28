@@ -21,8 +21,7 @@
       "cwd": "${workspaceFolder}",
       "protocol": "inspector",
       "env": {
-        "NODE_ENV": "development",
-        "DOCKER_PRIVATE_REPO_BASE64_KEY" : "docker-repository-no.asi.fr:eyJ1c2VybmFtZSI6ImFkbS1hc2kiLCJwYXNzd29yZCI6IlhwZXJ0aXNlMzUifQ=="
+        "NODE_ENV": "development"
       }
     },
     {

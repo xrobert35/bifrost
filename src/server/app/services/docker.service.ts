@@ -8,6 +8,7 @@ import { Observable, Observer } from 'rxjs';
 import { Stream } from 'stream';
 import { TechnicalException } from '@common/exception/technical.exception';
 import Bluebird = require('bluebird');
+import shelljs = require('shelljs');
 
 @Injectable()
 export class DockerService {
@@ -16,9 +17,10 @@ export class DockerService {
 
   private readonly logger = WinLogger.get('docker-service');
 
+  private auth: { [url: string]: { username: string, password: string } } = {};
+
   constructor() {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
-    // this.docker = new Docker({ host: '192.168.56.101', port: '2375' });
   }
 
   async list(stack: string): Promise<DockerContainer[]> {
@@ -52,10 +54,10 @@ export class DockerService {
     const image = <any>await this.docker.image.get(imageId).status();
 
     let imageName = '';
-    if (image.data.RepoDigests && image.data.RepoDigests.length > 0) {
-      imageName = image.data.RepoDigests[0];
-    } else if (image.data.RepoTags && image.data.RepoTags.length > 0) {
+    if (image.data.RepoTags && image.data.RepoTags.length > 0) {
       imageName = image.data.RepoTags[0];
+    } else if (image.data.RepoDigests && image.data.RepoDigests.length > 0) {
+      imageName = image.data.RepoDigests[0];
     }
 
     return imageName;
@@ -65,7 +67,12 @@ export class DockerService {
     this.logger.info('Recreating container ' + containerId);
     const container = await this.docker.container.get(containerId).status();
 
+    try {
     await this.pullImage(info);
+    } catch (err) {
+      this.logger.error('Error while trying to update image', err);
+      throw new TechnicalException('container-update-error', 'Error while trying to update container' + containerId);
+    }
     // recreate container
     await container.stop();
     await container.delete();
@@ -84,7 +91,7 @@ export class DockerService {
         stdout: true,
         stderr: true,
         tail: tail,
-        timestamps : true
+        timestamps: true
       });
 
       logsPromise.then((logStream: Stream) => {
@@ -111,35 +118,16 @@ export class DockerService {
     if (info.image.indexOf('/') !== -1) {
       repo = info.image.split('/')[0];
     }
-
     // pull new version of the image
-    const authKey = this.getAuthKeyForRepo(repo);
-    let auth = null;
-    if (authKey) {
-      auth = { base64: authKey };
-    }
+    const authKey = this.auth[repo];
     this.logger.info('pull image ' + info.image + ' with authKey ' + authKey);
-    const stream = <any>await this.docker.image.create(auth, { fromImage: info.image, pull: true });
+    const stream = <any>await this.docker.image.create(authKey, { fromImage: info.image, pull: true });
 
     await new Promise((resolve, reject) => {
       stream.on('data', (data: any) => this.logger.log(data.toString()));
       stream.on('end', resolve);
-      stream.on('error', reject);
+      stream.on('error', () => reject);
     });
-  }
-
-  private getAuthKeyForRepo(repoToFind: string) {
-    const strRepoKeys = Config.get().DOCKER_PRIVATE_REPO_BASE64_KEY;
-    if (strRepoKeys) {
-      const repoKeys = strRepoKeys.split(';');
-      const repoKey = repoKeys.find((key) => {
-        return key.split(':')[0] === repoToFind;
-      });
-      if (repoKey) {
-        return repoKey.split(':')[1];
-      }
-    }
-    return null;
   }
 
   private async recreateContainer(info: any, container: Container): Promise<Container> {
@@ -199,9 +187,33 @@ export class DockerService {
     } else {
       dockerContainer.Image = imageFullName;
     }
-    if  (dockerContainer.Labels ) {
+    if (dockerContainer.Labels) {
       dockerContainer.stack = dockerContainer.Labels['com.docker.compose.project'];
     }
     return dockerContainer;
+  }
+
+  manageCredentials() {
+    this.logger.info('Initialise docker credentials');
+    const keys = Config.get().DOCKER_REPO_KEYS.split(';');
+
+    return Bluebird.each(keys, (key) => {
+      return new Promise((resolve) => {
+        const repoUrl = key.split(':')[0];
+        const repoCred = key.split(':')[1];
+
+        const user = repoCred.split('|')[0];
+        const pwd = repoCred.split('|')[1];
+
+        this.logger.info(`Login into ${repoUrl}...`);
+        const proc = shelljs.exec(`echo ${pwd} | docker login ${repoUrl} --username ${user} --password-stdin`, (_code, stdout, stderr) => {
+          this.logger.info(`${stdout || stderr}`);
+        });
+        proc.on('exit', () => {
+          this.auth[repoUrl] = { username: user, password: pwd };
+          resolve();
+        });
+      });
+    });
   }
 }
