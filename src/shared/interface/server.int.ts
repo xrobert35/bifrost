@@ -6,13 +6,13 @@ import { IsNumber, IsString, ValidateNested, Allow, IsBoolean } from 'class-vali
 export class Server {
 
   @IsBoolean()
-  onlyActive: boolean;
+  onlyActive = false;
 
   @IsNumber()
-  port: number;
+  port?: number;
 
   @IsString()
-  serverName: string;
+  serverName?: string;
 
   @Allow()
   @Type(() => ServerLocation)

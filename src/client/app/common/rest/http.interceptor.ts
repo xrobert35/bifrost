@@ -1,5 +1,5 @@
 
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse } from '@angular/common/http';
 import { Injectable, ErrorHandler } from '@angular/core';
@@ -22,7 +22,7 @@ export class BifrostHttpInterceptor implements HttpInterceptor {
       } else {
         this.errorHandler.handleError(err);
       }
-      return observableThrowError(err);
+      return throwError(err);
     }));
   }
 }

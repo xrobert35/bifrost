@@ -3,20 +3,20 @@ import { Config } from '../../config/config';
 
 export class LoggerFactory {
 
-  private static logger;
+  private static logger: winston.Logger;
 
   public static get() {
     if (!this.logger) {
 
       const myCustomLevels = {
         levels: {
-          warn: 3,
-          debug: 2,
-          info: 1,
+          debug: 3,
+          info: 2,
+          warn: 1,
           error: 0
         },
         colors: {
-          warn: 'blue',
+          warn: 'yellow',
           debug: 'green',
           info: 'blue',
           error: 'red'
@@ -37,6 +37,7 @@ export class LoggerFactory {
                 const {
                   timestamp, level, message, ...args
                 } = info;
+
                 return `${timestamp} - ${level} - ${message} ${Object.keys(args).length ? JSON.stringify(args, null, 2) : ''}`;
               }),
             )

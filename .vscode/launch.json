@@ -5,7 +5,28 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch test unitaire",
+      "name": "Launch server",
+      "type": "node",
+      "request": "launch",
+      "args": [
+        "${workspaceFolder}/src/server/app/main.ts"
+      ],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register",
+        "-r",
+        "tsconfig-paths/register"
+      ],
+      "outputCapture": "std",
+      "cwd": "${workspaceFolder}",
+      "protocol": "inspector",
+      "env": {
+        "NODE_ENV": "development",
+        "DOCKER_PRIVATE_REPO_BASE64_KEY" : "docker-repository-no.asi.fr:eyJ1c2VybmFtZSI6ImFkbS1hc2kiLCJwYXNzd29yZCI6IlhwZXJ0aXNlMzUifQ=="
+      }
+    },
+    {
+      "name": "Launch unit test",
       "type": "node",
       "request": "launch",
       "env": {
@@ -69,26 +90,5 @@
       "outputCapture": "std",
       "internalConsoleOptions": "openOnSessionStart"
     },
-    {
-      "name": "Launch server",
-      "type": "node",
-      "request": "launch",
-      "args": [
-        "${workspaceFolder}/src/server/app/main.ts"
-      ],
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register",
-        "-r",
-        "tsconfig-paths/register"
-      ],
-      "outputCapture": "std",
-      "cwd": "${workspaceFolder}",
-      "protocol": "inspector",
-      "env": {
-        "NODE_ENV": "development",
-        "DOCKER_PRIVATE_REPO_BASE64_KEY" : "docker-repository-no.asi.fr:eyJ1c2VybmFtZSI6ImFkbS1hc2kiLCJwYXNzd29yZCI6IlhwZXJ0aXNlMzUifQ=="
-      }
-    }
   ]
 }

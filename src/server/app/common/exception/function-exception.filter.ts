@@ -25,6 +25,7 @@ export class FunctionalExceptionFilter implements ExceptionFilter {
         path: request.url,
         code: exception.code,
         libelle: exception.libelle,
+        fonctional: true
       });
   }
 }

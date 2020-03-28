@@ -1,0 +1,28 @@
+<form [formGroup]="taskForm" class="flex-column start" (ngSubmit)="onFormSubmit()">
+  <div class="flex-row col-end static">
+    <asi-input label="Name" labelPosition="top" formControlName="name"></asi-input>
+    <asi-input label="Cron"  labelPosition="top" formControlName="cron"></asi-input>
+    <!-- add -->
+    <asi-button type="submit" *ngIf="!selectedTask" class="icon-action-button">
+      <i class="fas fa-plus-circle"></i>
+      <span>Add</span>
+    </asi-button>
+    <!-- valid edit -->
+    <asi-button type="submit" *ngIf="selectedTask" class="icon-action-button">
+      <i class="fas fa-edit"></i>
+      <span>Update</span>
+    </asi-button>
+    <!-- cancel edit -->
+    <asi-button (click)="endEditTask()" *ngIf="selectedTask" class="icon-action-button">
+      <i class="fas fa-ban"></i>
+      <span>Cancel</span>
+    </asi-button>
+    <!-- delete -->
+    <asi-button (click)="deleteTask()" *ngIf="selectedTask" class="icon-action-button">
+      <i class="fas fa-trash"></i>
+      <span>Delete</span>
+    </asi-button>
+  </div>
+
+  <monaco-editor formControlName="script"></monaco-editor>
+</form>

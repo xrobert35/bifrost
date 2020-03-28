@@ -1,0 +1,112 @@
+docker-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+
+  .asi-table table thead tr th {
+    padding-right: 10px;
+  }
+
+  .display-panel {
+    margin: 10px;
+  }
+
+  .all-container-panel {
+    padding: 10px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    margin: 10px;
+
+    > span {
+      margin: 5px;
+    }
+  }
+
+  table {
+    ul {
+      margin: 0px;
+      list-style: none;
+    }
+
+    .check-col {
+      width: 35px;
+    }
+
+    .state-col {
+      width: 35px;
+      asi-cell {
+        justify-content: center;
+      }
+      .header {
+        justify-content: center !important;
+      }
+    }
+
+    .info-col {
+      width: 35px;
+      asi-cell {
+        justify-content: center;
+      }
+      .header {
+        justify-content: center !important;
+      }
+    }
+
+    .port-col {
+      max-width: 160px;
+    }
+    .action-col {
+      width: 80px;
+      asi-cell {
+        justify-content: center;
+      }
+      .header {
+        justify-content: center !important;
+      }
+    }
+  }
+
+  .server-header {
+    height: 60px;
+
+    .asi-button > button {
+      max-height: 35px;
+      padding: 5px;
+    }
+  }
+
+  .asi-fa-icon {
+    &.running {
+      .fa-power-off:not([disabled]) {
+        color: @bifrost-active-color;
+      }
+    }
+
+    &.exited {
+      .fa-power-off:not([disabled]) {
+        color: red;
+      }
+    }
+
+    .fa-play:not([disabled]) {
+      color: @bifrost-primary-color;
+    }
+
+    .fa-stop:not([disabled]) {
+      color: red;
+    }
+
+    .fa-sync:not([disabled]) {
+      color: @bifrost-primary-color;
+    }
+  }
+}

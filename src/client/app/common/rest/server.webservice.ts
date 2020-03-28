@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { share } from 'rxjs/operators';
+import { share, map } from 'rxjs/operators';
 import { Server } from '@shared/interface/server.int';
 import { Observable } from 'rxjs';
-import { DockerContainer } from '@shared/interface/container.int';
 import { UniversalService } from '../universal/universal.service';
-import { PruneResult } from '@shared/interface/pruneResult.int';
+import { ServerLocation } from '@shared/interface/serverLocation.int';
 
 @Injectable()
 export class ServerWebService {
 
-  private baseUrl = null;
+  private baseUrl: string = null;
 
   constructor(private httpClient: HttpClient, private universalService: UniversalService) {
     this.baseUrl = `${this.universalService.getApiUrl()}/server`;
@@ -20,34 +19,24 @@ export class ServerWebService {
     return this.httpClient.get<Server>(`${this.baseUrl}`).pipe(share());
   }
 
-  stopContainer(containerId: string) {
-    if (this.universalService.isClient()) {
-      return this.httpClient.post(`${this.baseUrl}/container/${containerId}/stop`, {});
-    }
-    return null;
+  create(serverLocation: ServerLocation): Observable<ServerLocation> {
+    return this.httpClient.post(`${this.baseUrl}/proxy`, serverLocation, { responseType: 'text' }).pipe(share(),
+      map((reference: string) => {
+        serverLocation.reference = reference;
+        return serverLocation;
+      }));
   }
 
-  startContainer(containerId: string) {
-    return this.httpClient.post(`${this.baseUrl}/container/${containerId}/start`, {});
+  update(serverLocation: ServerLocation): Observable<ServerLocation> {
+    return this.httpClient.put(`${this.baseUrl}/proxy/${serverLocation.reference}`, serverLocation, { responseType: 'text' }).pipe(share(),
+      map((reference: string) => {
+        serverLocation.reference = reference;
+        return serverLocation;
+      }));
   }
 
-  deletetContainer(containerId: string) {
-    return this.httpClient.delete(`${this.baseUrl}/container/${containerId}`, {});
+  delete(serverLocation: ServerLocation): Observable<void> {
+    return this.httpClient.delete<void>(`${this.baseUrl}/proxy/${serverLocation.reference}`).pipe(share());
   }
 
-  updateContainer(containerId: string, info: any) {
-    return this.httpClient.post(`${this.baseUrl}/container/${containerId}/update`, info);
-  }
-
-  prune() {
-    return this.httpClient.post<PruneResult>(`${this.baseUrl}/prune`, {});
-  }
-
-  createUpdate(server: Server) {
-    return this.httpClient.post(`${this.baseUrl}`, server).pipe(share());
-  }
-
-  containers() {
-    return this.httpClient.get<Array<DockerContainer>>(`${this.baseUrl}/containers`).pipe(share());
-  }
 }

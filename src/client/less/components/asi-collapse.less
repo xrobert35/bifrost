@@ -1,0 +1,27 @@
+.asi-collapse {
+  padding: 5px;
+  margin: 5px 5px 0px 5px;
+  box-shadow: 1px 1px 3px darkslategrey;
+  border-left: 3px solid darkslategrey;
+
+  &:hover {
+    border-color: @bifrost-active-color;
+  }
+
+  .collapse-header {
+    &:focus {
+      border: none;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: transparent;
+      color: black;
+    }
+  }
+
+  .collapse-panel {
+    background-color: lightslategray;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}

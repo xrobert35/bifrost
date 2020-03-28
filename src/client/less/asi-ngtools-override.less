@@ -1,7 +1,7 @@
 @asi-table-header-height: 40px;
 @asi-table-header-th-border: 2px solid grey;
 @asi-table-header-tr-border: 1px solid transparent;
-@asi-table-header-box-shadow: 0 0 1px @univ-secondary-color;
+@asi-table-header-box-shadow: 0 0 1px @bifrost-secondary-color;
 @asi-table-header-background-color: #fefeff;
 @asi-table-header-text-color: black;
 @asi-table-body-1-color: white;
@@ -13,20 +13,14 @@
 @asi-table-body-line1-color: transparent;
 @asi-table-body-line2-color: transparent;
 
-@asi-button-background-color: #222;
-@asi-button-label-color: white;
-@asi-button-border: 1px solid transparent;
+@asi-button-background-color: white;
+@asi-button-label-color: @bifrost-secondary-color;
+@asi-button-border: 1px solid @bifrost-secondary-color;
 @asi-button-border-radius: 20px;
 @asi-button-hover-background-color: white;
 @asi-button-hover-border: 1px solid #222;
 
-.asi-button {
-  button:not(:disabled) {
-    &:hover {
-      color: black !important;
-    }
-  }
-}
+@asi-checkbox-checked-background-color : @bifrost-primary-color;
+@asi-checkbox-border: 1px solid lightgrey;
 
-@asi-checkbox-checked-background-color : #555;
-@asi-checkbox-border: 1px solid #555;
+@asi-ngtools-primary-color: @bifrost-secondary-color;

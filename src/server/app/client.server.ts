@@ -1,19 +1,22 @@
 // GitHub source: server.js
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
-import * as express from 'express';
+
+import express = require('express');
+import cookieParser = require('cookie-parser');
+
 import { join } from 'path';
 import { enableProdMode } from '@angular/core';
 import { Config } from '@config/config';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import { WinLogger } from '@common/logger/winlogger';
 import { INestApplication } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
 
 const DIST_FOLDER = join(process.cwd(), 'dist/client');
 const { RootServerModuleNgFactory, LAZY_MODULE_MAP } = require(join(DIST_FOLDER, 'server/main'));
 const { provideModuleMap } = require('@nguniversal/module-map-ngfactory-loader');
 const proxyMiddleware = require('http-proxy-middleware');
+
 export class ClientServer {
 
   static clientInstance: ClientServer;
@@ -31,7 +34,7 @@ export class ClientServer {
   constructor(_app: INestApplication) {
   }
 
-  private initServer(done) {
+  private initServer(done: Function) {
     // Faster server renders w/ Prod mode (dev mode never needed)
     enableProdMode();
     const app = express();
@@ -63,11 +66,11 @@ export class ClientServer {
     app.set('views', join(DIST_FOLDER, 'browser'));
 
     // Server static files from /browser
-    app.use('/views', express.static(join(DIST_FOLDER, 'browser'), {
+    app.use('/bifrost', express.static(join(DIST_FOLDER, 'browser'), {
       maxAge: '1y'
     }));
 
-    app.get('/views/*', async (req: any, _res: any, next: any) => {
+    app.get('/bifrost/*', async (req: any, _res: any, next: any) => {
       req.asiNgtools = {
         language: req.headers['accept-language']
       };
@@ -89,7 +92,7 @@ export class ClientServer {
     app.use(this.manageError);
 
     app.get('*', (_req: any, res: any) => {
-      res.redirect('/views');
+      res.redirect('/bifrost');
     });
 
     // Start up the Node server

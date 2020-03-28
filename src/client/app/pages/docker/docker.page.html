@@ -1,0 +1,43 @@
+<div class="flex-row col-center space-between static display-panel">
+  <div class="flex">
+    <label *ngIf="display === 'stack'"> Stacks ({{stacks?.length}})</label>
+    <label *ngIf="display === 'list'"> Containers ({{stacks[0]?.containers.length}})</label>
+  </div>
+  <div class="flex-row static">
+    <button id="display_list" [disabled]="display === 'list'" type="button" class="small-icon-action-button"
+      (click)="displayList()">
+      <i class="fas fa-list-ul"></i>
+    </button>
+    <button id="display_stack" [disabled]="display === 'stack'" type="button" class="small-icon-action-button"
+      (click)="displayStack()">
+      <i class="fas fa-layer-group"></i>
+    </button>
+    <button id="docker_prune" type="button" class="small-icon-action-button" (click)="pruneDocker()">
+      <i class="fas fa-snowplow"></i>
+    </button>
+  </div>
+</div>
+
+
+<div *ngIf="display === 'stack'">
+  <asi-collapse *ngFor="let stack of stacks" [collapsed]="display === 'stack'">
+    <asi-header *asiCollapseHeaderDef="let data">
+      <div class="flex-row col-center space-between static">
+        <div class="flex-row col-center">
+          <asi-fa-icon *ngIf="display === 'stack'" icon="fa fa-power-off" [ngClass]="{'running' : stack.started}">
+          </asi-fa-icon>
+          <strong> {{ stack.name }} </strong>
+        </div>
+      </div>
+    </asi-header>
+
+    <stack-display [stack]="stack" [onlyActive]="onlyActive"></stack-display>
+
+  </asi-collapse>
+</div>
+
+<div *ngIf="display === 'list'">
+  <div class="all-container-panel">
+    <stack-display [stack]="stacks[0]" [onlyActive]="onlyActive" [paginate]="true"></stack-display>
+  </div>
+</div>

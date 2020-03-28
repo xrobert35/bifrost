@@ -15,21 +15,36 @@
           "options": {
             "outputPath": "dist/client/browser",
             "index": "src/client/index.html",
-            "baseHref": "/views/",
+            "baseHref": "/bifrost/",
             "main": "src/client/main.ts",
             "polyfills": "src/client/polyfills.ts",
             "tsConfig": "src/client/tsconfig.app.json",
             "preserveSymlinks": true,
             "assets": [
               "src/client/favicon.ico",
-              "src/client/assets"
+              "src/client/assets",
+              {
+                "glob": "Monokai.json",
+                "input": "./node_modules/monaco-themes/themes",
+                "output": "assets/monaco-themes"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/monaco-editor/min",
+                "output": "assets/monaco-editor"
+              }
             ],
             "styles": [
               "src/client/styles.css",
               "src/client/less/main.less",
-              "./node_modules/@fortawesome/fontawesome-free/css/all.css"
+              "./node_modules/prismjs/themes/prism-okaidia.css",
+              "./node_modules/@fortawesome/fontawesome-free/css/all.css",
+              "src/client/assets/icons/glyphter-font/css/bifrost.css"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/prismjs/prism.js",
+              "./node_modules/prismjs/components/prism-shell-session.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -77,7 +92,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "port" : 4200,
+            "port": 4200,
             "proxyConfig": "./proxy.conf.json",
             "browserTarget": "bifrost-client:build"
           },
@@ -100,14 +115,9 @@
             "polyfills": "src/client/polyfills.ts",
             "tsConfig": "src/client/tsconfig.spec.json",
             "karmaConfig": "src/client/karma.conf.js",
-            "styles": [
-              "src/client/styles.css"
-            ],
+            "styles": ["src/client/styles.css"],
             "scripts": [],
-            "assets": [
-              "src/client/favicon.ico",
-              "src/client/assets"
-            ]
+            "assets": ["src/client/favicon.ico", "src/client/assets"]
           }
         },
         "lint": {
@@ -117,9 +127,7 @@
               "src/client/tsconfig.app.json",
               "src/client/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -144,9 +152,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         }
       }

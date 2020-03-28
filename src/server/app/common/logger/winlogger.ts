@@ -10,7 +10,7 @@ export class WinLogger implements LoggerService {
     this.logger = LoggerFactory.get();
   }
 
-  public static get(name): WinLogger {
+  public static get(name: string): WinLogger {
     return new WinLogger(name);
   }
 

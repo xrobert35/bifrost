@@ -1,0 +1,25 @@
+<div class="flex-row end static">
+  <asi-switch label="Show timestamp : " labelPosition="left" [(ngModel)]="showTimeStamp" (onValueChange)="showTimeStampChanged()"></asi-switch>
+  <button
+    id="go_bottom"
+    class="small-icon-action-button"
+    (click)="getBottom()"
+  >
+    <i class="fas fa-arrow-alt-circle-down"></i>
+  </button>
+  <button
+  id="go_bottom"
+  class="small-icon-action-button"
+  (click)="plusHundred()"
+>
+  +100
+</button>
+{{displayLogs.length}}
+</div>
+<div class="logs-container" #logsContainer>
+  <div class="logs">
+    <div class="log" *ngFor="let log of displayLogs">
+      <p [innerHtml]="'  ' + log"></p>
+    </div>
+  </div>
+</div>

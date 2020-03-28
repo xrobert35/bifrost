@@ -1,0 +1,60 @@
+<div class="flex-column">
+
+  <form [formGroup]="proxyForm" class="flex-row col-center static panel" (ngSubmit)="submitProxy()">
+    <div class="flex-row col-end">
+      <asi-input labelPosition="left" label="Name" labelPosition="top" formControlName="name"></asi-input>
+      <asi-input labelPosition="left" label="Path" labelPosition="top" formControlName="path"></asi-input>
+      <asi-input labelPosition="left" label="Proxy Path" labelPosition="top" formControlName="proxyPass"></asi-input>
+      <!-- add -->
+      <button id="proxy_add" type="submit"  *ngIf="!editedProxy" class="small-icon-action-button">
+        <i class="fas fa-plus-circle"></i>
+      </button>
+
+      <!-- valid edit -->
+      <button id="proxy_valide_edit" type="submit" *ngIf="editedProxy" class="small-icon-action-button">
+        <i class="fas fa-check"></i>
+      </button>
+
+      <!-- cancel edit -->
+      <button id="proxy_valide_cancel" type="button" (click)="endEditProxy()" *ngIf="editedProxy" class="small-icon-action-button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </form>
+
+  <asi-table #containersTable [autoSort]="true" [selectionModel]="proxysSelectionModel" [onRequestData]="refreshTable">
+
+    <asi-table-column name="proxified" type="checkbox" columnClass="check-col"></asi-table-column>
+
+    <asi-table-column name="name" libelle="Name" [sortable]="true" columnClass="name-col">
+      <asi-cell *asiCellDef="let proxy">
+        <span> {{proxy.name }} </span>
+      </asi-cell>
+    </asi-table-column>
+
+    <asi-table-column name="proxy" libelle="Proxy - Path" columnClass="proxypath-col">
+      <asi-cell *asiCellDef="let proxy">
+        <span> {{proxy.path }} </span>
+      </asi-cell>
+    </asi-table-column>
+
+    <asi-table-column name="proxy" libelle="ProxyPass" [sortable]="true" columnClass="proxypass-col">
+      <asi-cell *asiCellDef="let proxy">
+        <span> {{proxy.proxyPass }} </span>
+      </asi-cell>
+    </asi-table-column>
+
+    <asi-table-column name="action" libelle="" columnClass="action-col">
+      <asi-cell *asiCellDef="let proxy" class="flex-row static center">
+        <button id="proxy_edit" type="button" class="small-icon-action-button"
+        (click)="startEditProxy(proxy)()">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button id="proxy_delete" type="button" class="small-icon-action-button"
+        (click)="deleteProxy(proxy)()">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </asi-cell>
+    </asi-table-column>
+  </asi-table>
+</div>

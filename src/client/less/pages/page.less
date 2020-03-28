@@ -1,6 +1,35 @@
-@import "./server.less";
-
+@import "./docker.less";
+@import "./proxy.less";
+@import "./web-upload.less";
+@import "./ssh.less";
 
 app-page {
-  background-color: #eeeeee;
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+
+    background-color: white;
+    box-shadow: 1px 1px 5px black;
+
+    margin: 15px;
+
+    h1.page-title {
+      color: @bifrost-primary-color;
+      font-family: @font-regular;
+      font-size: 3.5em;
+      margin-top: 0px;
+      margin-bottom: 10px;
+    }
+
+    .panel {
+      margin-bottom: 20px;
+
+      .input-label {
+        min-width: 100px;
+        text-align: left;
+      }
+    }
+  }
 }
