@@ -1,7 +1,7 @@
 import { WinLogger } from '../common/logger/winlogger';
 
 import urlJoin = require('url-join');
-import * as jsonOverride from 'json-override';
+import jsonOverride = require('json-override');
 
 export class Config {
 
@@ -18,7 +18,6 @@ export class Config {
     AUTH_JWT_KEY: string, // JWT secret key to share with an auth service
     DOCKER_PRIVATE_REPO_BASE64_KEY: string,
     SERVER_DATA: string;
-    UPLOAD_TMP_FOLDER: string;
     DEFAULT_COMPOSE_FOLDER: string;
   };
 

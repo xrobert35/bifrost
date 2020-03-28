@@ -1,16 +1,16 @@
 <div class="flex-row end static">
-  <asi-switch label="Show timestamp : " [labelPosition]="left" [(ngModel)]="showTimeStamp" (onValueChange)="showTimeStampChanged()"></asi-switch>
+  <asi-switch label="Show timestamp : " labelPosition="left" [(ngModel)]="showTimeStamp" (onValueChange)="showTimeStampChanged()"></asi-switch>
   <button
     id="go_bottom"
     class="small-icon-action-button"
-    (click)="getBottom(container)"
+    (click)="getBottom()"
   >
     <i class="fas fa-arrow-alt-circle-down"></i>
   </button>
   <button
   id="go_bottom"
   class="small-icon-action-button"
-  (click)="plusHundred(container)"
+  (click)="plusHundred()"
 >
   +100
 </button>

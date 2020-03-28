@@ -8,7 +8,7 @@ export class MonacoEditorService {
 
   nodeRequire: any;
 
-  isMonacoLoaded: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isMonacoLoaded = new BehaviorSubject<boolean>(false);
 
   private _monacoPath = 'assets/monaco-editor/vs';
   private _monacoThemesPath = 'assets/monaco-themes/';
@@ -24,7 +24,7 @@ export class MonacoEditorService {
   constructor(ngZone: NgZone, private httpClient: HttpClient, universalService: UniversalService) {
 
     if (universalService.isClient()) {
-
+      console.error('loading editor');
       const onGotAmdLoader = () => {
         if ((<any>window).monacoEditorAlreadyInitialized) {
           ngZone.run(() => this.isMonacoLoaded.next(true));

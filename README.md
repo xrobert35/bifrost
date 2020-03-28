@@ -13,19 +13,23 @@ It can also be used to quickly update a container to the newest version of the i
 
 ### docker compose
 
+Minimal compose 
+
 ```
-version: "3.3"
+version: "3.5"
 
 services:
   bifrost:
     image: xrobert35/bifrost:latest
     container_name: bifrost
     ports:
-      - "4080:4080"
-      - "80:80"
+    - "4080:4080" #website
+    - "4081:4081" #websocket
+    - "80:80" #nginx
     volumes:
-      - /opt/bifrost:/opt/bifrost
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/bifrost:/opt/bifrost #bifrost data
+      - /var/run/docker.sock:/var/run/docker.sock #give access to docker
+      - /opt/docker:/opt/docker #your docker management folder 
     environment:
       - DOCKER_PRIVATE_REPO_BASE64_KEY=repo-name1:base64-privatekey1;repo-name2:base64-privatekey2
     restart: always
@@ -45,6 +49,51 @@ DOCKER_PRIVATE_REPO_BASE64_KEY contain a list of private repository key who will
       - DOCKER_PRIVATE_REPO_BASE64_KEY=repo-name1:base64-privatekey1;repo-name2:base64-privatekey2
 ```
 
+### Docker
+
+UI for docker, allowing you to check logs, start, update, remove, restart containers
+
+### Nginx UI
+
+UI for nginx allowing you to add some proxy
+
+### Docker compose
+
+Online Editor allowing you to manage your compose, and also up and down stacks
+
+### Web uploading
+
+Simple upload interface, allowing you to drop file (cool for dumps etc...)
+
 ## Why ?
 
 This projet has been created to help developers when creating micro-service application, some of the microservice can for exemple run on a docker container but you will still need to launch some of them on your favorite IDE for debug purpose. Thanks to this projet you will be able to easily switch from IDE to container. 
+
+## How to Dev
+
+Back
+
+There's a vscode debug launcher or
+```
+npm run server:run
+
+Front 
+```
+npm start
+```
+
+## How to build
+
+### The project
+
+```
+npm run build
+```
+
+### Docker image
+
+build  the project first
+
+```
+docker build -t xrobert35/bifrost2 .
+```

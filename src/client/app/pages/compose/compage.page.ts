@@ -47,13 +47,13 @@ export class ComposePage implements OnInit {
       const compose = this.composeForm.value;
       if (!this.selectedCompose) {
         this.composeService.create(compose).subscribe((createdCompose) => {
-          this.bifrostNotificationService.showInfo(`New docker compose has been added`);
+          this.bifrostNotificationService.showSuccess(`New docker compose has been added`);
           this.composes = this.composes.concat([createdCompose]);
           this.selectedCompose = createdCompose;
         });
       } else {
         this.composeService.update(compose).subscribe(() => {
-          this.bifrostNotificationService.showInfo(`Docker compose has been updated`);
+          this.bifrostNotificationService.showSuccess(`Docker compose has been updated`);
           Object.assign(this.selectedCompose, compose);
         });
       }

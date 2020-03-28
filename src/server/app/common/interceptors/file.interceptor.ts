@@ -1,33 +1,32 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as multer from 'multer';
-import { Config } from '@config/config';
-import * as fs from 'fs';
 import { WinLogger } from '@common/logger/winlogger';
+import fs = require('fs');
 import urlJoin = require('url-join');
+import multer = require('multer');
+import { WebUploadService } from '@services/web-upload.service';
 
 @Injectable()
 export class BifrostFileInterceptor implements NestInterceptor {
 
   private logger = WinLogger.get('file-interceptor');
-  uploadTmpFolder = Config.get().UPLOAD_TMP_FOLDER;
 
-  constructor() {
-    if (!fs.existsSync(this.uploadTmpFolder)) {
-      fs.mkdirSync(this.uploadTmpFolder, { recursive: true });
-    }
+  constructor(private webUploadService: WebUploadService) {
   }
 
-  intercept(context: ExecutionContext, next: CallHandler) {
+  async intercept(context: ExecutionContext, next: CallHandler) {
+    const req = context.switchToHttp().getRequest();
+    const folder = await this.webUploadService.getFolder(req.params.reference);
+
     const fileInterceptor = FileInterceptor('file', {
       storage: multer.diskStorage({
         destination: (_req, _file, cb) => {
-          cb(null, this.uploadTmpFolder);
+          cb(null, folder.path);
         },
-        filename: (req: any, file, cb) => {
-          req.context = req.context || {};
+        filename: (_req: any, file, cb) => {
+          _req.context = _req.context || {};
           const fileName = file.fieldname + '-' + Date.now();
-          req.context.uploading = urlJoin(this.uploadTmpFolder, fileName);
+          req.context.uploading = urlJoin(folder.path, fileName);
           cb(null, fileName);
         },
       })

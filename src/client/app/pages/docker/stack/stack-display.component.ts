@@ -159,7 +159,7 @@ export class StackDisplayComponent {
     this.serverWebService.create({
       name: container.name,
       path: '/default',
-      proxyPass: 'localhost'
+      proxyPass: 'http://localhost'
     }).pipe(catchError(res => {
       if (res.error.fonctional) {
         this.bifrostNotificationService.showError(res.error.libelle);

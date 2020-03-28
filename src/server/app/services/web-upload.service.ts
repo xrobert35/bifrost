@@ -1,11 +1,12 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
-import * as fs from 'fs';
 import { Folder } from '@shared/interface/folder.int';
-import * as shortUid from 'short-uuid';
 import { WinLogger } from '@common/logger/winlogger';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Config } from '@config/config';
 import { FunctionalException } from '@common/exception/functional.exception';
+
+import fs = require('fs');
+import shortUid = require('short-uuid');
 import Bluebird = require('bluebird');
 import urlJoin = require('url-join');
 
@@ -22,7 +23,7 @@ export class WebUploadService {
     this.readFoldersJson();
   }
 
-  public async getFolder(reference: string) {
+  public async getFileList(reference: string) {
     const folder = this.folders.find((afolder) => afolder.reference === reference);
     try {
       const folderContent = await fs.promises.readdir(folder.path);
@@ -38,6 +39,10 @@ export class WebUploadService {
       this.logger.error(`Error while reading directory content ${folder.path}`, exp);
       throw new FunctionalException('folder-not-found', `Folder with the path "${folder.path}" not found`);
     }
+  }
+
+  public getFolder(reference: string) {
+   return this.folders.find((afolder) => afolder.reference === reference);
   }
 
   /**

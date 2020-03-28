@@ -4,6 +4,7 @@ import { take, filter } from 'rxjs/operators';
 import { DefaultControlValueAccessor } from '@asi-ngtools/lib';
 import { Subscription, fromEvent } from 'rxjs';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UniversalService } from '../../universal/universal.service';
 
 declare const monaco: any;
 
@@ -32,20 +33,22 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
 
   @ViewChild('editor', { static: true }) editorContent: ElementRef;
 
-  constructor(private monacoEditorService: MonacoEditorService, private ngZone: NgZone) {
+  constructor(private monacoEditorService: MonacoEditorService, private universalService: UniversalService, private ngZone: NgZone) {
     super();
   }
 
   ngOnInit() {
     this.container = this.editorContent.nativeElement;
 
-    this.monacoEditorService.isMonacoLoaded.pipe(
-      filter(isLoaded => isLoaded),
-      take(1)
-    ).subscribe(() => {
-      (<any>window).editor = require('monaco-editor');
-      this.initMonaco();
-    });
+    if (this.universalService.isClient()) {
+      this.monacoEditorService.isMonacoLoaded.pipe(
+        filter(isLoaded => isLoaded),
+        take(1)
+      ).subscribe(() => {
+        (<any>window).editor = require('monaco-editor');
+        this.initMonaco();
+      });
+    }
   }
 
   private async initMonaco() {

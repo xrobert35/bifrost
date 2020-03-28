@@ -6,7 +6,7 @@ import * as socketio from 'socket.io-client';
 export class WebSocketClient {
 
   open(socketName: string): SocketIOClient.Socket {
-    return socketio.connect(`ws://localhost:4081/${socketName}`);
+    return socketio.connect(`ws://${window.location.hostname}:4081/${socketName}`);
   }
 
   emit(socket: SocketIOClient.Socket, event: string, data: any) {

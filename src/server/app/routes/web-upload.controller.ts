@@ -30,7 +30,7 @@ export class WebUploadController {
   @Get('folder/:reference')
   @UsePipes(CustomValidationPipe)
   getFolder(@Param('reference') reference: string) {
-    return this.uploadService.getFolder(reference);
+    return this.uploadService.getFileList(reference);
   }
 
   @Put('folder/:reference')
@@ -49,7 +49,7 @@ export class WebUploadController {
 
   @Post('upload/:reference')
   @UseInterceptors(BifrostFileInterceptor)
-  uploadFile(@UploadedFile() file: File, @Param('reference') reference: string) {
+  uploadFile(@UploadedFile() file: any, @Param('reference') reference: string) {
     return this.uploadService.uploadFile(file, reference);
   }
 }

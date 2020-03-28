@@ -1,8 +1,19 @@
-FROM node:10.15.0-alpine
+FROM node:10.19.0
+
+#update
+RUN apt-get update
+
+# install docker
+RUN curl -sSL https://get.docker.com/ | sh
+
+# install docker-compose
+RUN curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+RUN chmod +x /usr/local/bin/docker-compose
+RUN ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
 
 # install c++
 RUN mkdir -p /app
-
 
 WORKDIR /app
 
@@ -17,12 +28,12 @@ COPY proxy.conf.json proxy.conf.json
 RUN npm install --production
 
 # install Nginx
-RUN apk add nginx
+RUN apt-get install nginx -y
 
 # Expose Nginx port
-EXPOSE 8080
+EXPOSE 80
 # Expose node server port
-EXPOSE 4000
+EXPOSE 4080
 
 RUN mkdir -p /run/nginx
 

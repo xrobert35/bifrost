@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Server } from '@shared/interface/server.int';
 import { ServerLocation } from '@shared/interface/serverLocation.int';
 import { FunctionalException } from '@common/exception/functional.exception';
+
 import { Config } from '@config/config';
-import * as fs from 'fs';
-import * as Mustache from 'mustache';
-import * as shortUid from 'short-uuid';
-import * as shelljs from 'shelljs';
+import fs =  require('fs');
+import Mustache =  require('mustache');
+import shortUid =  require('short-uuid');
+import shelljs =  require('shelljs');
 
 import { WinLogger } from '@common/logger/winlogger';
 

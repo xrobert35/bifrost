@@ -3,9 +3,10 @@ import { WinLogger } from '@common/logger/winlogger';
 import { Config } from '@config/config';
 import { Task } from '@shared/interface/task.int';
 import { FunctionalException } from '@common/exception/functional.exception';
-import * as shortUid from 'short-uuid';
-import * as fs from 'fs';
 import { TechnicalException } from '@common/exception/technical.exception';
+
+import shortUid = require('short-uuid');
+import fs = require('fs');
 
 @Injectable()
 export class TaskService {

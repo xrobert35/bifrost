@@ -63,7 +63,7 @@ export class WebUploadPage {
     })).subscribe((folder) => {
       this.folderForm.reset();
       this.uploadableFolders.push({ folder: folder, fileToUpload: null });
-      this.bifrostNotificationService.showInfo(`New folder has been added`);
+      this.bifrostNotificationService.showSuccess(`New folder has been added`);
     });
   }
 
@@ -79,7 +79,7 @@ export class WebUploadPage {
       Object.assign(this.editedFolder, folder);
       this.editedFolder = null;
       this.folderForm.reset();
-      this.bifrostNotificationService.showInfo(`Folder has been edited`);
+      this.bifrostNotificationService.showSuccess(`Folder has been edited`);
     });
   }
 
@@ -87,7 +87,7 @@ export class WebUploadPage {
   deleteFolder(folderToDelete: Folder) {
     this.webUploadWebService.delete(folderToDelete).subscribe(() => {
       remove(this.uploadableFolders, (folder) => folder.folder === folderToDelete);
-      this.bifrostNotificationService.showInfo(`Folder has been removed`);
+      this.bifrostNotificationService.showSuccess(`Folder has been removed`);
     });
   }
 

@@ -5,12 +5,14 @@ import { FunctionalException } from '@common/exception/functional.exception';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Compose } from '@shared/interface/compose.int';
 import { ComposeOption } from '@shared/interface/compose.option.int';
-import * as shortUid from 'short-uuid';
-import * as fs from 'fs';
-import * as shelljs from 'shelljs';
 import { SocketInfo } from '@shared/interface/socket-into.int';
+
 import Bluebird = require('bluebird');
 import urlJoin = require('url-join');
+import shortUid = require('short-uuid');
+import fs = require('fs');
+import shelljs = require('shelljs');
+
 
 @Injectable()
 export class ComposeService {
