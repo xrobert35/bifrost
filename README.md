@@ -19,7 +19,7 @@ version: "3.5"
 
 services:
   bifrost:
-    image: xrobert35/bifrost:latest
+    image: xrobert35/bifrost2:latest
     container_name: bifrost
     ports:
     - "4080:4080" #website
