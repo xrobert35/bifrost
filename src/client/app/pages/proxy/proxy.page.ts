@@ -73,20 +73,10 @@ export class ProxyPage {
     });
   }
 
-  /** Edit a proxy */
+  /** Valide edit a proxy */
   editProxy() {
     const proxy: ServerLocation = this.proxyForm.value;
-    this.serverWebService.update(proxy).pipe(catchError(res => {
-      if (res.error.fonctional) {
-        this.bifrostNotificationService.showError(res.error.libelle);
-      }
-      return throwError(res);
-    })).subscribe(() => {
-      Object.assign(this.editedProxy, proxy);
-      this.proxyForm.reset();
-      this.bifrostNotificationService.showInfo(`Proxy "${proxy.name} has been updated`);
-      this.asiTable.fireRefresh();
-    });
+    this.updateProxy(proxy);
   }
 
   startEditProxy(proxy: ServerLocation) {
@@ -96,6 +86,26 @@ export class ProxyPage {
       proxyPass: proxy.proxyPass,
       path: proxy.path,
       reference: proxy.reference
+    });
+  }
+
+  updateProxy(proxy: ServerLocation) {
+    this.serverWebService.update(proxy).pipe(catchError(res => {
+      if (res.error.fonctional) {
+        this.bifrostNotificationService.showError(res.error.libelle);
+      }
+      return throwError(res);
+    })).subscribe(() => {
+      Object.assign(this.editedProxy, proxy);
+      this.proxyForm.reset();
+      this.bifrostNotificationService.showSuccess(`Proxy "${proxy.name} has been updated`);
+      this.asiTable.fireRefresh();
+    });
+  }
+
+  reloadProxyConf() {
+    this.serverWebService.reload().subscribe(() => {
+      this.bifrostNotificationService.showSuccess(`Proxy configuration reloaded`);
     });
   }
 

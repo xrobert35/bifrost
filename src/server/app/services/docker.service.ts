@@ -188,7 +188,7 @@ export class DockerService {
       dockerContainer.Image = imageFullName;
     }
     if (dockerContainer.Labels) {
-      dockerContainer.stack = dockerContainer.Labels['com.docker.compose.project'];
+      dockerContainer.stack = dockerContainer.Labels['com.docker.compose.project'] || 'others..';
     }
     return dockerContainer;
   }

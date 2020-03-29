@@ -4,7 +4,7 @@ import { TechnicalExceptionFilter } from './common/exception/technical-exception
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { RoutesModule } from './routes/routes.modules';
 import { LoggingInterceptor } from '@common/interceptors/logging-interceptor';
-import { DockerGateway } from './routes/docker.gateway';
+import { LogGateway } from './routes/log.gateway';
 import { DefaultExceptionFilter } from '@common/exception/default-exception.filter';
 
 @Module({
@@ -27,7 +27,7 @@ import { DefaultExceptionFilter } from '@common/exception/default-exception.filt
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    DockerGateway
+    LogGateway
   ],
 })
 export class AppModule {}

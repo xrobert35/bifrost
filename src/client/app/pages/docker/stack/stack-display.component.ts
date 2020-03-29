@@ -11,7 +11,7 @@ import { throwError } from 'rxjs';
 
 @Component({
   selector: 'stack-display',
-  host: { 'class': 'stack-display' },
+  host: { 'class': 'stack-display flex-column' },
   templateUrl: './stack-display.component.html'
 })
 export class StackDisplayComponent {

@@ -39,4 +39,9 @@ export class ServerController {
     this.serverService.deleteProxy(reference);
   }
 
+  @Post('/reload')
+  @HttpCode(HttpStatus.OK)
+  public readlogProxyConfig() {
+    return this.serverService.writeAndReloadNginxConf().toPromise();
+  }
 }

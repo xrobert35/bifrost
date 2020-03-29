@@ -4,18 +4,20 @@
     <asi-input labelPosition="left" label="Path" labelPosition="top" formControlName="path"></asi-input>
 
     <!-- add -->
-    <button id="folder_add" type="submit" *ngIf="!editedFolder" class="small-icon-action-button">
+    <button id="folder_add" type="submit" *ngIf="!editedFolder" class="small-icon-action-button tooltip-left"
+    [attr.asi-tooltip]="'Add'">
       <i class="fas fa-plus-circle"></i>
     </button>
 
     <!-- valide edit -->
-    <button id="folder_edit_valid" type="submit" *ngIf="editedFolder" class="small-icon-action-button">
+    <button id="folder_edit_valid" type="submit" *ngIf="editedFolder"
+    class="small-icon-action-button" [attr.asi-tooltip]="'Valide edit'">
       <i class="fas fa-check"></i>
     </button>
 
     <!-- cancel edit -->
     <button id="proxy_edit_cancel" type="button" (click)="endEditFolder()" *ngIf="editedFolder"
-      class="small-icon-action-button">
+      class="small-icon-action-button" [attr.asi-tooltip]="'Cancel edit'">
       <i class="fas fa-times"></i>
     </button>
   </div>
@@ -26,26 +28,28 @@
     <div class="flex-row col-center space-between">
       <strong>{{uploadableFolder.folder.libelle}}</strong>
       <div class="flex-row static">
+        <!-- Show content -->
         <button id="show-content" class="small-icon-action-button" [disabled]="uploadableFolder.progress"
-          (click)="showFolderContent(uploadableFolder.folder)">
+          (click)="showFolderContent(uploadableFolder.folder)" [attr.asi-tooltip]="'Show content'">
           <i class="fas fa-list clickable icon-action"></i>
         </button>
+        <!-- Edit -->
         <button id="start-edit" class="small-icon-action-button" [disabled]="uploadableFolder.progress"
-          (click)="startEditFolder(uploadableFolder.folder)">
+          (click)="startEditFolder(uploadableFolder.folder)" [attr.asi-tooltip]="'Edit'">
           <i class="far fa-edit clickable icon-action"></i>
         </button>
+        <!-- Delete -->
         <button id="delete-folder" class="small-icon-action-button" [disabled]="uploadableFolder.progress"
-          (click)="deleteFolder(uploadableFolder.folder)">
+          (click)="deleteFolder(uploadableFolder.folder)" [attr.asi-tooltip]="'Delete'">
           <i class="far fa-trash-alt clickable icon-action"></i>
         </button>
       </div>
     </div>
     <div class="flex-row space-between">
       <span>{{uploadableFolder.folder.path}}</span>
-      <span [hidden]="!uploadableFolder.progress">
-        {{uploadableFolder.progress}}%</span>
+      <span [hidden]="!uploadableFolder.progress">{{uploadableFolder.progress}}%</span>
     </div>
-    <asi-file-chooser name="file" [accept]="acceptedFiles" [disabled]="uploadableFolder.progress"
+    <asi-file-chooser name="file" [accept]="acceptedFiles" [disabled]="uploadableFolder.progress" [attr.asi-tooltip]="'Select file'"
       [(ngModel)]="uploadableFolder.fileToUpload">
     </asi-file-chooser>
     <asi-button id="web_upload_file" [disabled]="!uploadableFolder.fileToUpload || uploadableFolder.progress"

@@ -10,7 +10,10 @@ import { UniversalService } from '../../universal/universal.service';
 export class TailLogComponent implements OnChanges, OnDestroy {
 
   @Input()
-  containerId: string;
+  logType: string;
+
+  @Input()
+  logId: string;
 
   displayLogs: string[] = [];
   originalLogs: string[] = [];
@@ -33,13 +36,15 @@ export class TailLogComponent implements OnChanges, OnDestroy {
 
     if (this.universalService.isClient()) {
 
-      this.socket = this.webSocketClient.open('dockerlogs');
-      this.webSocketClient.emit(this.socket, 'getlogs', { containerId: this.containerId, logLength: this.logLength });
+      this.socket = this.webSocketClient.open('logs');
 
-      this.receiveLogSub = this.webSocketClient.onEvent(this.socket, `asynclog/${this.containerId}`).subscribe((msg) => {
+      this.askForLogs();
+
+      this.receiveLogSub = this.webSocketClient.onEvent(this.socket, `asynclog/${this.logType}/${this.logId}`).subscribe((msg) => {
         this.originalLogs.push(msg);
         this.displayLogs.push(this.toDisplayLog(msg));
-        if (this.firstLoad || this.logsContainer.nativeElement.scrollTop === this.logsContainer.nativeElement.scrollHeight) {
+        const logsContainerDiv = this.logsContainer.nativeElement;
+        if (this.firstLoad || (logsContainerDiv.offsetHeight  + logsContainerDiv.scrollTop) === logsContainerDiv.scrollHeight) {
           this.firstLoad = false;
           setTimeout(() => {
             this.getBottom();
@@ -47,6 +52,11 @@ export class TailLogComponent implements OnChanges, OnDestroy {
         }
       });
     }
+  }
+
+  private askForLogs() {
+    const dataWithLength = { logType: this.logType, logId: this.logId, logLength: this.logLength };
+    this.webSocketClient.emit(this.socket, 'getlogs', dataWithLength);
   }
 
   private toDisplayLog(originalLog: string) {
@@ -65,7 +75,8 @@ export class TailLogComponent implements OnChanges, OnDestroy {
     this.displayLogs = [];
 
     this.logLength += 100;
-    this.webSocketClient.emit(this.socket, 'getlogs', { containerId: this.containerId, logLength: this.logLength });
+
+    this.askForLogs();
   }
 
   getBottom() {

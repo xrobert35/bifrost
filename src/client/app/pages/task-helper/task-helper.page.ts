@@ -32,12 +32,12 @@ export class TaskHelperPage {
       const task = this.taskForm.value;
       if (!this.selectedTask) {
         this.taskService.create(task).subscribe((createdTask) => {
-          this.bifrostNotificationService.showInfo(`New Task has been added`);
+          this.bifrostNotificationService.showSuccess(`New Task has been added`);
           this.tasks.push(createdTask);
         });
       } else {
         this.taskService.update(task).subscribe(() => {
-          this.bifrostNotificationService.showInfo(`Task ${task.name} has been updated`);
+          this.bifrostNotificationService.showSuccess(`Task ${task.name} has been updated`);
           Object.assign(this.selectedTask, task);
         });
       }

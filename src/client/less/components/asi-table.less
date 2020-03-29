@@ -9,9 +9,16 @@ app-root {
             height: 15px;
 
             .asi-input {
-              margin : 3px 0px 3px 0px;
+              margin : 0px 0px 0px 0px;
               input{
                 box-shadow: none;
+                border :none;
+                border-radius: 0px;
+                border-bottom: 1px solid @bifrost-secondary-color;
+                &:focus{
+                  border: none;
+                  border-bottom: 1px solid @bifrost-active-color;
+                }
               }
             }
           }

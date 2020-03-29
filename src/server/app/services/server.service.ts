@@ -4,12 +4,14 @@ import { ServerLocation } from '@shared/interface/serverLocation.int';
 import { FunctionalException } from '@common/exception/functional.exception';
 
 import { Config } from '@config/config';
-import fs =  require('fs');
-import Mustache =  require('mustache');
-import shortUid =  require('short-uuid');
-import shelljs =  require('shelljs');
-
+import fs = require('fs');
+import Mustache = require('mustache');
+import shortUid = require('short-uuid');
+import shelljs = require('shelljs');
+import Tail = require('nodejs-tail');
 import { WinLogger } from '@common/logger/winlogger';
+import { Observable, Observer } from 'rxjs';
+import { TechnicalException } from '@common/exception/technical.exception';
 
 @Injectable()
 export class ServerService {
@@ -78,19 +80,45 @@ export class ServerService {
     this.saveServer();
   }
 
-  private saveServer() {
-    this.saveServerJson(this.server);
-    const nginxConf = Mustache.render(this.nginxTemplate, this.server);
-    this.writeAndReloadNginxConf(nginxConf);
+  public streamLog(logFile: string, logLength: number): Observable<string> {
+    return Observable.create((observer: Observer<string>) => {
+      const file = `/var/log/nginx/${logFile}`;
+      const initTail = shelljs.tail({ '-n': logLength }, file);
+      const lines = initTail.toString().split('\n');
+      lines.pop();
+      lines.forEach((line) => {
+        observer.next(line);
+      });
+      const tail = new Tail(`/var/log/nginx/${logFile}`);
+      tail.on('line', (line: string) => {
+        observer.next(line);
+      });
+      tail.on('close', () => {
+        observer.complete();
+      });
+      tail.watch();
+    });
   }
 
-  private writeAndReloadNginxConf(conf: string) {
-    try {
-      fs.writeFileSync('/etc/nginx/conf.d/default.conf', conf);
-      shelljs.exec('/usr/sbin/nginx -s reload');
-    } catch (err) {
-      this.logger.error('Unabled to write and reload nginx configuration', err);
-    }
+  public writeAndReloadNginxConf(): Observable<string> {
+    const conf = Mustache.render(this.nginxTemplate, this.server);
+    return Observable.create((observer: Observer<string>) => {
+      try {
+        fs.writeFileSync('/etc/nginx/conf.d/default.conf', conf);
+        const proc = shelljs.exec('/usr/sbin/nginx -s reload', (_code, stdout) => {
+          this.logger.info(stdout);
+        });
+        proc.on('exit', () => {
+          observer.complete();
+        });
+      } catch (err) {
+        observer.error(new TechnicalException('nginx-error', `Unabled to write and reload nginx configuration`, err, 500));
+      }
+    });
+  }
+
+  private saveServer() {
+    this.saveServerJson(this.server);
   }
 
   private saveServerJson(server: Server) {
@@ -115,7 +143,7 @@ export class ServerService {
         if (server) {
           this.server = JSON.parse(server);
         } else {
-          this.server = { onlyActive: false, locations: [] };
+          this.server = { port: 80, serverName: 'localhost', onlyActive: false, locations: [] };
         }
       } catch (err) {
         this.logger.error('Unabled to read server configuration', err);

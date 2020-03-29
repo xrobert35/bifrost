@@ -39,4 +39,7 @@ export class ServerWebService {
     return this.httpClient.delete<void>(`${this.baseUrl}/proxy/${serverLocation.reference}`).pipe(share());
   }
 
+  reload(): Observable<void> {
+    return this.httpClient.post<void>(`${this.baseUrl}/reload`, null).pipe(share());
+  }
 }

@@ -4,22 +4,26 @@
     <label *ngIf="display === 'list'"> Containers ({{stacks[0]?.containers.length}})</label>
   </div>
   <div class="flex-row static">
-    <button id="display_list" [disabled]="display === 'list'" type="button" class="small-icon-action-button"
+    <button id="display_list" [disabled]="display === 'list'" type="button"
+    class="small-icon-action-button" [attr.asi-tooltip]="'Display List'"
       (click)="displayList()">
       <i class="fas fa-list-ul"></i>
     </button>
-    <button id="display_stack" [disabled]="display === 'stack'" type="button" class="small-icon-action-button"
+    <button id="display_stack" [disabled]="display === 'stack'" type="button"
+    class="small-icon-action-button" [attr.asi-tooltip]="'Display stack'"
       (click)="displayStack()">
       <i class="fas fa-layer-group"></i>
     </button>
-    <button id="docker_prune" type="button" class="small-icon-action-button" (click)="pruneDocker()">
+    <button id="docker_prune" type="button" class="small-icon-action-button tooltip-left"
+    [attr.asi-tooltip]="'Docker prune'"
+    (click)="pruneDocker()">
       <i class="fas fa-snowplow"></i>
     </button>
   </div>
 </div>
 
 
-<div *ngIf="display === 'stack'">
+<div *ngIf="display === 'stack'" class="flex-column overflow">
   <asi-collapse *ngFor="let stack of stacks" [collapsed]="display === 'stack'">
     <asi-header *asiCollapseHeaderDef="let data">
       <div class="flex-row col-center space-between static">

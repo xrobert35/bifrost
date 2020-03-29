@@ -2,9 +2,10 @@ side-panel {
   display: flex;
   flex-direction: column;
   flex: 0 0 150px;
+  border-right: 1px solid darkblue;
 
+  padding: 5px 5px 5px 12px;
   max-width: 200px;
-  margin: 15px 5px 15px 15px;
 
   .logo-panel {
     display: flex;
@@ -18,17 +19,15 @@ side-panel {
     }
 
     label {
-      color: white;
+      color: darkblue;
       text-align: center;
       font-family: @font-bold;
     }
-    padding: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   .nav-panel {
     background-color: white;
-    box-shadow: 1px 1px 5px black;
 
     .menu-icon {
       height: 25px;
@@ -49,7 +48,6 @@ side-panel {
       &.compose {
         background-image: url("../../assets/icons/compose-menu.png");
       }
-
 
       &.upload {
         background-image: url("../../assets/icons/upload-menu.png");

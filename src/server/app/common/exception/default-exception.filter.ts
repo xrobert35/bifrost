@@ -1,4 +1,4 @@
-import { Catch, ExceptionFilter, ArgumentsHost } from '@nestjs/common';
+import { Catch, ExceptionFilter, ArgumentsHost, NotFoundException } from '@nestjs/common';
 import { WinLogger } from '@common/logger/winlogger';
 
 
@@ -13,15 +13,28 @@ export class DefaultExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    this.logger.error(`An unknow exception occured`, exception);
+    if (exception instanceof NotFoundException) {
+      response
+        .status(404)
+        .json({
+          statusCode: 404,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+          method : request.method,
+          libelle: 'Sorry, this endpoint does not exist',
+        });
+    } else {
+      this.logger.error(`An unknow exception occured`, exception);
+      response
+        .status(500)
+        .json({
+          statusCode: 500,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+          libelle: 'Sorry, an unknow exception occured',
+        });
+    }
 
-    response
-      .status(500)
-      .json({
-        statusCode: 500,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        libelle: 'Sorry, an unknow exception occured',
-      });
+
   }
 }

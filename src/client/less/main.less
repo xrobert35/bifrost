@@ -17,7 +17,6 @@ html {
     margin: 0;
     flex: 1 0 auto;
     flex-direction: column;
-    background-image: linear-gradient(to right bottom, #9fc5ff, #86ace9, #6d93d3, #547bbd, #3a64a8, #2b5b9c, #1a5190, #004884, #00497d, #004a75, #004a6d, #0d4964);
   }
 
   .ml-5 {
@@ -40,10 +39,93 @@ html {
     width: 35px;
     height: 35px;
 
-    box-sizing : border-box;
+    box-sizing: border-box;
+
+    cursor: pointer;
 
     &:hover {
       color: @bifrost-active-color;
+    }
+  }
+
+  [asi-tooltip] {
+    position: relative;
+
+    &:hover:after {
+      position: absolute;
+      background: white;
+      color: darkblue;
+
+      border-radius: 5px;
+      border: 1px solid darkblue;
+
+      font-family: @font-light;
+      font-size: 14px;
+
+      line-height: 28px;
+      top: 40px;
+
+      text-align: center;
+
+      content: attr(asi-tooltip);
+      padding: 5px 15px;
+
+      z-index: 98;
+
+      white-space: nowrap;
+    }
+
+    &.tooltip-top-left:hover:after {
+      top: -45px;
+      right: 10px;
+    }
+
+    &.tooltip-top:hover:after {
+      top: -50px;
+    }
+
+    &.tooltip-left:hover:after {
+      right: 10px;
+    }
+
+    &.tooltip-right:hover:after {
+      left: 10px;
+    }
+  }
+
+  [asi-tooltip] {
+    position: relative;
+
+    &:hover:after {
+      position: absolute;
+      background: white;
+      color: darkblue;
+
+      border-radius: 5px;
+      border: 1px solid darkblue;
+
+      font-family: @font-light;
+      font-size: 14px;
+
+      line-height: 28px;
+      top: 40px;
+
+      text-align: center;
+
+      content: attr(asi-tooltip);
+      padding: 5px 15px;
+
+      z-index: 98;
+
+      white-space: nowrap;
+    }
+
+    &.tooltip-left:hover:after {
+      right: 10px;
+    }
+
+    &.tooltip-right:hover:after {
+      left: 10px;
     }
   }
 
@@ -75,7 +157,13 @@ html {
     &.static {
       flex: 0 0 auto;
     }
+
+    &.overflow {
+      flex: 1 1 0px;
+      overflow: auto;
+    }
   }
+
   .flex-row {
     display: flex;
     flex-direction: row;
@@ -145,6 +233,28 @@ html {
 
     .clickable {
       cursor: pointer;
+    }
+
+    .table-action-container {
+      background-image: linear-gradient(
+        to right bottom,
+        #3a64a8,
+        #2b5b9c,
+        #1a5190,
+        #004884,
+        #00497d,
+        #004a75,
+        #004a6d,
+        #0d4964
+      );
+      padding: 1px;
+      display: flex;
+      flex-direction: column;
+      flex: 0 0 auto;
+
+      .table-action-panel {
+        margin: 5px;
+      }
     }
   }
 }
