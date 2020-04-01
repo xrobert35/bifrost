@@ -1,19 +1,26 @@
 <div class="table-action-container">
-  <div class="flex-row start col-center table-action-panel">
+  <div class="table-action-panel">
     <!-- start -->
     <button id="stack_start" type="button" class="small-icon-action-button tooltip-right" [attr.asi-tooltip]="'Play'"
       (click)="startSelectedContainers()">
-      <i class="g-play"></i>
+      <i class="fas fa-play"></i>
     </button>
     <!-- stop -->
     <button id="stack_stop" type="button" class="small-icon-action-button" [attr.asi-tooltip]="'Stop'"
       (click)="stopSelectedContainers()">
-      <i class="g-stop"></i>
+      <i class="fas fa-stop"></i>
     </button>
+
+    <!-- restart -->
+    <button id="stack_delete" type="button" class="small-icon-action-button" [attr.asi-tooltip]="'Restart'"
+      (click)="restartSelectedContainers()">
+      <i class="fas fa-redo"></i>
+    </button>
+
     <!-- update -->
     <button id="stack_delete" type="button" class="small-icon-action-button" [attr.asi-tooltip]="'Update'"
       (click)="updateSelectedContainers()">
-      <i class="g-update"></i>
+      <i class="fas fa-sync"></i>
     </button>
     <!-- delete -->
     <button id="stack_delete" type="button" class="small-icon-action-button" [attr.asi-tooltip]="'Delete'"
@@ -52,8 +59,8 @@
     <!-- port -->
     <asi-table-column name="port" libelle="Port" columnClass="port-col">
       <asi-cell *asiCellDef="let container">
-        <span *ngFor="let port of container.Ports" [hidden]="!port.PublicPort">
-          {{ port.PrivatePort + ":" + port.PublicPort }}</span>
+        <a *ngFor="let port of container.Ports" [hidden]="!port.PublicPort" [href]="getAppLocation(port.PublicPort)">
+          {{ port.PublicPort + ":" + port.PrivatePort }}</a>
       </asi-cell>
     </asi-table-column>
     <!-- action -->

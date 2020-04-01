@@ -7,6 +7,7 @@ import { DockerWebService } from '@rest/docker.webservice';
 import { ServerWebService } from '@rest/server.webservice';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -29,11 +30,14 @@ export class StackDisplayComponent {
 
   nbElementByPage = 20;
 
+  host: string;
+
   containerSelectionModel = new AsiTableSelectionModel('name', false);
 
   constructor(private bifrostNotificationService: BifrostNotificationService,
     private dockerWebService: DockerWebService,
-    private serverWebService: ServerWebService) {
+    private serverWebService: ServerWebService,
+    private sanitizer: DomSanitizer) {
   }
 
   ngOnInit() {
@@ -45,6 +49,10 @@ export class StackDisplayComponent {
   }
 
   refreshTable = async (_tableRequest: AsiTableRequest) => {
+    this.containerSelectionModel.itemsIncluded = [];
+    this.containerSelectionModel.allChecked = false;
+    this.containerSelectionModel.itemsExcluded = [];
+
     const tableData = new AsiTableData<DockerContainer>();
 
     tableData.results = this.stack.containers;
@@ -110,6 +118,13 @@ export class StackDisplayComponent {
     return Promise.all(deletingContainers);
   }
 
+  async restartSelectedContainers() {
+    await this.stopContainers(this.getSelectedContainers());
+    await this.startContainers(this.getSelectedContainers());
+    await this.refreshStackContainer();
+    this.asiTable.fireRefresh();
+  }
+
   async startSelectedContainers() {
     await this.startContainers(this.getSelectedContainers());
     await this.refreshStackContainer();
@@ -168,6 +183,13 @@ export class StackDisplayComponent {
     })).subscribe(() => {
       this.bifrostNotificationService.showSuccess(`New proxy has been added`);
     });
+  }
+
+  getAppLocation(port: string) {
+    if (port) {
+      return this.sanitizer.bypassSecurityTrustUrl(window.location.hostname + ':' + port);
+    }
+    return undefined;
   }
 
   private getSelectedContainers(): DockerContainer[] {
