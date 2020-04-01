@@ -4,7 +4,7 @@ side-panel {
   flex: 0 0 150px;
   border-right: 1px solid darkblue;
 
-  padding: 5px 5px 5px 12px;
+  padding: 5px 5px 5px 5px;
   max-width: 200px;
 
   .logo-panel {
@@ -90,25 +90,36 @@ side-panel {
       }
     }
 
-    .asi-nav-group {
-      .asi-nav-group-container {
-        .asi-nav-header {
-          flex-direction: column;
+    .asi-menu {
+      .asi-menu-container {
+        .asi-menu-panel {
+          .items-container {
+            .item-container {
+              display: flex;
+              flex-direction: row;
+              flex: 1 0 auto;
+              margin-bottom: 10px;
 
-          min-height: 0px;
-          max-height: none;
-          border-bottom: none;
-          background-color: none;
+              min-height: 0px;
+              max-height: none;
+              border-bottom: none;
+              background-color: transparent;
 
-          button {
-            font-family: @font-bold;
-            box-shadow: none;
-            &.active {
+              font-family: @font-bold;
               box-shadow: none;
-            }
-            &:focus {
-              border: none;
-              border-bottom: 1px solid #3d566f;
+              color: black;
+              &.active {
+                box-shadow: none;
+                background-color: transparent;
+                border-bottom: 1px solid @bifrost-primary-color;
+              }
+              &:focus {
+                border: none;
+                border-bottom: 1px solid @bifrost-primary-color;
+              }
+              &:hover {
+                background-color: transparent;
+              }
             }
           }
         }

@@ -3,43 +3,43 @@
   <label> Bifröst </label>
 </div>
 
-<div class="nav-panel flex">
-  <asi-nav-group>
-    <asi-nav [routerLink]="['docker']">
-      <div *asiNavHeaderDef="let data" class="flex-row col-center">
+<nav class="nav-panel flex">
+  <asi-menu [vertical]="true">
+    <asi-menu-item [routerLink]="['docker']">
+      <div class="flex-row col-center">
         <div class="menu-icon docker"></div>
         <span> Docker </span>
       </div>
-    </asi-nav>
-    <asi-nav [routerLink]="['proxy']">
-      <div *asiNavHeaderDef="let data" class="flex-row col-center">
+    </asi-menu-item>
+    <asi-menu-item [routerLink]="['proxy']">
+      <div class="flex-row col-center">
         <div class="menu-icon proxy"></div>
         <span> Proxy </span>
       </div>
-    </asi-nav>
-    <asi-nav [routerLink]="['compose']">
-      <div *asiNavHeaderDef="let data" class="flex-row col-center">
+    </asi-menu-item>
+    <asi-menu-item [routerLink]="['compose']">
+      <div class="flex-row col-center">
         <div class="menu-icon compose"></div>
         <span> Compose </span>
       </div>
-    </asi-nav>
-    <asi-nav [routerLink]="['web-upload']">
-      <div *asiNavHeaderDef="let data" class="flex-row col-center">
+    </asi-menu-item>
+    <asi-menu-item [routerLink]="['web-upload']">
+      <div class="flex-row col-center">
         <div class="menu-icon upload"> </div>
         <span> Web Upload </span>
       </div>
-    </asi-nav>
+    </asi-menu-item>
     <!-- <asi-nav [routerLink]="['task-helper']">
-      <div *asiNavHeaderDef="let data" class="flex-row col-center">
+      <div class="flex-row col-center">
         <div class="menu-icon task"></div>
         <span> Task </span>
       </div>
     </asi-nav> -->
     <!-- <asi-nav [routerLink]="['ssh']">
-      <div *asiNavHeaderDef="let data" class="flex-row col-center">
+      <div class="flex-row col-center">
         <div class="menu-icon ssh"></div>
         <span> SSH </span>
       </div>
     </asi-nav> -->
-  </asi-nav-group>
-</div>
+  </asi-menu>
+</nav>
