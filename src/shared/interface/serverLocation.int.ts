@@ -20,4 +20,8 @@ export class ServerLocation {
 
   @IsString()
   proxyPass?: string;
+
+  @IsString()
+  rewrite?: string;
+
 }

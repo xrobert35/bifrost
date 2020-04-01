@@ -55,9 +55,9 @@ export class ServerService {
   }
 
   public editProxy(proxy: ServerLocation): string {
-    const proxyToEdit = this.server.locations.find((proxyToFind) => {
-      return proxyToFind.reference = proxy.reference;
-    });
+    const proxyToEdit = this.server.locations.find((proxyToFind) =>
+      proxyToFind.reference === proxy.reference
+    );
 
     Object.assign(proxyToEdit, proxy);
 

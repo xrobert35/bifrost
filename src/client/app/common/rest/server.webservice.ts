@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { share, map } from 'rxjs/operators';
 import { Server } from '@shared/interface/server.int';
-import { Observable } from 'rxjs';
 import { UniversalService } from '../universal/universal.service';
 import { ServerLocation } from '@shared/interface/serverLocation.int';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ServerWebService {
