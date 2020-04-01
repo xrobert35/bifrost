@@ -27,9 +27,15 @@ export class DockerService {
     this.logger.info('Listing container ');
     let containers = await this.docker.container.list({ all: true });
     if (stack) {
-      containers = containers.filter(container =>
-        (<DockerContainer>container.data).Labels['com.docker.compose.project'] === stack
-      );
+      if (stack !== 'others..') {
+        containers = containers.filter(container =>
+          (<DockerContainer>container.data).Labels['com.docker.compose.project'] === stack
+        );
+      } else {
+        containers = containers.filter(container =>
+          !(<DockerContainer>container.data).Labels['com.docker.compose.project']
+        );
+      }
     }
 
     return await Bluebird.mapSeries(containers, async (container) => {
@@ -68,7 +74,7 @@ export class DockerService {
     const container = await this.docker.container.get(containerId).status();
 
     try {
-    await this.pullImage(info);
+      await this.pullImage(info);
     } catch (err) {
       this.logger.error('Error while trying to update image', err);
       throw new TechnicalException('container-update-error', 'Error while trying to update container' + containerId);
@@ -137,6 +143,7 @@ export class DockerService {
     const containerInfo: any = container.data;
     const newContainer = {
       ...containerInfo,
+      Labels: containerInfo.Config.Labels
     };
 
     this.logger.info('new image id ' + newImage.data.Id);
