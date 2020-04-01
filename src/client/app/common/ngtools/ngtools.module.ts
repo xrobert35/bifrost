@@ -22,6 +22,7 @@ import {
 } from '@asi-ngtools/lib';
 import { NotificationComponent } from './notification/notification.component';
 import { BifrostNotificationService } from './notification/notification.service';
+import { AsiLastPipe } from '../components/last/last.pipe';
 
 const modules = [
   AsiInputModule,
@@ -48,9 +49,9 @@ const modules = [
 ];
 
 @NgModule({
-  declarations: [NotificationComponent],
+  declarations: [NotificationComponent, AsiLastPipe],
   imports: [modules],
-  exports: [modules],
+  exports: [modules, AsiLastPipe],
   entryComponents : [NotificationComponent],
   providers: [BifrostNotificationService]
 })

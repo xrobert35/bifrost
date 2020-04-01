@@ -46,7 +46,7 @@
       </div>
     </div>
     <div class="flex-row space-between">
-      <span>{{uploadableFolder.folder.path}}</span>
+      <span class="tooltip-left" [attr.asi-tooltip]="uploadableFolder.folder.path">{{uploadableFolder.folder.path | asiLast : 35}}</span>
       <span [hidden]="!uploadableFolder.progress">{{uploadableFolder.progress}}%</span>
     </div>
     <asi-file-chooser name="file" [accept]="acceptedFiles" [disabled]="uploadableFolder.progress" [attr.asi-tooltip]="'Select file'"
