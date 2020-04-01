@@ -8,6 +8,7 @@ import { ServerWebService } from '@rest/server.webservice';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { DomSanitizer } from '@angular/platform-browser';
+import { UniversalService } from 'client/app/common/universal/universal.service';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class StackDisplayComponent {
   constructor(private bifrostNotificationService: BifrostNotificationService,
     private dockerWebService: DockerWebService,
     private serverWebService: ServerWebService,
+    private universalService: UniversalService,
     private sanitizer: DomSanitizer) {
   }
 
@@ -186,8 +188,10 @@ export class StackDisplayComponent {
   }
 
   getAppLocation(port: string) {
-    if (port) {
-      return this.sanitizer.bypassSecurityTrustUrl(window.location.hostname + ':' + port);
+    if (this.universalService.isClient()) {
+      if (port) {
+        return this.sanitizer.bypassSecurityTrustUrl(window.location.hostname + ':' + port);
+      }
     }
     return undefined;
   }
