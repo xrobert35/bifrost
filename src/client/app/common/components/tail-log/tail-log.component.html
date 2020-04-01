@@ -1,25 +1,23 @@
-<div class="flex-row end static">
-  <asi-switch label="Show timestamp : " labelPosition="left" [(ngModel)]="showTimeStamp" (onValueChange)="showTimeStampChanged()"></asi-switch>
-  <button
-    id="go_bottom"
-    class="small-icon-action-button"
-    (click)="getBottom()"
-  >
-    <i class="fas fa-arrow-alt-circle-down"></i>
-  </button>
-  <button
-  id="go_bottom"
-  class="small-icon-action-button"
-  (click)="plusHundred()"
->
-  +100
-</button>
-{{displayLogs.length}}
-</div>
-<div class="logs-container" #logsContainer>
-  <div class="logs">
-    <div class="log" *ngFor="let log of displayLogs">
-      <p [innerHtml]="'  ' + log"></p>
+<div class="table-action-container flex">
+  <div class="table-action-panel">
+    <asi-switch label="Show timestamp : " labelPosition="left" [(ngModel)]="showTimeStamp"
+      (onValueChange)="showTimeStampChanged()"></asi-switch>
+    <button id="go_bottom" class="small-icon-action-button" [attr.asi-tooltip]="'Go bottom'" (click)="getBottom()">
+      <i class="fas fa-arrow-alt-circle-down"></i>
+    </button>
+    <button id="go_bottom" class="small-icon-action-button" (click)="plusHundred()">
+      +500
+    </button>
+  </div>
+  <div class="table-sub-action-panel">
+    <span>lines : {{ displayLogs.length }}</span>
+  </div>
+
+  <div class="logs-container" #logsContainer>
+    <div class="logs">
+      <div class="log" *ngFor="let log of displayLogs">
+        <p [innerHtml]="'  ' + log"></p>
+      </div>
     </div>
   </div>
 </div>

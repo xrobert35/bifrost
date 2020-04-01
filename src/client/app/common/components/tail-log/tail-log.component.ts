@@ -55,6 +55,9 @@ export class TailLogComponent implements OnChanges, OnDestroy {
   }
 
   private askForLogs() {
+    this.originalLogs = [];
+    this.displayLogs = [];
+
     const dataWithLength = { logType: this.logType, logId: this.logId, logLength: this.logLength };
     this.webSocketClient.emit(this.socket, 'getlogs', dataWithLength);
   }
@@ -71,11 +74,7 @@ export class TailLogComponent implements OnChanges, OnDestroy {
   }
 
   plusHundred() {
-    this.originalLogs = [];
-    this.displayLogs = [];
-
-    this.logLength += 100;
-
+    this.logLength += 500;
     this.askForLogs();
   }
 

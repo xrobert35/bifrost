@@ -25,7 +25,7 @@
   </form>
 
   <div class="table-action-container">
-    <div class="flex-row start static table-action-panel">
+    <div class="table-action-panel">
       <!-- error logs -->
       <a id="show_errors_logs" class="small-icon-action-button tooltip-left" [attr.asi-tooltip]="'Show errors logs'"
         href="/bifrost/app/proxy/logs/error">
@@ -35,7 +35,7 @@
       <!-- access logs -->
       <a id="show_acces_logs" class="small-icon-action-button tooltip-left" [attr.asi-tooltip]="'Show access logs'"
         href="/bifrost/app/proxy/logs/access">
-        <i class="fas fa-file-alt"></i>
+        <i class="far fa-file-alt"></i>
       </a>
 
       <!-- update proxy -->
@@ -60,9 +60,15 @@
         </asi-cell>
       </asi-table-column>
 
-      <asi-table-column name="proxy" libelle="ProxyPass" [sortable]="true" columnClass="proxypass-col">
+      <asi-table-column name="proxyPass" libelle="ProxyPass" [sortable]="true" columnClass="proxypass-col">
         <asi-cell *asiCellDef="let proxy">
           <asi-input [delay]="1000" class="table-input" [(ngModel)]="proxy.proxyPass" (onValueChange)="updateProxy(proxy)"></asi-input>
+        </asi-cell>
+      </asi-table-column>
+
+      <asi-table-column name="rewrite" libelle="Rewrite" [sortable]="true" columnClass="rewrite-col">
+        <asi-cell *asiCellDef="let proxy">
+          <asi-input [delay]="1000" class="table-input" [(ngModel)]="proxy.rewrite" (onValueChange)="updateProxy(proxy)"></asi-input>
         </asi-cell>
       </asi-table-column>
 

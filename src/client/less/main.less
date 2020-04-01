@@ -252,8 +252,20 @@ html {
       flex-direction: column;
       flex: 0 0 auto;
 
+      &.flex {
+        flex: 1 0 auto;
+      }
+
       .table-action-panel {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
         margin: 5px;
+      }
+
+      .table-sub-action-panel {
+        height: 24px;
+        background-color: white;
       }
     }
   }
