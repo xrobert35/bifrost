@@ -1,19 +1,20 @@
-FROM node:10.19.0
+FROM docker:19.03.8-dind
 
 #update
-RUN apt-get update
-
-# install docker
-RUN curl -sSL https://get.docker.com/ | sh
-
-# install docker-compose
-RUN curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
-RUN ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
+RUN apk update
 
 # install c++
 RUN mkdir -p /app
+
+RUN apk add curl
+RUN apk add bash
+
+## install nodejs
+RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main/ nodejs=12.15.0-r1
+## install npm
+RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main/ npm=12.15.0-r1
+## install docker-compose
+RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main/ docker-compose=1.24.1-r3
 
 WORKDIR /app
 
@@ -28,7 +29,7 @@ COPY proxy.conf.json proxy.conf.json
 RUN npm install --production
 
 # install Nginx
-RUN apt-get install nginx -y
+RUN apk add nginx
 
 # Expose Nginx port
 EXPOSE 80

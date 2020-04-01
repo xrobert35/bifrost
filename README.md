@@ -21,6 +21,7 @@ services:
   bifrost:
     image: xrobert35/bifrost2:latest
     container_name: bifrost
+    privileged: "true"
     ports:
     - "4080:4080" #website
     - "4081:4081" #websocket
