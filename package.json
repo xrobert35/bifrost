@@ -14,7 +14,8 @@
     "copy:resources": "copyfiles ./src/server/app/**/* dist/ -u 1 -e './src/server/app/**/*.ts'",
     "client:lint": "ng run bifrost-client:lint --fix",
     "client:server:build": "ng run bifrost-client:server:production",
-    "client:browser:build": "ng run bifrost-client:build:production",
+    "client:browser:build": "ng run bifrost-client:build:production && npm run client:post:build",
+    "client:post:build" : "find ./dist/client/browser/assets/**/* -regex '.*\\.\\(js\\|css\\)' -exec sed -i -E '\\/[\\*\\/]#\\ssourceMappingURL=.+.map(\\*\\/)?/g' {} +",
     "client:build": "npm run client:browser:build && npm run client:server:build",
     "server:run": "ts-node -r tsconfig-paths/register src/server/app/main.ts",
     "server:lint": "tslint --project tsconfig.server.json --fix",
@@ -67,8 +68,7 @@
     "lodash": "^4.17.5",
     "mock-browser": "^0.92.14",
     "moment": "^2.22.2",
-    "monaco-editor": "^0.18.1",
-    "monaco-themes": "^0.3.3",
+    "monaco-editor": "^0.20.0",
     "mustache": "^3.0.1",
     "node-docker-api": "^1.1.22",
     "node-json-db": "^0.9.2",
@@ -93,7 +93,7 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.803.15",
+    "@angular-devkit/build-angular": "^0.803.26",
     "@angular/cli": "~8.3.15",
     "@angular/compiler-cli": "^8.2.12",
     "@angular/language-service": "^8.2.12",

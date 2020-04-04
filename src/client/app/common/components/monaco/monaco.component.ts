@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, ChangeDetectionStrategy, forwardRef, NgZone } from '@angular/core';
 import { MonacoEditorService } from './monaco.service';
-import { take, filter } from 'rxjs/operators';
 import { DefaultControlValueAccessor } from '@asi-ngtools/lib';
 import { Subscription, fromEvent } from 'rxjs';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -22,14 +21,15 @@ declare const monaco: any;
 })
 export class MonacoEditorComponent extends DefaultControlValueAccessor implements OnInit {
 
-
   @Input() options: any;
 
   editor: any;
+  model: any;
   container: HTMLDivElement;
   parseError: boolean;
 
   private _windowResizeSubscription: Subscription;
+  private modelUri: any;
 
   @ViewChild('editor', { static: true }) editorContent: ElementRef;
 
@@ -41,54 +41,62 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
     this.container = this.editorContent.nativeElement;
 
     if (this.universalService.isClient()) {
-      this.monacoEditorService.isMonacoLoaded.pipe(
-        filter(isLoaded => isLoaded),
-        take(1)
-      ).subscribe(() => {
-        (<any>window).editor = require('monaco-editor');
-        this.initMonaco();
+      this.monacoEditorService.initMonaco().then((alreadyInit: boolean) => {
+          this.initMonaco(alreadyInit);
       });
     }
   }
 
-  private async initMonaco() {
+  ngOnDestroy() {
+    if (this._windowResizeSubscription) {
+      this._windowResizeSubscription.unsubscribe();
+    }
+    if (this.editor) {
+      this.editor.dispose();
+      this.editor = undefined;
+    }
+  }
+
+  private async initMonaco(_alreadyInit: boolean) {
+    if (!this.modelUri) {
+      this.modelUri = monaco.Uri.parse('a://b/docker-compose.yml');
+    }
+    if (!this.model) {
+      this.model = monaco.editor.getModel(this.modelUri);
+      if (!this.model) {
+        this.model = monaco.editor.createModel([this.value].join('\n'), 'yaml', this.modelUri);
+      }
+    }
+
     let opts: any = {
-      value: [this.value].join('\n'),
-      language: 'yaml',
+      theme: 'vs-dark',
+      fontSize: '16px',
       automaticLayout: true,
       scrollBeyondLastLine: false,
+      showFoldingControls: 'always',
       minimap: {
         enabled: false
-      }
+      },
+      model: this.model,
     };
 
     if (this.options) {
       opts = Object.assign({}, opts, this.options);
     }
 
-
     this.ngZone.runOutsideAngular(async () => {
       this.editor = monaco.editor.create(this.container, opts);
       this.editor.layout();
-
-      monaco.editor.defineTheme('monokai', await this.monacoEditorService.getTheme());
-      monaco.editor.setTheme('monokai');
 
       this.editor.onDidChangeModelContent(() => {
         this.value = this.editor.getValue();
       });
 
       this.editor.onDidChangeModelDecorations(() => {
-        const pastParseError = this.parseError;
-
         if (monaco.editor.getModelMarkers({}).map((m: any) => m.message).join(', ')) {
           this.parseError = true;
         } else {
           this.parseError = false;
-        }
-
-        if (pastParseError !== this.parseError) {
-          // this.onErrorStatusChange();
         }
       });
 
@@ -97,7 +105,7 @@ export class MonacoEditorComponent extends DefaultControlValueAccessor implement
       });
 
 
-      //efsh layout on resize event.
+      // refresh layout on resize event.
       if (this._windowResizeSubscription) {
         this._windowResizeSubscription.unsubscribe();
       }

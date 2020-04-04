@@ -78,6 +78,11 @@ export class ClientServer {
       req.BASE_URL = `http://localhost:${this.CLIENT_PORT}`;
       next();
     }, (req: any, res: any) => {
+      if (req.path.endsWith('js.map')) {
+        this.logger.debug(`Ignoring ${req.path}`);
+        return res.send({});
+      }
+      // dont follow possible sourcemap of external lib
       this.logger.debug(`Start rendering ${req.path} ${new Date()}`);
       res.render(join(DIST_FOLDER, 'browser', 'index.html'), { req, res }, (_err: any, html: any) => {
         this.logger.debug(`End rendering ${req.path}  ${new Date()}`);

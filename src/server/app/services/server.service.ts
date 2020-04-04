@@ -34,7 +34,7 @@ export class ServerService {
       this.logger.error('Fail to create folder for nginx', err);
     }
 
-    fs.mkdirSync('/opt/bifrost/server', { recursive: true });
+    fs.mkdirSync(Config.get().SERVER_DATA, { recursive: true });
   }
 
   get(): Server {
@@ -143,7 +143,7 @@ export class ServerService {
         if (server) {
           this.server = JSON.parse(server);
         } else {
-          this.server = { port: 80, serverName: 'localhost', onlyActive: false, locations: [] };
+          this.server = { port: 80, serverName: '', onlyActive: false, locations: [] };
         }
       } catch (err) {
         this.logger.error('Unabled to read server configuration', err);

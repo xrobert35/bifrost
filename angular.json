@@ -24,14 +24,24 @@
               "src/client/favicon.ico",
               "src/client/assets",
               {
-                "glob": "Monokai.json",
-                "input": "./node_modules/monaco-themes/themes",
-                "output": "assets/monaco-themes"
+                "glob": "**/*",
+                "input": "./node_modules/monaco-editor/min",
+                "output": "assets/monaco"
               },
               {
                 "glob": "**/*",
-                "input": "./node_modules/monaco-editor/min",
-                "output": "assets/monaco-editor"
+                "input": "./node_modules/monaco-yaml/dev",
+                "output": "assets/monaco/vs/language/yaml"
+              },
+              {
+                "glob": "parser-yaml.js",
+                "input": "./node_modules/prettier",
+                "output": "assets/monaco/vs/prettier"
+              },
+              {
+                "glob": "standalone.js",
+                "input": "./node_modules/prettier",
+                "output": "assets/monaco/vs/prettier"
               }
             ],
             "styles": [

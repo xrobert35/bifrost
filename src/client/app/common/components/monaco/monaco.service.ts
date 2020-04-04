@@ -1,93 +1,79 @@
-import { Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { UniversalService } from '../../universal/universal.service';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class MonacoEditorService {
 
-  nodeRequire: any;
+  private _monacoPath = 'assets/monaco/vs';
+  private monacoAlreadyLoaded = false;
 
-  isMonacoLoaded = new BehaviorSubject<boolean>(false);
+  constructor() { }
 
-  private _monacoPath = 'assets/monaco-editor/vs';
-  private _monacoThemesPath = 'assets/monaco-themes/';
-
-  private theme: any;
-
-  set monacoPath(value: any) {
-    if (value) {
-      this._monacoPath = value;
-    }
+  public initMonaco() {
+    return this.loadMonaco();
   }
 
-  constructor(ngZone: NgZone, private httpClient: HttpClient, universalService: UniversalService) {
+  private loadMonaco() {
+    return new Promise((resolve) => {
+      if (this.monacoAlreadyLoaded) {
+        resolve(true);
+        return;
+      }
 
-    if (universalService.isClient()) {
-      console.error('loading editor');
       const onGotAmdLoader = () => {
-        if ((<any>window).monacoEditorAlreadyInitialized) {
-          ngZone.run(() => this.isMonacoLoaded.next(true));
-          return;
-        }
-
-        (<any>window).monacoEditorAlreadyInitialized = true;
-
+        this.monacoAlreadyLoaded = true;
         // Load monaco
-        (<any>window).amdRequire = (<any>window).require;
-        if (this.nodeRequire) {
-          (<any>window).require = this.nodeRequire;
-        }
-        (<any>window).amdRequire.config({ paths: { 'vs': this._monacoPath } });
-        (<any>window).amdRequire(['vs/editor/editor.main'], () => {
-          ngZone.run(() => this.isMonacoLoaded.next(true));
+        (<any>window).require.config({ paths: { vs: this._monacoPath, prettier: `${this._monacoPath}/prettier` } });
+        (<any>window).require(['vs/editor/editor.main.nls', 'vs/editor/editor.main'], () => {
+          this.addAdditionnals().then(() => {
+            resolve(false);
+          });
         });
       };
 
-      let loaderScript: any = null;
       // Load AMD loader if necessary
-      if (!(<any>window).require && !(<any>window).amdRequire) {
-
-        loaderScript = document.createElement('script');
+      if (!(<any>window).require) {
+        const loaderScript = document.createElement('script');
         loaderScript.type = 'text/javascript';
         loaderScript.src = `${this._monacoPath}/loader.js`;
         loaderScript.addEventListener('load', onGotAmdLoader);
         document.body.appendChild(loaderScript);
-
-      } else if (!(<any>window).amdRequire) {
-
-        this.addElectronFixScripts();
-
-        this.nodeRequire = (<any>window).require;
-        loaderScript = document.createElement('script');
-        loaderScript.type = 'text/javascript';
-        loaderScript.src = `${this._monacoPath}/loader.js`;
-        loaderScript.addEventListener('load', onGotAmdLoader);
-        document.body.appendChild(loaderScript);
-
       } else {
         onGotAmdLoader();
       }
-    }
+    });
   }
 
-  async getTheme() {
-    if (this.theme) {
-      return this.theme;
-    } else {
-      this.theme = await this.httpClient.get(this._monacoThemesPath + 'Monokai.json').toPromise();
-      return this.theme;
-    }
-  }
 
-  addElectronFixScripts() {
-    const electronFixScript = document.createElement('script');
-    // workaround monaco-css not understanding the environment
-    const inlineScript = document.createTextNode('self.module = undefined;');
-    // workaround monaco-typescript not understanding the environment
-    const inlineScript2 = document.createTextNode('self.process.browser = true;');
-    electronFixScript.appendChild(inlineScript);
-    electronFixScript.appendChild(inlineScript2);
-    document.body.appendChild(electronFixScript);
+  addAdditionnals() {
+    return new Promise((resolve) => {
+      (<any>window).require([
+        'prettier/standalone',
+        'prettier/parser-yaml',
+      ], () => {
+
+        const monaco = (<any>window).monaco;
+
+        const prettier = require('prettier/standalone');
+        const yamlParser = require('prettier/parser-yaml');
+
+        monaco.languages.registerDocumentFormattingEditProvider('yaml', {
+          provideDocumentFormattingEdits: function (model: any, options: any, _token: any) {
+            const value = model.getValue();
+            try {
+              const text = value;
+              const formatted = prettier.format(text, Object.assign(options, { parser: 'yaml', plugins: [yamlParser] }));
+              return [{
+                range: model.getFullModelRange(),
+                text: formatted
+              }];
+            } catch (error) {
+              return [];
+            }
+          }
+        });
+      });
+
+      resolve();
+    });
   }
 }
