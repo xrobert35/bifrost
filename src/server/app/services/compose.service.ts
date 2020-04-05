@@ -5,14 +5,14 @@ import { FunctionalException } from '@common/exception/functional.exception';
 import { TechnicalException } from '@common/exception/technical.exception';
 import { Compose } from '@shared/interface/compose.int';
 import { ComposeOption } from '@shared/interface/compose.option.int';
-import { SocketInfo } from '@shared/interface/socket-into.int';
 
 import Bluebird = require('bluebird');
 import urlJoin = require('url-join');
 import shortUid = require('short-uuid');
 import fs = require('fs');
 import shelljs = require('shelljs');
-
+import { TaskLogsService } from './taskLogs.service';
+import { LogSocket } from '@shared/interface/log-socket.int';
 
 @Injectable()
 export class ComposeService {
@@ -23,7 +23,7 @@ export class ComposeService {
 
   private readonly logger = WinLogger.get('compose-service');
 
-  constructor() {
+  constructor(private taskLogsService: TaskLogsService) {
     this.readComposesJson();
   }
 
@@ -92,7 +92,7 @@ export class ComposeService {
     const dirContent = await fs.promises.readdir(defaultComposeFolder);
 
     // get only folder
-    const composeFolders =  await Bluebird.filter(dirContent, async fileName => {
+    const composeFolders = await Bluebird.filter(dirContent, async fileName => {
       const filePath = urlJoin(defaultComposeFolder, fileName);
       const fileInfo = await fs.promises.stat(filePath);
       if (fileInfo.isDirectory()) {
@@ -106,7 +106,8 @@ export class ComposeService {
       return {
         reference: shortUid.generate(),
         name: composeFolder,
-        compose: await fs.promises.readFile(urlJoin(defaultComposeFolder, composeFolder, 'docker-compose.yml'),  'utf8')
+        compose: await fs.promises.readFile(urlJoin(defaultComposeFolder, composeFolder, 'docker-compose.yml'), 'utf8'),
+        compatibility: true
       };
     });
 
@@ -115,7 +116,7 @@ export class ComposeService {
     return this.composes;
   }
 
-  public composeUp(reference: string, composeOption: ComposeOption) {
+  public composeUp(reference: string, _composeOpts: ComposeOption): LogSocket {
     this.logger.debug(`Running composeUp with reference : ${reference}`);
 
     const compose = this.getCompose(reference);
@@ -125,7 +126,7 @@ export class ComposeService {
     }
 
     let option = '';
-    if (composeOption.compatibility) {
+    if (compose.compatibility) {
       option += '--compatibility ';
     }
 
@@ -134,17 +135,24 @@ export class ComposeService {
 
     this.logger.info(`> running : ${cmd}`);
 
-    const logSocketId = `up-log-${shortUid}`;
+    const taskId = this.taskLogsService.newTask('compose-up-log');
+
+    // lauching compose up
     shelljs.exec(cmd, (code, stdout, stderr) => {
-      this.logger.info(`${code} ${stdout || stderr}`);
+      this.taskLogsService.addLog(taskId, stdout, stderr);
+      // exit
+      if (code === 1) {
+        this.taskLogsService.endTask(taskId);
+      }
     });
 
     return {
-      reference: logSocketId
+      logType: 'task',
+      logId: taskId
     };
   }
 
-  public composeDown(reference: string, composeOption: ComposeOption): SocketInfo {
+  public composeDown(reference: string, _composeOpts: ComposeOption): LogSocket {
     this.logger.debug(`Running composeUp with reference : ${reference}`);
 
     const compose = this.getCompose(reference);
@@ -154,7 +162,7 @@ export class ComposeService {
     }
 
     let option = '';
-    if (composeOption.compatibility) {
+    if (compose.compatibility) {
       option += '--compatibility ';
     }
 
@@ -163,13 +171,20 @@ export class ComposeService {
 
     this.logger.info(`> running : ${cmd}`);
 
-    const logSocketId = `up-log-${shortUid}`;
+    const taskId = this.taskLogsService.newTask('compose-down-log');
+
+    // lauching compose up
     shelljs.exec(cmd, (code, stdout, stderr) => {
-      this.logger.info(`${code} ${stdout || stderr}`);
+      this.taskLogsService.addLog(taskId, stdout, stderr);
+      // exit
+      if (code === 1) {
+        this.taskLogsService.endTask(taskId);
+      }
     });
 
     return {
-      reference: logSocketId
+      logType: 'task',
+      logId: taskId
     };
   }
 

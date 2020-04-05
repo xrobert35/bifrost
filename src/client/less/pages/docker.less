@@ -63,6 +63,9 @@ docker-page {
 
     .port-col {
       max-width: 160px;
+      .port-link {
+        margin-right: 5px;
+      }
     }
     .action-col {
       width: 80px;
@@ -88,11 +91,14 @@ docker-page {
     &.running {
       .fa-power-off:not([disabled]) {
         color: @bifrost-active-color;
+        cursor: default;
       }
     }
 
     &.exited {
+      cursor: default;
       .fa-power-off:not([disabled]) {
+        cursor: default;
         color: red;
       }
     }

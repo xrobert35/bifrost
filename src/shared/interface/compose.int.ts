@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean } from 'class-validator';
 
 export class Compose {
 
@@ -12,4 +12,7 @@ export class Compose {
   @IsNotEmpty()
   @IsString()
   compose: string;
+
+  @IsBoolean()
+  compatibility: boolean;
 }

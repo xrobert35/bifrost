@@ -4,9 +4,10 @@ import { DockerService } from './docker.service';
 import { ComposeService } from './compose.service';
 import { TaskService } from './task.service';
 import { WebUploadService } from './web-upload.service';
+import { TaskLogsService } from './taskLogs.service';
 
 const services = [
-  ServerService, DockerService, ComposeService, TaskService, WebUploadService
+  ServerService, DockerService, ComposeService, TaskService, WebUploadService, TaskLogsService
 ];
 
 @Module({

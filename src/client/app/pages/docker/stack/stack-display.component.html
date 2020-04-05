@@ -1,12 +1,12 @@
 <div class="table-action-container">
   <div class="table-action-panel">
     <!-- start -->
-    <button id="stack_start" type="button" class="small-icon-action-button tooltip-right" [attr.asi-tooltip]="'Play'"
+    <button id="stack_start" type="button" class="small-icon-action-button green tooltip-right" [attr.asi-tooltip]="'Play'"
       (click)="startSelectedContainers()">
       <i class="fas fa-play"></i>
     </button>
     <!-- stop -->
-    <button id="stack_stop" type="button" class="small-icon-action-button" [attr.asi-tooltip]="'Stop'"
+    <button id="stack_stop" type="button" class="small-icon-action-button red" [attr.asi-tooltip]="'Stop'"
       (click)="stopSelectedContainers()">
       <i class="fas fa-stop"></i>
     </button>
@@ -23,7 +23,7 @@
       <i class="fas fa-sync"></i>
     </button>
     <!-- delete -->
-    <button id="stack_delete" type="button" class="small-icon-action-button" [attr.asi-tooltip]="'Delete'"
+    <button id="stack_delete" type="button" class="small-icon-action-button red" [attr.asi-tooltip]="'Delete'"
       (click)="deleteSelectedContainers()">
       <i class="fas fa-trash-alt"></i>
     </button>
@@ -59,7 +59,7 @@
     <!-- port -->
     <asi-table-column name="port" libelle="Port" columnClass="port-col">
       <asi-cell *asiCellDef="let container">
-        <a *ngFor="let port of container.Ports" [hidden]="!port.PublicPort" [href]="getAppLocation(port.PublicPort)">
+        <a *ngFor="let port of container.Ports" [hidden]="!port.PublicPort" class="port-link" [href]="getAppLocation(port.PublicPort)">
           {{ port.PublicPort + ":" + port.PrivatePort }}</a>
       </asi-cell>
     </asi-table-column>

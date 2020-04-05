@@ -24,6 +24,11 @@
         </error-messages>
       </div>
 
+      <div>
+        <!-- compatibility -->
+        <asi-checkbox label="Compatibility" labelPosition="left" formControlName="compatibility"></asi-checkbox>
+      </div>
+
       <div class="flex-row static" *ngIf="!selectedCompose">
         <!-- add -->
         <button id="compose_add" type="submit" class="small-icon-action-button tooltip-left" [attr.asi-tooltip]="'Create'">
@@ -65,4 +70,19 @@
       <monaco-editor formControlName="compose"></monaco-editor>
     </div>
   </form>
+</div>
+
+<div *ngIf="streamingLog" class="log-panel">
+  <div class="logs-action">
+    <button id="compose_up" type="button" (click)="closeLog()" class="small-icon-action-button" [attr.asi-tooltip]="'Close'">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="logs-container" #logsContainer>
+    <div class="logs">
+      <div *ngFor="let log of displayLogs" [class]="'log ' + log.type +'-type'">
+        <p [innerHtml]="log.msg"></p>
+      </div>
+    </div>
+  </div>
 </div>

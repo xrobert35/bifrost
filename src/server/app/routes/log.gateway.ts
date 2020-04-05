@@ -10,6 +10,7 @@ import { DockerService } from '@services/docker.service';
 import { Socket } from 'net';
 import { Subscription } from 'rxjs';
 import { ServerService } from '@services/server.service';
+import { TaskLogsService } from '@services/taskLogs.service';
 
 @WebSocketGateway(4081, { namespace: 'logs' })
 export class LogGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -18,7 +19,9 @@ export class LogGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private clients: { subscriptions: { [name: string]: Subscription }, socket: Socket }[] = [];
 
-  constructor(private dockerService: DockerService, private serverService: ServerService) {
+  constructor(private dockerService: DockerService,
+    private serverService: ServerService,
+    private taskLogsService: TaskLogsService) {
     this.logger.info('Docket gateway loaded');
   }
 
@@ -54,6 +57,11 @@ export class LogGateway implements OnGatewayConnection, OnGatewayDisconnect {
         break;
       case 'nginx':
         subscription = this.serverService.streamLog(socketData.logId + '.log', socketData.logLength || 100).subscribe((logs) => {
+          socket.emit(`asynclog/${socketData.logType}/${socketData.logId}`, logs);
+        });
+        break;
+      case 'task':
+        subscription = this.taskLogsService.streamLog(socketData.logId).subscribe((logs) => {
           socket.emit(`asynclog/${socketData.logType}/${socketData.logId}`, logs);
         });
         break;

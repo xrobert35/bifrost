@@ -5,6 +5,7 @@ import { UniversalService } from '../universal/universal.service';
 import { Compose } from '@shared/interface/compose.int';
 import { Observable } from 'rxjs';
 import { ComposeOption } from '@shared/interface/compose.option.int';
+import { LogSocket } from '@shared/interface/log-socket.int';
 
 @Injectable()
 export class ComposeWebService {
@@ -36,12 +37,12 @@ export class ComposeWebService {
     return this.httpClient.delete<void>(`${this.baseUrl}/${compose.reference}`).pipe(share());
   }
 
-  up(compose: Compose, composeOptions: ComposeOption): Observable<void> {
-    return this.httpClient.post<void>(`${this.baseUrl}/up/${compose.reference}`, composeOptions).pipe(share());
+  up(compose: Compose, composeOptions: ComposeOption): Observable<LogSocket> {
+    return this.httpClient.post<LogSocket>(`${this.baseUrl}/up/${compose.reference}`, composeOptions).pipe(share());
   }
 
-  down(compose: Compose, composeOptions: ComposeOption): Observable<void> {
-    return this.httpClient.post<void>(`${this.baseUrl}/down/${compose.reference}`, composeOptions).pipe(share());
+  down(compose: Compose, composeOptions: ComposeOption): Observable<LogSocket> {
+    return this.httpClient.post<LogSocket>(`${this.baseUrl}/down/${compose.reference}`, composeOptions).pipe(share());
   }
 
   scan() {

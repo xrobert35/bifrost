@@ -93,6 +93,7 @@ export class DockerService {
   streamLog(containerId: string, tail: number): Observable<string> {
     return Observable.create((obs: Observer<string>) => {
       const logsPromise = this.docker.container.get(containerId).logs({
+        details : true,
         follow: true,
         stdout: true,
         stderr: true,
@@ -102,9 +103,7 @@ export class DockerService {
 
       logsPromise.then((logStream: Stream) => {
         logStream.on('data', (buffer) => {
-          // TODO 8 first byte are log status information
-          const log = buffer.toString('utf8', 8, buffer.length);
-          obs.next(log);
+          obs.next(buffer.toString('utf8', 8, buffer.length));
         });
         logStream.on('close', () => {
           obs.complete();
