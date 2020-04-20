@@ -3,7 +3,7 @@ import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
-export class CustomValidationPipe implements PipeTransform<any> {
+export class ValidationPipe implements PipeTransform<any> {
 
   constructor() {}
 

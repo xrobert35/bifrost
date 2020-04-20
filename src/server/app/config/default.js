@@ -8,6 +8,7 @@ const config = {
   SWAGGER_ACTIVATED: process.env.SWAGGER_ACTIVATED != null ? process.env.SWAGGER_ACTIVATED : false,
   DOCKER_REPO_KEYS : process.env.DOCKER_REPO_KEYS || null,
   SERVER_DATA: process.env.SERVER_DATA || '/opt/bifrost',
-  DEFAULT_COMPOSE_FOLDER : process.env.DEFAULT_COMPOSE_FOLDER || '/opt/docker/compose'
+  DEFAULT_COMPOSE_FOLDER : process.env.DEFAULT_COMPOSE_FOLDER || '/opt/docker/compose',
+  AUTH_JWT_KEY: process.env.AUTH_JWT_KEY || 'I015U2VjcmV0SldUNCFJbmV4eXM=',
 }
 module.exports = { config: config }

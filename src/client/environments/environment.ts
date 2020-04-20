@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   SENTRY_ACTIVATED: true,
-  AUTH_TOKEN_NAME : 'authorization'
+  AUTH_TOKEN_NAME: 'authorization',
+  LOGIN_SAVE_URL: <string>null,
 };
 
 /*

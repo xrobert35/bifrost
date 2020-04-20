@@ -14,6 +14,7 @@ export class Config {
     CLIENT_PROXY_ACTIVATED: boolean;
     SERVER_PATH: string,
     LOG_LEVEL: string,
+    AUTH_JWT_KEY: string;
     SWAGGER_ACTIVATED: string,
     DOCKER_REPO_KEYS: string,
     SERVER_DATA: string;

@@ -18,15 +18,17 @@ import { StackDisplayComponent } from './docker/stack/stack-display.component';
 import { DockerLogsPage } from './docker/logs/docker-logs.page';
 import { ContainerResolver } from '../common/resolver/container.resolver';
 import { ProxyLogsPage } from './proxy/logs/proxy-logs.page';
+import { LoginPage } from './login/login.page';
 
 const appRouter: Routes = [
+  { path: 'login', component: LoginPage },
   {
     path: 'app', component: AppPage,
     children: [
       { path: 'docker', component: DockerPage },
       { path: 'docker/logs/:containerId', component: DockerLogsPage, resolve: { container: ContainerResolver } },
       { path: 'proxy', component: ProxyPage, resolve: { server: ServerResolver } },
-      { path: 'proxy/logs/:type', component: ProxyLogsPage},
+      { path: 'proxy/logs/:type', component: ProxyLogsPage },
       { path: 'compose', component: ComposePage, resolve: { composes: ComposesResolver } },
       { path: 'web-upload', component: WebUploadPage, resolve: { folders: FoldersResolver } },
       { path: 'task-helper', component: TaskHelperPage },
@@ -40,6 +42,7 @@ const appRouter: Routes = [
 @NgModule({
   declarations: [
     AppPage,
+    LoginPage,
     DockerPage,
     StackDisplayComponent,
     ComposePage,

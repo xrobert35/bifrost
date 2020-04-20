@@ -6,6 +6,8 @@ import { UniversalService } from './universal/universal.service';
 import { ConfirmDialog } from './components/dialog/confirm.dialog';
 import { ContainerResolver } from './resolver/container.resolver';
 import { MonacoEditorModule } from './components/monaco/monaco.module';
+import { EnsureUserAuthGuard } from './security/auth.guard';
+import { UserStore } from './security/user.store';
 
 @NgModule({
   declarations: [ConfirmDialog],
@@ -22,7 +24,7 @@ import { MonacoEditorModule } from './components/monaco/monaco.module';
     MonacoEditorModule,
   ],
   entryComponents: [ConfirmDialog],
-  providers: [UniversalService, ContainerResolver]
+  providers: [UniversalService, ContainerResolver, EnsureUserAuthGuard, UserStore]
 })
 export class BifrostCommonModule {
 

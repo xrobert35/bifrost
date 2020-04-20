@@ -7,7 +7,6 @@ export class LoggerFactory {
 
   public static get() {
     if (!this.logger) {
-
       const myCustomLevels = {
         levels: {
           debug: 3,
@@ -23,29 +22,31 @@ export class LoggerFactory {
         }
       };
 
-      const logLevel = Config.get().LOG_LEVEL;
-
       this.logger = winston.createLogger({
         levels: myCustomLevels.levels,
-        transports: [
-          new winston.transports.Console({
-            level: logLevel,
-            format: winston.format.combine(
-              winston.format.timestamp(),
-              winston.format.colorize(),
-              winston.format.printf((info) => {
-                const {
-                  timestamp, level, message, ...args
-                } = info;
-
-                return `${timestamp} - ${level} - ${message} ${Object.keys(args).length ? JSON.stringify(args, null, 2) : ''}`;
-              }),
-            )
-          }),
-        ],
+        transports: [this.getConsoleTransport()],
       });
       winston.addColors(myCustomLevels.colors);
     }
     return this.logger;
+  }
+
+  private static getConsoleTransport() {
+    const logLevel = Config.get().LOG_LEVEL;
+
+    return new winston.transports.Console({
+      level: logLevel,
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.colorize(),
+        winston.format.printf((info) => {
+          const {
+            timestamp, level, message, ...args
+          } = info;
+
+          return `${timestamp} - ${level} - ${message} ${Object.keys(args).length ? JSON.stringify(args, null, 2) : ''}`;
+        }),
+      )
+    });
   }
 }
